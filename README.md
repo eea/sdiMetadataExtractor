@@ -1,6 +1,8 @@
 # sdiMetadataExtractor
 
 
+	Talend job to be edited with version 6.3.1
+
 	Usage:
 
 	sdiMetadataExtractor.sh --context_param username=changeme --context_param password=changeme --context_param outputDir=changeme
