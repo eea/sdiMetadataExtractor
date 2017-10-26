@@ -6881,11 +6881,7 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 	
 	
 					if(execStat){				
-	       				runStat.updateStatOnConnection("OnComponentOk5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row17", 3, 0);
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -6893,47 +6889,7 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row8", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row19", 3, 0);
-					}           			
-				
-					if(execStat){				
 	       				runStat.updateStatOnConnection("OnComponentOk4", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row4", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnComponentError1", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row16", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnComponentError3", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row10", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -6941,175 +6897,11 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row3", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row27", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("map", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row35", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfmap", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row31", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("shortname", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row26", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row12", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfcopyOfmapped3_0", 3, 0);
-					}           			
-				
-					if(execStat){				
 	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
 					}           			
 				
 					if(execStat){				
 	       				runStat.updateStatOnConnection("row34", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row15", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row24", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row9", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row22", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row15", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row23", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnComponentError11", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row29", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row8", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row14", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row19", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnComponentOk1", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row11", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row34", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnComponentError12", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row21", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row2", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnComponentError4", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnComponentError9", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row22", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row30", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7117,67 +6909,11 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfcopyOfmapped2", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnComponentError13", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row33", 3, 0);
-					}           			
-				
-					if(execStat){				
 	       				runStat.updateStatOnConnection("row7", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("OnComponentOk2", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row28", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row18", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row25", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+	       				runStat.updateStatOnConnection("OnComponentError5", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7185,19 +6921,11 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row27", 3, 0);
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row23", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row6", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row1", 3, 0);
+	       				runStat.updateStatOnConnection("row26", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7205,11 +6933,39 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfmapped3", 3, 0);
+	       				runStat.updateStatOnConnection("row29", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row13", 3, 0);
+	       				runStat.updateStatOnConnection("OnComponentOk2", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row27", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row2", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row16", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7221,7 +6977,7 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("OnComponentError8", 3, 0);
+	       				runStat.updateStatOnConnection("row22", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7229,15 +6985,31 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
+	       				runStat.updateStatOnConnection("row8", 3, 0);
+					}           			
+				
+					if(execStat){				
 	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("OnComponentError5", 3, 0);
+	       				runStat.updateStatOnConnection("row27", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row32", 3, 0);
+	       				runStat.updateStatOnConnection("row14", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row15", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnComponentError9", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7245,7 +7017,23 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+	       				runStat.updateStatOnConnection("OnComponentError1", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row12", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row17", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row34", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row19", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7253,7 +7041,219 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
+	       				runStat.updateStatOnConnection("row9", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnComponentError3", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnComponentError4", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("copyOfcopyOfmapped3_0", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row13", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("copyOfmap", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnComponentError8", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnComponentError13", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("copyOfmapped3", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row19", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("map", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("copyOfcopyOfmapped2", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row8", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row18", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row10", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row11", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnComponentOk1", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
 	       				runStat.updateStatOnConnection("shortname", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row35", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row31", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row6", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row32", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row33", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row22", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row1", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnComponentOk5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row25", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row24", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row4", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row23", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row21", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row30", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row3", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row23", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnComponentError11", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("shortname", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnComponentError12", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row28", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row15", 3, 0);
 					}           			
 				
 				if(execStat){
@@ -35895,5 +35895,5 @@ if (execStat) {
 }
 /************************************************************************************************
  *     902796 characters generated by Talend Open Studio for Big Data 
- *     on the October 26, 2017 10:36:30 AM CEST
+ *     on the October 26, 2017 11:20:41 AM CEST
  ************************************************************************************************/
