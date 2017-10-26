@@ -760,6 +760,12 @@ public static class row3Struct implements routines.system.IPersistableRow<row3St
 					return this.referenceFlag;
 				}
 				
+			    public String wms;
+
+				public String getWms () {
+					return this.wms;
+				}
+				
 
 
 
@@ -880,6 +886,8 @@ public static class row3Struct implements routines.system.IPersistableRow<row3St
 					this.shortname = readString(dis);
 					
 					this.referenceFlag = readString(dis);
+					
+					this.wms = readString(dis);
 					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
@@ -1039,6 +1047,10 @@ public static class row3Struct implements routines.system.IPersistableRow<row3St
 				
 						writeString(this.referenceFlag,dos);
 					
+					// String
+				
+						writeString(this.wms,dos);
+					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
         }
@@ -1082,6 +1094,7 @@ public static class row3Struct implements routines.system.IPersistableRow<row3St
 		sb.append(",browseGraphic="+browseGraphic);
 		sb.append(",shortname="+shortname);
 		sb.append(",referenceFlag="+referenceFlag);
+		sb.append(",wms="+wms);
 	    sb.append("]");
 
 	    return sb.toString();
@@ -1307,6 +1320,12 @@ public static class row4Struct implements routines.system.IPersistableRow<row4St
 					return this.referenceFlag;
 				}
 				
+			    public String wms;
+
+				public String getWms () {
+					return this.wms;
+				}
+				
 
 
 
@@ -1427,6 +1446,8 @@ public static class row4Struct implements routines.system.IPersistableRow<row4St
 					this.shortname = readString(dis);
 					
 					this.referenceFlag = readString(dis);
+					
+					this.wms = readString(dis);
 					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
@@ -1586,6 +1607,10 @@ public static class row4Struct implements routines.system.IPersistableRow<row4St
 				
 						writeString(this.referenceFlag,dos);
 					
+					// String
+				
+						writeString(this.wms,dos);
+					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
         }
@@ -1629,6 +1654,7 @@ public static class row4Struct implements routines.system.IPersistableRow<row4St
 		sb.append(",browseGraphic="+browseGraphic);
 		sb.append(",shortname="+shortname);
 		sb.append(",referenceFlag="+referenceFlag);
+		sb.append(",wms="+wms);
 	    sb.append("]");
 
 	    return sb.toString();
@@ -1854,6 +1880,12 @@ public static class row5Struct implements routines.system.IPersistableRow<row5St
 					return this.referenceFlag;
 				}
 				
+			    public String wms;
+
+				public String getWms () {
+					return this.wms;
+				}
+				
 
 
 
@@ -1974,6 +2006,8 @@ public static class row5Struct implements routines.system.IPersistableRow<row5St
 					this.shortname = readString(dis);
 					
 					this.referenceFlag = readString(dis);
+					
+					this.wms = readString(dis);
 					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
@@ -2133,6 +2167,10 @@ public static class row5Struct implements routines.system.IPersistableRow<row5St
 				
 						writeString(this.referenceFlag,dos);
 					
+					// String
+				
+						writeString(this.wms,dos);
+					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
         }
@@ -2176,6 +2214,7 @@ public static class row5Struct implements routines.system.IPersistableRow<row5St
 		sb.append(",browseGraphic="+browseGraphic);
 		sb.append(",shortname="+shortname);
 		sb.append(",referenceFlag="+referenceFlag);
+		sb.append(",wms="+wms);
 	    sb.append("]");
 
 	    return sb.toString();
@@ -2401,6 +2440,12 @@ public static class finaloutputStruct implements routines.system.IPersistableRow
 					return this.referenceFlag;
 				}
 				
+			    public String wms;
+
+				public String getWms () {
+					return this.wms;
+				}
+				
 
 
 
@@ -2521,6 +2566,8 @@ public static class finaloutputStruct implements routines.system.IPersistableRow
 					this.shortname = readString(dis);
 					
 					this.referenceFlag = readString(dis);
+					
+					this.wms = readString(dis);
 					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
@@ -2680,6 +2727,10 @@ public static class finaloutputStruct implements routines.system.IPersistableRow
 				
 						writeString(this.referenceFlag,dos);
 					
+					// String
+				
+						writeString(this.wms,dos);
+					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
         }
@@ -2723,6 +2774,7 @@ public static class finaloutputStruct implements routines.system.IPersistableRow
 		sb.append(",browseGraphic="+browseGraphic);
 		sb.append(",shortname="+shortname);
 		sb.append(",referenceFlag="+referenceFlag);
+		sb.append(",wms="+wms);
 	    sb.append("]");
 
 	    return sb.toString();
@@ -2948,6 +3000,12 @@ public static class row1Struct implements routines.system.IPersistableRow<row1St
 					return this.referenceFlag;
 				}
 				
+			    public String wms;
+
+				public String getWms () {
+					return this.wms;
+				}
+				
 
 
 
@@ -3068,6 +3126,8 @@ public static class row1Struct implements routines.system.IPersistableRow<row1St
 					this.shortname = readString(dis);
 					
 					this.referenceFlag = readString(dis);
+					
+					this.wms = readString(dis);
 					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
@@ -3227,6 +3287,10 @@ public static class row1Struct implements routines.system.IPersistableRow<row1St
 				
 						writeString(this.referenceFlag,dos);
 					
+					// String
+				
+						writeString(this.wms,dos);
+					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
         }
@@ -3270,6 +3334,7 @@ public static class row1Struct implements routines.system.IPersistableRow<row1St
 		sb.append(",browseGraphic="+browseGraphic);
 		sb.append(",shortname="+shortname);
 		sb.append(",referenceFlag="+referenceFlag);
+		sb.append(",wms="+wms);
 	    sb.append("]");
 
 	    return sb.toString();
@@ -3495,6 +3560,12 @@ public static class after_tFileInputDelimited_1Struct implements routines.system
 					return this.referenceFlag;
 				}
 				
+			    public String wms;
+
+				public String getWms () {
+					return this.wms;
+				}
+				
 
 
 
@@ -3615,6 +3686,8 @@ public static class after_tFileInputDelimited_1Struct implements routines.system
 					this.shortname = readString(dis);
 					
 					this.referenceFlag = readString(dis);
+					
+					this.wms = readString(dis);
 					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
@@ -3774,6 +3847,10 @@ public static class after_tFileInputDelimited_1Struct implements routines.system
 				
 						writeString(this.referenceFlag,dos);
 					
+					// String
+				
+						writeString(this.wms,dos);
+					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
         }
@@ -3817,6 +3894,7 @@ public static class after_tFileInputDelimited_1Struct implements routines.system
 		sb.append(",browseGraphic="+browseGraphic);
 		sb.append(",shortname="+shortname);
 		sb.append(",referenceFlag="+referenceFlag);
+		sb.append(",wms="+wms);
 	    sb.append("]");
 
 	    return sb.toString();
@@ -3950,7 +4028,7 @@ String fileName_tFileOutputDelimited_1 = "";
     boolean isFileGenerated_tFileOutputDelimited_1 = true;
     java.io.File filetFileOutputDelimited_1 = new java.io.File(fileName_tFileOutputDelimited_1);
     globalMap.put("tFileOutputDelimited_1_FILE_NAME",fileName_tFileOutputDelimited_1);
-                String[] headColutFileOutputDelimited_1=new String[30];
+                String[] headColutFileOutputDelimited_1=new String[31];
             class CSVBasicSet_tFileOutputDelimited_1{
                 private char field_Delim;
                 private char row_Delim;
@@ -4101,6 +4179,7 @@ String fileName_tFileOutputDelimited_1 = "";
                                     headColutFileOutputDelimited_1[27]="browseGraphic";
                                     headColutFileOutputDelimited_1[28]="shortname";
                                     headColutFileOutputDelimited_1[29]="referenceFlag";
+                                    headColutFileOutputDelimited_1[30]="wms";
                             CsvWritertFileOutputDelimited_1.writeNext(headColutFileOutputDelimited_1);
                             CsvWritertFileOutputDelimited_1.flush();
                         }
@@ -4211,9 +4290,9 @@ java.sql.Connection conn_tSQLiteOutput_1 = null;
                 }
                 java.sql.Statement stmtCreate_tSQLiteOutput_1 = conn_tSQLiteOutput_1.createStatement();
                 	
-                stmtCreate_tSQLiteOutput_1.execute("CREATE TABLE \"" + tableName_tSQLiteOutput_1 + "\"(\"uuid\" VARCHAR(0)  ,\"dataset_id\" VARCHAR(0)  ,\"datestamp\" VARCHAR(0)  ,\"crs\" VARCHAR(0)  ,\"title\" VARCHAR(0)  ,\"edition\" VARCHAR(0)  ,\"abstracts\" VARCHAR(0)  ,\"custodian\" VARCHAR(0)  ,\"inspire_themes\" VARCHAR(0)  ,\"gemet_concepts\" VARCHAR(0)  ,\"wlon\" FLOAT ,\"elon\" FLOAT ,\"slat\" FLOAT ,\"nlat\" FLOAT ,\"stype\" VARCHAR(0)  ,\"scaleres\" VARCHAR(0)  ,\"tbegin\" VARCHAR(0)  ,\"tend\" VARCHAR(0)  ,\"protocols\" VARCHAR(0)  ,\"links\" VARCHAR(0)  ,\"lineage\" VARCHAR(0)  ,\"data_src\" VARCHAR(0)  ,\"published\" VARCHAR(0)  ,\"sdiurl\" VARCHAR(0)  ,\"distributionFormat\" VARCHAR(0)  ,\"place\" VARCHAR(0)  ,\"useLimitation\" VARCHAR(0)  ,\"browseGraphic\" VARCHAR(0)  ,\"shortname\" VARCHAR(0)  ,\"referenceFlag\" VARCHAR(0)  )");
+                stmtCreate_tSQLiteOutput_1.execute("CREATE TABLE \"" + tableName_tSQLiteOutput_1 + "\"(\"uuid\" VARCHAR(0)  ,\"dataset_id\" VARCHAR(0)  ,\"datestamp\" VARCHAR(0)  ,\"crs\" VARCHAR(0)  ,\"title\" VARCHAR(0)  ,\"edition\" VARCHAR(0)  ,\"abstracts\" VARCHAR(0)  ,\"custodian\" VARCHAR(0)  ,\"inspire_themes\" VARCHAR(0)  ,\"gemet_concepts\" VARCHAR(0)  ,\"wlon\" FLOAT ,\"elon\" FLOAT ,\"slat\" FLOAT ,\"nlat\" FLOAT ,\"stype\" VARCHAR(0)  ,\"scaleres\" VARCHAR(0)  ,\"tbegin\" VARCHAR(0)  ,\"tend\" VARCHAR(0)  ,\"protocols\" VARCHAR(0)  ,\"links\" VARCHAR(0)  ,\"lineage\" VARCHAR(0)  ,\"data_src\" VARCHAR(0)  ,\"published\" VARCHAR(0)  ,\"sdiurl\" VARCHAR(0)  ,\"distributionFormat\" VARCHAR(0)  ,\"place\" VARCHAR(0)  ,\"useLimitation\" VARCHAR(0)  ,\"browseGraphic\" VARCHAR(0)  ,\"shortname\" VARCHAR(0)  ,\"referenceFlag\" VARCHAR(0)  ,\"wms\" VARCHAR(0)  )");
                 	
-	    String insert_tSQLiteOutput_1 = "INSERT INTO \"" + "sdi-internal" + "\" (\"uuid\",\"dataset_id\",\"datestamp\",\"crs\",\"title\",\"edition\",\"abstracts\",\"custodian\",\"inspire_themes\",\"gemet_concepts\",\"wlon\",\"elon\",\"slat\",\"nlat\",\"stype\",\"scaleres\",\"tbegin\",\"tend\",\"protocols\",\"links\",\"lineage\",\"data_src\",\"published\",\"sdiurl\",\"distributionFormat\",\"place\",\"useLimitation\",\"browseGraphic\",\"shortname\",\"referenceFlag\") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	    String insert_tSQLiteOutput_1 = "INSERT INTO \"" + "sdi-internal" + "\" (\"uuid\",\"dataset_id\",\"datestamp\",\"crs\",\"title\",\"edition\",\"abstracts\",\"custodian\",\"inspire_themes\",\"gemet_concepts\",\"wlon\",\"elon\",\"slat\",\"nlat\",\"stype\",\"scaleres\",\"tbegin\",\"tend\",\"protocols\",\"links\",\"lineage\",\"data_src\",\"published\",\"sdiurl\",\"distributionFormat\",\"place\",\"useLimitation\",\"browseGraphic\",\"shortname\",\"referenceFlag\",\"wms\") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	    java.sql.PreparedStatement pstmt_tSQLiteOutput_1 = conn_tSQLiteOutput_1.prepareStatement(insert_tSQLiteOutput_1);
 	    
 
@@ -4299,8 +4378,8 @@ java.sql.Connection conn_tSQLiteOutput_1 = null;
         int startRowNum_tFileOutputExcel_1 = writableSheet_tFileOutputExcel_1.getRows();
 		//modif end
 		
-		int[] fitWidth_tFileOutputExcel_1 = new int[30];
-		for(int i_tFileOutputExcel_1=0;i_tFileOutputExcel_1<30;i_tFileOutputExcel_1++){
+		int[] fitWidth_tFileOutputExcel_1 = new int[31];
+		for(int i_tFileOutputExcel_1=0;i_tFileOutputExcel_1<31;i_tFileOutputExcel_1++){
 		    int fitCellViewSize_tFileOutputExcel_1=writableSheet_tFileOutputExcel_1.getColumnView(i_tFileOutputExcel_1).getSize();
 			fitWidth_tFileOutputExcel_1[i_tFileOutputExcel_1]=fitCellViewSize_tFileOutputExcel_1/256;
 			if(fitCellViewSize_tFileOutputExcel_1%256!=0){
@@ -4495,6 +4574,12 @@ java.sql.Connection conn_tSQLiteOutput_1 = null;
 			));
 		//modif end
 		fitWidth_tFileOutputExcel_1[29]=fitWidth_tFileOutputExcel_1[29]>13?fitWidth_tFileOutputExcel_1[29]:13;
+		//modif start
+			writableSheet_tFileOutputExcel_1.addCell(new jxl.write.Label(30, nb_line_tFileOutputExcel_1, "wms"
+					,format_tFileOutputExcel_1
+			));
+		//modif end
+		fitWidth_tFileOutputExcel_1[30]=fitWidth_tFileOutputExcel_1[30]>3?fitWidth_tFileOutputExcel_1[30]:3;
 		nb_line_tFileOutputExcel_1 ++;
 	}
 		
@@ -4892,6 +4977,8 @@ finaloutputStruct finaloutput_tmp = new finaloutputStruct();
 							row1.shortname = null;
 					
 							row1.referenceFlag = null;
+					
+							row1.wms = null;
 					
 				}else{
 					
@@ -5497,6 +5584,24 @@ finaloutputStruct finaloutput_tmp = new finaloutputStruct();
 						
 						
 					
+						columnIndexWithD_tFileInputDelimited_1 = 30;
+						
+						
+						
+						if(columnIndexWithD_tFileInputDelimited_1 < rowtFileInputDelimited_1.length){
+						
+						
+							
+									row1.wms = rowtFileInputDelimited_1[columnIndexWithD_tFileInputDelimited_1];
+									
+							
+						
+						}else{
+							row1.wms = null;
+						}
+						
+						
+					
 				}
 				
 									
@@ -5719,6 +5824,7 @@ finaloutput_tmp.useLimitation = row1.useLimitation ;
 finaloutput_tmp.browseGraphic = row1.browseGraphic ;
 finaloutput_tmp.shortname = row1.shortname ;
 finaloutput_tmp.referenceFlag = row1.referenceFlag.equals("") ? "FALSE" : "TRUE";
+finaloutput_tmp.wms = row1.wms ;
 finaloutput = finaloutput_tmp;
 // ###############################
 
@@ -5805,7 +5911,8 @@ if(finaloutput != null) {
 	row3.useLimitation = finaloutput.useLimitation;								
 	row3.browseGraphic = finaloutput.browseGraphic;								
 	row3.shortname = finaloutput.shortname;								
-	row3.referenceFlag = finaloutput.referenceFlag;			
+	row3.referenceFlag = finaloutput.referenceFlag;								
+	row3.wms = finaloutput.wms;			
 	row4 = new row4Struct();
 						
 	row4.uuid = finaloutput.uuid;								
@@ -5837,7 +5944,8 @@ if(finaloutput != null) {
 	row4.useLimitation = finaloutput.useLimitation;								
 	row4.browseGraphic = finaloutput.browseGraphic;								
 	row4.shortname = finaloutput.shortname;								
-	row4.referenceFlag = finaloutput.referenceFlag;			
+	row4.referenceFlag = finaloutput.referenceFlag;								
+	row4.wms = finaloutput.wms;			
 	row5 = new row5Struct();
 						
 	row5.uuid = finaloutput.uuid;								
@@ -5869,7 +5977,8 @@ if(finaloutput != null) {
 	row5.useLimitation = finaloutput.useLimitation;								
 	row5.browseGraphic = finaloutput.browseGraphic;								
 	row5.shortname = finaloutput.shortname;								
-	row5.referenceFlag = finaloutput.referenceFlag;			
+	row5.referenceFlag = finaloutput.referenceFlag;								
+	row5.wms = finaloutput.wms;			
 
 
  
@@ -5907,7 +6016,7 @@ if(finaloutput != null) {
 		
 
 
-                        String[] rowtFileOutputDelimited_1=new String[30];
+                        String[] rowtFileOutputDelimited_1=new String[31];
                             rowtFileOutputDelimited_1[0]=row3.uuid == null ? null : row3.uuid;
                             rowtFileOutputDelimited_1[1]=row3.dataset_id == null ? null : row3.dataset_id;
                             rowtFileOutputDelimited_1[2]=row3.datestamp == null ? null : row3.datestamp;
@@ -5938,6 +6047,7 @@ if(finaloutput != null) {
                             rowtFileOutputDelimited_1[27]=row3.browseGraphic == null ? null : row3.browseGraphic;
                             rowtFileOutputDelimited_1[28]=row3.shortname == null ? null : row3.shortname;
                             rowtFileOutputDelimited_1[29]=row3.referenceFlag == null ? null : row3.referenceFlag;
+                            rowtFileOutputDelimited_1[30]=row3.wms == null ? null : row3.wms;
                 nb_line_tFileOutputDelimited_1++;
                 resourceMap.put("nb_line_tFileOutputDelimited_1", nb_line_tFileOutputDelimited_1);
                                        CsvWritertFileOutputDelimited_1.writeNext(rowtFileOutputDelimited_1);
@@ -6134,6 +6244,11 @@ pstmt_tSQLiteOutput_1.setNull(29, java.sql.Types.VARCHAR);
                     if(row4.referenceFlag == null) {
 pstmt_tSQLiteOutput_1.setNull(30, java.sql.Types.VARCHAR);
 } else {pstmt_tSQLiteOutput_1.setString(30, row4.referenceFlag);
+}
+
+                    if(row4.wms == null) {
+pstmt_tSQLiteOutput_1.setNull(31, java.sql.Types.VARCHAR);
+} else {pstmt_tSQLiteOutput_1.setString(31, row4.wms);
 }
 
 
@@ -7012,6 +7127,32 @@ pstmt_tSQLiteOutput_1.setNull(30, java.sql.Types.VARCHAR);
 							writableSheet_tFileOutputExcel_1.addCell(cell_29_tFileOutputExcel_1);
 							int currentWith_29_tFileOutputExcel_1 = cell_29_tFileOutputExcel_1.getContents().trim().length();
 							fitWidth_tFileOutputExcel_1[29]=fitWidth_tFileOutputExcel_1[29]>currentWith_29_tFileOutputExcel_1?fitWidth_tFileOutputExcel_1[29]:currentWith_29_tFileOutputExcel_1+2;
+	    				} 
+					
+								   				
+	    				if(row5.wms != null) {
+    				
+					
+//modif start
+					
+						columnIndex_tFileOutputExcel_1 = 30;
+					
+
+					
+						jxl.write.WritableCell cell_30_tFileOutputExcel_1 = new jxl.write.Label(columnIndex_tFileOutputExcel_1, startRowNum_tFileOutputExcel_1 + nb_line_tFileOutputExcel_1,
+					
+//modif end
+								row5.wms
+						,format_tFileOutputExcel_1
+							);
+//modif start					
+							//If we keep the cell format from the existing cell in sheet
+							
+							
+//modif ends							
+							writableSheet_tFileOutputExcel_1.addCell(cell_30_tFileOutputExcel_1);
+							int currentWith_30_tFileOutputExcel_1 = cell_30_tFileOutputExcel_1.getContents().trim().length();
+							fitWidth_tFileOutputExcel_1[30]=fitWidth_tFileOutputExcel_1[30]>currentWith_30_tFileOutputExcel_1?fitWidth_tFileOutputExcel_1[30]:currentWith_30_tFileOutputExcel_1+2;
 	    				} 
 					
     			nb_line_tFileOutputExcel_1++;
@@ -8939,6 +9080,6 @@ if (execStat) {
     ResumeUtil resumeUtil = null;
 }
 /************************************************************************************************
- *     231261 characters generated by Talend Open Studio for Big Data 
- *     on the October 23, 2017 3:26:46 PM CEST
+ *     234599 characters generated by Talend Open Studio for Big Data 
+ *     on the October 26, 2017 10:36:29 AM CEST
  ************************************************************************************************/
