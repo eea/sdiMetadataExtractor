@@ -6,7 +6,7 @@
     <contextParameter comment="" name="outputDir" prompt="outputDir?" promptNeeded="false" type="id_String" value="/tmp/sdiDump"/>
   </context>
   <parameters>
-    <elementParameter field="TEXT" name="SCREEN_OFFSET_X" value="7776" show="false"/>
+    <elementParameter field="TEXT" name="SCREEN_OFFSET_X" value="10368" show="false"/>
     <elementParameter field="TEXT" name="SCREEN_OFFSET_Y" value="0" show="false"/>
     <elementParameter field="TEXT" name="REPOSITORY_CONNECTION_ID" value="" show="false"/>
     <elementParameter field="TEXT" name="OOZIE_PROPERTY_TYPENAME" value="" show="false"/>
@@ -435,6 +435,7 @@
       <column comment="" key="false" length="-1" name="referenceFlag" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="wms" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="idpTopics" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="restApi" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
     <nodeData xsi:type="MapperData">
       <uiProperties shellMaximized="true"/>
@@ -472,6 +473,7 @@
         <mapperTableEntries name="referenceFlag" expression="row27.keyword " type="id_String" nullable="true"/>
         <mapperTableEntries name="wms" expression="row34.url " type="id_String" nullable="true"/>
         <mapperTableEntries name="idpTopics" expression="row40.keyword " type="id_String" nullable="true"/>
+        <mapperTableEntries name="restApi" expression="row44.url " type="id_String" nullable="true"/>
       </outputTables>
       <inputTables sizeState="INTERMEDIATE" name="row2" matchingMode="UNIQUE_MATCH" lookupMode="LOAD_ONCE">
         <mapperTableEntries name="uuid" type="id_String" nullable="true"/>
@@ -551,6 +553,11 @@
         <mapperTableEntries name="uuid" expression="row2.uuid " type="id_String" nullable="true"/>
         <mapperTableEntries name="keyword" type="id_String" nullable="true"/>
         <mapperTableEntries name="codeListValue" type="id_String" nullable="true"/>
+      </inputTables>
+      <inputTables sizeState="INTERMEDIATE" name="row44" matchingMode="UNIQUE_MATCH" lookupMode="LOAD_ONCE">
+        <mapperTableEntries name="uuid" expression="row2.uuid " type="id_String" nullable="true"/>
+        <mapperTableEntries name="url" expression="" type="id_String" nullable="true"/>
+        <mapperTableEntries name="protocol" type="id_String" nullable="true"/>
       </inputTables>
     </nodeData>
   </node>
@@ -4709,6 +4716,7 @@
       <column comment="" key="false" length="-1" name="referenceFlag" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="wms" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="idpTopics" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="restApi" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
   </node>
   <node componentName="tFileOutputDelimited" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="-6080" posY="64">
@@ -4774,6 +4782,7 @@
       <column comment="" key="false" length="-1" name="referenceFlag" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="wms" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="idpTopics" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="restApi" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
   </node>
   <node componentName="tAggregateRow" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="-6016" posY="704">
@@ -5984,7 +5993,7 @@
       <column comment="" key="false" length="-1" name="codeListValue" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
     <nodeData xsi:type="MapperData">
-      <uiProperties shellMaximized="true"/>
+      <uiProperties/>
       <varTables sizeState="INTERMEDIATE" name="Var">
         <mapperTableEntries name="codeListValue" expression="row38.keyword.trim().substring(row38.keyword.trim().lastIndexOf('_') + 1) " type="id_String"/>
       </varTables>
@@ -6049,6 +6058,565 @@
       <column comment="" key="false" length="-1" name="uuid" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="keyword" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="codeListValue" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+    </metadata>
+  </node>
+  <node componentName="tFileInputXML" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="-6464" posY="832">
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="tFileInputXML_14" show="false"/>
+    <elementParameter field="FILE" name="FILENAME" value="System.getProperty(&quot;java.io.tmpdir&quot;) + &quot;/sdiDump/tmp/out.xml&quot;"/>
+    <elementParameter field="TEXT" name="LOOP_QUERY" value="&quot;/csw:GetRecordsResponse&quot;"/>
+    <elementParameter field="TABLE" name="MAPPING">
+      <elementValue elementRef="SCHEMA_COLUMN" value="xmldoc"/>
+      <elementValue elementRef="QUERY" value="&quot;.&quot;"/>
+      <elementValue elementRef="NODECHECK" value="true"/>
+    </elementParameter>
+    <elementParameter field="TEXT" name="LIMIT" value=""/>
+    <elementParameter field="CHECK" name="DIE_ON_ERROR" value="false"/>
+    <elementParameter field="CHECK" name="ADVANCED_SEPARATOR" value="false"/>
+    <elementParameter field="TEXT" name="THOUSANDS_SEPARATOR" value="&quot;,&quot;" show="false"/>
+    <elementParameter field="TEXT" name="DECIMAL_SEPARATOR" value="&quot;.&quot;" show="false"/>
+    <elementParameter field="CHECK" name="IGNORE_NS" value="false"/>
+    <elementParameter field="CHECK" name="IGNORE_DTD" value="false"/>
+    <elementParameter field="FILE" name="TMP_FILENAME" value="&quot;/home/mauro/Desktop/TOS_BD-20161216_1026-V6.3.1/workspace/temp.xml&quot;" show="false"/>
+    <elementParameter field="CHECK" name="USE_SEPARATOR" value="false"/>
+    <elementParameter field="TEXT" name="FIELD_SEPARATOR" value="&quot;,&quot;" show="false"/>
+    <elementParameter field="CLOSED_LIST" name="GENERATION_MODE" value="Dom4j"/>
+    <elementParameter field="CHECK" name="CHECK_DATE" value="false"/>
+    <elementParameter field="ENCODING_TYPE" name="ENCODING" value="&quot;ISO-8859-15&quot;"/>
+    <elementParameter field="TECHNICAL" name="ENCODING:ENCODING_TYPE" value="ISO-8859-15"/>
+    <elementParameter field="TEXT" name="SCHEMA_OPT_NUM" value="100" show="false"/>
+    <elementParameter field="TEXT" name="LABEL" value="rest"/>
+    <elementParameter field="TEXT" name="CONNECTION_FORMAT" value="row"/>
+    <metadata connector="FLOW" name="tFileInputXML_14">
+      <column comment="" key="false" length="-1" name="xmldoc" nullable="true" pattern="" precision="-1" sourceType="" type="id_Document" originalLength="-1" usefulColumn="true"/>
+    </metadata>
+    <metadata connector="REJECT" name="REJECT">
+      <column comment="" key="false" length="-1" name="xmldoc" nullable="true" pattern="" precision="-1" sourceType="" type="id_Document" originalLength="-1" usefulColumn="true"/>
+      <column defaultValue="" key="false" length="255" name="errorCode" nullable="true" precision="0" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column defaultValue="" key="false" length="255" name="errorMessage" nullable="true" precision="0" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+    </metadata>
+  </node>
+  <node componentName="tXMLMap" componentVersion="2.1" offsetLabelX="0" offsetLabelY="0" posX="-6272" posY="832">
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="tXMLMap_9" show="false"/>
+    <elementParameter field="EXTERNAL" name="MAP" value=""/>
+    <elementParameter field="CHECK" name="DIE_ON_ERROR" value="false" show="false"/>
+    <elementParameter field="CHECK" name="KEEP_ORDER_FOR_DOCUMENT" value="false"/>
+    <elementParameter field="TEXT" name="CONNECTION_FORMAT" value="row"/>
+    <metadata connector="FLOW" label="mapped" name="copyOfcopyOfmap">
+      <column comment="" key="false" length="-1" name="uuid" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="url" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="protocol" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+    </metadata>
+    <nodeData xsi:type="TalendXMLMap:XmlMapData">
+      <inputTrees name="row41" matchingMode="ALL_ROWS" lookupMode="LOAD_ONCE">
+        <nodes name="xmldoc" expression="" type="id_Document" xpath="row41/xmldoc">
+          <children name="csw:GetRecordsResponse" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse" main="true">
+            <children name="xsi:schemaLocation" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/@xsi:schemaLocation" nodeType="ATTRIBUT"/>
+            <children name="csw" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/xmlns:csw" nodeType="NAME_SPACE" defaultValue="http://www.opengis.net/cat/csw/2.0.2"/>
+            <children name="gmd" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/xmlns:gmd" nodeType="NAME_SPACE" defaultValue="http://www.isotc211.org/2005/gmd"/>
+            <children name="gco" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/xmlns:gco" nodeType="NAME_SPACE" defaultValue="http://www.isotc211.org/2005/gco"/>
+            <children name="gmx" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/xmlns:gmx" nodeType="NAME_SPACE" defaultValue="http://www.isotc211.org/2005/gmx"/>
+            <children name="gml" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/xmlns:gml" nodeType="NAME_SPACE" defaultValue="http://www.opengis.net/gml"/>
+            <children name="csw:SearchStatus" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchStatus">
+              <children name="timestamp" type="id_Date" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchStatus/@timestamp" nodeType="ATTRIBUT" pattern="&quot;dd-MM-yyyy&quot;"/>
+            </children>
+            <children name="csw:SearchResults" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults" main="true">
+              <children name="numberOfRecordsMatched" type="id_Integer" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/@numberOfRecordsMatched" nodeType="ATTRIBUT"/>
+              <children name="numberOfRecordsReturned" type="id_Integer" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/@numberOfRecordsReturned" nodeType="ATTRIBUT"/>
+              <children name="elementSet" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/@elementSet" nodeType="ATTRIBUT"/>
+              <children name="nextRecord" type="id_Integer" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/@nextRecord" nodeType="ATTRIBUT"/>
+              <children name="gmd:MD_Metadata" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata" main="true">
+                <children name="xsi:schemaLocation" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/@xsi:schemaLocation" nodeType="ATTRIBUT"/>
+                <children name="gmd:fileIdentifier" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:fileIdentifier">
+                  <children name="gco:CharacterString" type="id_String" outgoingConnections="//@node.55/@nodeData/@connections.0" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:fileIdentifier/gco:CharacterString"/>
+                </children>
+                <children name="gmd:language" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:language">
+                  <children name="gmd:LanguageCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:language/gmd:LanguageCode">
+                    <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:language/gmd:LanguageCode/@codeList" nodeType="ATTRIBUT"/>
+                    <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:language/gmd:LanguageCode/@codeListValue" nodeType="ATTRIBUT"/>
+                  </children>
+                </children>
+                <children name="gmd:characterSet" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:characterSet">
+                  <children name="gmd:MD_CharacterSetCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:characterSet/gmd:MD_CharacterSetCode">
+                    <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:characterSet/gmd:MD_CharacterSetCode/@codeList" nodeType="ATTRIBUT"/>
+                    <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:characterSet/gmd:MD_CharacterSetCode/@codeListValue" nodeType="ATTRIBUT"/>
+                  </children>
+                </children>
+                <children name="gmd:hierarchyLevel" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:hierarchyLevel">
+                  <children name="gmd:MD_ScopeCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:hierarchyLevel/gmd:MD_ScopeCode">
+                    <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeList" nodeType="ATTRIBUT"/>
+                    <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue" nodeType="ATTRIBUT"/>
+                  </children>
+                </children>
+                <children name="gmd:contact" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact">
+                  <children name="gmd:CI_ResponsibleParty" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty">
+                    <children name="gmd:organisationName" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:organisationName">
+                      <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString"/>
+                    </children>
+                    <children name="gmd:contactInfo" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo">
+                      <children name="gmd:CI_Contact" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact">
+                        <children name="gmd:address" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address">
+                          <children name="gmd:CI_Address" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address">
+                            <children name="gmd:deliveryPoint" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:deliveryPoint">
+                              <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:deliveryPoint/gco:CharacterString"/>
+                            </children>
+                            <children name="gmd:city" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:city">
+                              <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:city/gco:CharacterString"/>
+                            </children>
+                            <children name="gmd:administrativeArea" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:administrativeArea">
+                              <children name="gco:CharacterString" type="id_Character" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:administrativeArea/gco:CharacterString"/>
+                            </children>
+                            <children name="gmd:postalCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:postalCode">
+                              <children name="gco:CharacterString" type="id_Integer" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:postalCode/gco:CharacterString"/>
+                            </children>
+                            <children name="gmd:country" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:country">
+                              <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:country/gco:CharacterString"/>
+                            </children>
+                            <children name="gmd:electronicMailAddress" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress">
+                              <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString"/>
+                            </children>
+                          </children>
+                        </children>
+                      </children>
+                    </children>
+                    <children name="gmd:role" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:role">
+                      <children name="gmd:CI_RoleCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:role/gmd:CI_RoleCode">
+                        <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:role/gmd:CI_RoleCode/@codeList" nodeType="ATTRIBUT"/>
+                        <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:role/gmd:CI_RoleCode/@codeListValue" nodeType="ATTRIBUT"/>
+                      </children>
+                    </children>
+                  </children>
+                </children>
+                <children name="gmd:dateStamp" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dateStamp">
+                  <children name="gco:DateTime" type="id_Date" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dateStamp/gco:DateTime" pattern="&quot;dd-MM-yyyy&quot;"/>
+                </children>
+                <children name="gmd:metadataStandardName" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:metadataStandardName">
+                  <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:metadataStandardName/gco:CharacterString"/>
+                </children>
+                <children name="gmd:metadataStandardVersion" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:metadataStandardVersion">
+                  <children name="gco:CharacterString" type="id_Float" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:metadataStandardVersion/gco:CharacterString"/>
+                </children>
+                <children name="gmd:referenceSystemInfo" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:referenceSystemInfo">
+                  <children name="gmd:MD_ReferenceSystem" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:referenceSystemInfo/gmd:MD_ReferenceSystem">
+                    <children name="gmd:referenceSystemIdentifier" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier">
+                      <children name="gmd:RS_Identifier" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/gmd:RS_Identifier">
+                        <children name="gmd:code" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/gmd:RS_Identifier/gmd:code">
+                          <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/gmd:RS_Identifier/gmd:code/gco:CharacterString"/>
+                        </children>
+                        <children name="gmd:codeSpace" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/gmd:RS_Identifier/gmd:codeSpace">
+                          <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/gmd:RS_Identifier/gmd:codeSpace/gco:CharacterString"/>
+                        </children>
+                      </children>
+                    </children>
+                  </children>
+                </children>
+                <children name="gmd:identificationInfo" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo">
+                  <children name="gmd:MD_DataIdentification" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification">
+                    <children name="gmd:citation" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation">
+                      <children name="gmd:CI_Citation" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation">
+                        <children name="gmd:title" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:title">
+                          <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString"/>
+                        </children>
+                        <children name="gmd:date" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:date">
+                          <children name="gmd:CI_Date" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date">
+                            <children name="gmd:date" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date">
+                              <children name="gco:Date" type="id_Date" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/gco:Date" pattern="&quot;dd-MM-yyyy&quot;"/>
+                            </children>
+                            <children name="gmd:dateType" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:dateType">
+                              <children name="gmd:CI_DateTypeCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:dateType/gmd:CI_DateTypeCode">
+                                <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:dateType/gmd:CI_DateTypeCode/@codeList" nodeType="ATTRIBUT"/>
+                                <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:dateType/gmd:CI_DateTypeCode/@codeListValue" nodeType="ATTRIBUT"/>
+                              </children>
+                            </children>
+                          </children>
+                        </children>
+                        <children name="gmd:edition" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:edition">
+                          <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:edition/gco:CharacterString"/>
+                        </children>
+                        <children name="gmd:identifier" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:identifier">
+                          <children name="gmd:RS_Identifier" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:identifier/gmd:RS_Identifier">
+                            <children name="gmd:code" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:identifier/gmd:RS_Identifier/gmd:code">
+                              <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:identifier/gmd:RS_Identifier/gmd:code/gco:CharacterString"/>
+                            </children>
+                          </children>
+                        </children>
+                      </children>
+                    </children>
+                    <children name="gmd:abstract" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:abstract">
+                      <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:abstract/gco:CharacterString"/>
+                    </children>
+                    <children name="gmd:status" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:status">
+                      <children name="gmd:MD_ProgressCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:status/gmd:MD_ProgressCode">
+                        <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:status/gmd:MD_ProgressCode/@codeList" nodeType="ATTRIBUT"/>
+                        <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:status/gmd:MD_ProgressCode/@codeListValue" nodeType="ATTRIBUT"/>
+                      </children>
+                    </children>
+                    <children name="gmd:pointOfContact" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact">
+                      <children name="gmd:CI_ResponsibleParty" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty">
+                        <children name="gmd:organisationName" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:organisationName">
+                          <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString"/>
+                        </children>
+                        <children name="gmd:contactInfo" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo">
+                          <children name="gmd:CI_Contact" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact">
+                            <children name="gmd:address" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address">
+                              <children name="gmd:CI_Address" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address">
+                                <children name="gmd:deliveryPoint" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:deliveryPoint">
+                                  <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:deliveryPoint/gco:CharacterString"/>
+                                </children>
+                                <children name="gmd:city" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:city">
+                                  <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:city/gco:CharacterString"/>
+                                </children>
+                                <children name="gmd:administrativeArea" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:administrativeArea">
+                                  <children name="gco:CharacterString" type="id_Character" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:administrativeArea/gco:CharacterString"/>
+                                </children>
+                                <children name="gmd:postalCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:postalCode">
+                                  <children name="gco:CharacterString" type="id_Integer" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:postalCode/gco:CharacterString"/>
+                                </children>
+                                <children name="gmd:country" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:country">
+                                  <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:country/gco:CharacterString"/>
+                                </children>
+                                <children name="gmd:electronicMailAddress" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress">
+                                  <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString"/>
+                                </children>
+                              </children>
+                            </children>
+                            <children name="gmd:onlineResource" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource">
+                              <children name="gmd:CI_OnlineResource" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource">
+                                <children name="gmd:linkage" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource/gmd:linkage">
+                                  <children name="gmd:URL" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource/gmd:linkage/gmd:URL"/>
+                                </children>
+                                <children name="gmd:protocol" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource/gmd:protocol">
+                                  <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString"/>
+                                </children>
+                                <children name="gmd:name" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource/gmd:name">
+                                  <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource/gmd:name/gco:CharacterString"/>
+                                </children>
+                                <children name="gmd:function" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource/gmd:function">
+                                  <children name="gmd:CI_OnLineFunctionCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource/gmd:function/gmd:CI_OnLineFunctionCode">
+                                    <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource/gmd:function/gmd:CI_OnLineFunctionCode/@codeList" nodeType="ATTRIBUT"/>
+                                    <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:onlineResource/gmd:CI_OnlineResource/gmd:function/gmd:CI_OnLineFunctionCode/@codeListValue" nodeType="ATTRIBUT"/>
+                                  </children>
+                                </children>
+                              </children>
+                            </children>
+                          </children>
+                        </children>
+                        <children name="gmd:role" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:role">
+                          <children name="gmd:CI_RoleCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:role/gmd:CI_RoleCode">
+                            <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:role/gmd:CI_RoleCode/@codeList" nodeType="ATTRIBUT"/>
+                            <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:role/gmd:CI_RoleCode/@codeListValue" nodeType="ATTRIBUT"/>
+                          </children>
+                        </children>
+                        <children name="gmd:positionName" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:positionName">
+                          <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:positionName/gco:CharacterString"/>
+                        </children>
+                      </children>
+                    </children>
+                    <children name="gmd:resourceMaintenance" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceMaintenance">
+                      <children name="gmd:MD_MaintenanceInformation" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceMaintenance/gmd:MD_MaintenanceInformation">
+                        <children name="gmd:maintenanceAndUpdateFrequency" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceMaintenance/gmd:MD_MaintenanceInformation/gmd:maintenanceAndUpdateFrequency">
+                          <children name="gmd:MD_MaintenanceFrequencyCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceMaintenance/gmd:MD_MaintenanceInformation/gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode">
+                            <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceMaintenance/gmd:MD_MaintenanceInformation/gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode/@codeList" nodeType="ATTRIBUT"/>
+                            <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceMaintenance/gmd:MD_MaintenanceInformation/gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode/@codeListValue" nodeType="ATTRIBUT"/>
+                          </children>
+                        </children>
+                      </children>
+                    </children>
+                    <children name="gmd:graphicOverview" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:graphicOverview">
+                      <children name="gmd:MD_BrowseGraphic" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:graphicOverview/gmd:MD_BrowseGraphic">
+                        <children name="gmd:fileName" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:graphicOverview/gmd:MD_BrowseGraphic/gmd:fileName">
+                          <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:graphicOverview/gmd:MD_BrowseGraphic/gmd:fileName/gco:CharacterString"/>
+                        </children>
+                      </children>
+                    </children>
+                    <children name="gmd:descriptiveKeywords" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords">
+                      <children name="gmd:MD_Keywords" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords">
+                        <children name="gmd:keyword" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword">
+                          <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/gco:CharacterString"/>
+                        </children>
+                        <children name="gmd:type" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:type">
+                          <children name="gmd:MD_KeywordTypeCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:type/gmd:MD_KeywordTypeCode">
+                            <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:type/gmd:MD_KeywordTypeCode/@codeList" nodeType="ATTRIBUT"/>
+                            <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:type/gmd:MD_KeywordTypeCode/@codeListValue" nodeType="ATTRIBUT"/>
+                          </children>
+                        </children>
+                        <children name="gmd:thesaurusName" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName">
+                          <children name="gmd:CI_Citation" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation">
+                            <children name="gmd:title" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation/gmd:title">
+                              <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation/gmd:title/gco:CharacterString"/>
+                            </children>
+                            <children name="gmd:date" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation/gmd:date">
+                              <children name="gmd:CI_Date" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation/gmd:date/gmd:CI_Date">
+                                <children name="gmd:date" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date">
+                                  <children name="gco:Date" type="id_Date" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/gco:Date" pattern="&quot;dd-MM-yyyy&quot;"/>
+                                </children>
+                                <children name="gmd:dateType" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:dateType">
+                                  <children name="gmd:CI_DateTypeCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:dateType/gmd:CI_DateTypeCode">
+                                    <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:dateType/gmd:CI_DateTypeCode/@codeList" nodeType="ATTRIBUT"/>
+                                    <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:dateType/gmd:CI_DateTypeCode/@codeListValue" nodeType="ATTRIBUT"/>
+                                  </children>
+                                </children>
+                              </children>
+                            </children>
+                            <children name="gmd:identifier" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation/gmd:identifier">
+                              <children name="gmd:MD_Identifier" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation/gmd:identifier/gmd:MD_Identifier">
+                                <children name="gmd:code" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation/gmd:identifier/gmd:MD_Identifier/gmd:code">
+                                  <children name="gmx:Anchor" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation/gmd:identifier/gmd:MD_Identifier/gmd:code/gmx:Anchor">
+                                    <children name="xlink:href" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:thesaurusName/gmd:CI_Citation/gmd:identifier/gmd:MD_Identifier/gmd:code/gmx:Anchor/@xlink:href" nodeType="ATTRIBUT"/>
+                                  </children>
+                                </children>
+                              </children>
+                            </children>
+                          </children>
+                        </children>
+                      </children>
+                    </children>
+                    <children name="gmd:resourceConstraints" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints">
+                      <children name="gmd:MD_Constraints" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_Constraints">
+                        <children name="gmd:useLimitation" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_Constraints/gmd:useLimitation">
+                          <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_Constraints/gmd:useLimitation/gco:CharacterString"/>
+                        </children>
+                      </children>
+                      <children name="gmd:MD_LegalConstraints" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_LegalConstraints">
+                        <children name="gmd:accessConstraints" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:accessConstraints">
+                          <children name="gmd:MD_RestrictionCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:accessConstraints/gmd:MD_RestrictionCode">
+                            <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:accessConstraints/gmd:MD_RestrictionCode/@codeList" nodeType="ATTRIBUT"/>
+                            <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:accessConstraints/gmd:MD_RestrictionCode/@codeListValue" nodeType="ATTRIBUT"/>
+                          </children>
+                        </children>
+                        <children name="gmd:otherConstraints" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:otherConstraints">
+                          <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:otherConstraints/gco:CharacterString"/>
+                        </children>
+                      </children>
+                    </children>
+                    <children name="gmd:spatialRepresentationType" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialRepresentationType">
+                      <children name="gmd:MD_SpatialRepresentationTypeCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialRepresentationType/gmd:MD_SpatialRepresentationTypeCode">
+                        <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialRepresentationType/gmd:MD_SpatialRepresentationTypeCode/@codeList" nodeType="ATTRIBUT"/>
+                        <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialRepresentationType/gmd:MD_SpatialRepresentationTypeCode/@codeListValue" nodeType="ATTRIBUT"/>
+                      </children>
+                    </children>
+                    <children name="gmd:spatialResolution" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution">
+                      <children name="gmd:MD_Resolution" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution/gmd:MD_Resolution">
+                        <children name="gmd:equivalentScale" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution/gmd:MD_Resolution/gmd:equivalentScale">
+                          <children name="gmd:MD_RepresentativeFraction" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution/gmd:MD_Resolution/gmd:equivalentScale/gmd:MD_RepresentativeFraction">
+                            <children name="gmd:denominator" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution/gmd:MD_Resolution/gmd:equivalentScale/gmd:MD_RepresentativeFraction/gmd:denominator">
+                              <children name="gco:Integer" type="id_Integer" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution/gmd:MD_Resolution/gmd:equivalentScale/gmd:MD_RepresentativeFraction/gmd:denominator/gco:Integer"/>
+                            </children>
+                          </children>
+                        </children>
+                      </children>
+                    </children>
+                    <children name="gmd:language" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:language">
+                      <children name="gmd:LanguageCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:language/gmd:LanguageCode">
+                        <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:language/gmd:LanguageCode/@codeList" nodeType="ATTRIBUT"/>
+                        <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:language/gmd:LanguageCode/@codeListValue" nodeType="ATTRIBUT"/>
+                      </children>
+                    </children>
+                    <children name="gmd:topicCategory" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:topicCategory">
+                      <children name="gmd:MD_TopicCategoryCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:topicCategory/gmd:MD_TopicCategoryCode"/>
+                    </children>
+                    <children name="gmd:extent" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent">
+                      <children name="gmd:EX_Extent" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent">
+                        <children name="gmd:geographicElement" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement">
+                          <children name="gmd:EX_GeographicBoundingBox" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox">
+                            <children name="gmd:westBoundLongitude" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:westBoundLongitude">
+                              <children name="gco:Decimal" type="id_Double" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:westBoundLongitude/gco:Decimal"/>
+                            </children>
+                            <children name="gmd:eastBoundLongitude" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:eastBoundLongitude">
+                              <children name="gco:Decimal" type="id_Integer" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:eastBoundLongitude/gco:Decimal"/>
+                            </children>
+                            <children name="gmd:southBoundLatitude" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:southBoundLatitude">
+                              <children name="gco:Decimal" type="id_Double" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:southBoundLatitude/gco:Decimal"/>
+                            </children>
+                            <children name="gmd:northBoundLatitude" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:northBoundLatitude">
+                              <children name="gco:Decimal" type="id_Float" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:northBoundLatitude/gco:Decimal"/>
+                            </children>
+                          </children>
+                        </children>
+                        <children name="gmd:temporalElement" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement">
+                          <children name="gmd:EX_TemporalExtent" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent">
+                            <children name="gmd:extent" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent">
+                              <children name="gml:TimePeriod" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod">
+                                <children name="gml:id" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod/@gml:id" nodeType="ATTRIBUT"/>
+                                <children name="gml:beginPosition" type="id_Date" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod/gml:beginPosition" pattern="&quot;dd-MM-yyyy&quot;"/>
+                                <children name="gml:endPosition" type="id_Date" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod/gml:endPosition" pattern="&quot;dd-MM-yyyy&quot;"/>
+                              </children>
+                            </children>
+                          </children>
+                        </children>
+                      </children>
+                    </children>
+                  </children>
+                </children>
+                <children name="gmd:distributionInfo" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo" main="true">
+                  <children name="gmd:MD_Distribution" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution" main="true">
+                    <children name="gmd:distributionFormat" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat">
+                      <children name="gmd:MD_Format" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat/gmd:MD_Format">
+                        <children name="gmd:name" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat/gmd:MD_Format/gmd:name">
+                          <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat/gmd:MD_Format/gmd:name/gco:CharacterString"/>
+                        </children>
+                        <children name="gmd:version" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat/gmd:MD_Format/gmd:version">
+                          <children name="gco:nilReason" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat/gmd:MD_Format/gmd:version/@gco:nilReason" nodeType="ATTRIBUT"/>
+                          <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat/gmd:MD_Format/gmd:version/gco:CharacterString"/>
+                        </children>
+                      </children>
+                    </children>
+                    <children name="gmd:transferOptions" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions" main="true">
+                      <children name="gmd:MD_DigitalTransferOptions" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions" main="true">
+                        <children name="gmd:onLine" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine" main="true">
+                          <children name="gmd:CI_OnlineResource" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource" loop="true" main="true">
+                            <children name="gmd:linkage" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage">
+                              <children name="gmd:URL" type="id_String" outgoingConnections="//@node.55/@nodeData/@connections.1" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL"/>
+                            </children>
+                            <children name="gmd:protocol" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol">
+                              <children name="gco:CharacterString" type="id_String" outgoingConnections="//@node.55/@nodeData/@connections.2" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString"/>
+                            </children>
+                            <children name="gmd:function" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:function">
+                              <children name="gmd:CI_OnLineFunctionCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:function/gmd:CI_OnLineFunctionCode">
+                                <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:function/gmd:CI_OnLineFunctionCode/@codeList" nodeType="ATTRIBUT"/>
+                                <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:function/gmd:CI_OnLineFunctionCode/@codeListValue" nodeType="ATTRIBUT"/>
+                              </children>
+                            </children>
+                            <children name="gmd:name" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:name">
+                              <children name="gco:nilReason" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:name/@gco:nilReason" nodeType="ATTRIBUT"/>
+                              <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:name/gco:CharacterString"/>
+                            </children>
+                            <children name="gmd:description" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:description">
+                              <children name="gco:nilReason" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:description/@gco:nilReason" nodeType="ATTRIBUT"/>
+                              <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:description/gco:CharacterString"/>
+                            </children>
+                          </children>
+                        </children>
+                      </children>
+                    </children>
+                  </children>
+                </children>
+                <children name="gmd:dataQualityInfo" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dataQualityInfo">
+                  <children name="gmd:DQ_DataQuality" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality">
+                    <children name="gmd:scope" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:scope">
+                      <children name="gmd:DQ_Scope" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:scope/gmd:DQ_Scope">
+                        <children name="gmd:level" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:scope/gmd:DQ_Scope/gmd:level">
+                          <children name="gmd:MD_ScopeCode" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:scope/gmd:DQ_Scope/gmd:level/gmd:MD_ScopeCode">
+                            <children name="codeListValue" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:scope/gmd:DQ_Scope/gmd:level/gmd:MD_ScopeCode/@codeListValue" nodeType="ATTRIBUT"/>
+                            <children name="codeList" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:scope/gmd:DQ_Scope/gmd:level/gmd:MD_ScopeCode/@codeList" nodeType="ATTRIBUT"/>
+                          </children>
+                        </children>
+                      </children>
+                    </children>
+                    <children name="gmd:lineage" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage">
+                      <children name="gmd:LI_Lineage" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage">
+                        <children name="gmd:statement" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:statement">
+                          <children name="gco:CharacterString" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:statement/gco:CharacterString"/>
+                        </children>
+                        <children name="gmd:source" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:source">
+                          <children name="uuidref" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:source/@uuidref" nodeType="ATTRIBUT"/>
+                          <children name="gmd:LI_Source" type="id_String" xpath="row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:source/gmd:LI_Source"/>
+                        </children>
+                      </children>
+                    </children>
+                  </children>
+                </children>
+              </children>
+            </children>
+          </children>
+        </nodes>
+      </inputTrees>
+      <outputTrees name="copyOfcopyOfmap">
+        <nodes name="uuid" expression="[row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:fileIdentifier/gco:CharacterString]" type="id_String" incomingConnections="//@node.55/@nodeData/@connections.0" xpath="copyOfcopyOfmap/uuid"/>
+        <nodes name="url" expression="[row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL]" type="id_String" incomingConnections="//@node.55/@nodeData/@connections.1" xpath="copyOfcopyOfmap/url"/>
+        <nodes name="protocol" expression="[row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString]" type="id_String" incomingConnections="//@node.55/@nodeData/@connections.2" xpath="copyOfcopyOfmap/protocol" pattern=""/>
+      </outputTrees>
+      <varTables name="Var" minimized="true"/>
+      <connections xsi:type="TalendXMLMap:Connection" source="//@node.55/@nodeData/@inputTrees.0/@nodes.0/@children.0/@children.7/@children.4/@children.1/@children.0" target="//@node.55/@nodeData/@outputTrees.0/@nodes.0"/>
+      <connections xsi:type="TalendXMLMap:Connection" source="//@node.55/@nodeData/@inputTrees.0/@nodes.0/@children.0/@children.7/@children.4/@children.11/@children.0/@children.1/@children.0/@children.0/@children.0/@children.0/@children.0" target="//@node.55/@nodeData/@outputTrees.0/@nodes.1"/>
+      <connections xsi:type="TalendXMLMap:Connection" source="//@node.55/@nodeData/@inputTrees.0/@nodes.0/@children.0/@children.7/@children.4/@children.11/@children.0/@children.1/@children.0/@children.0/@children.0/@children.1/@children.0" target="//@node.55/@nodeData/@outputTrees.0/@nodes.2"/>
+    </nodeData>
+  </node>
+  <node componentName="tFilterRow" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="-6112" posY="832">
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="tFilterRow_14" show="false"/>
+    <elementParameter field="CLOSED_LIST" name="LOGICAL_OP" value="&amp;&amp;"/>
+    <elementParameter field="TABLE" name="CONDITIONS"/>
+    <elementParameter field="CHECK" name="USE_ADVANCED" value="true"/>
+    <elementParameter field="MEMO_JAVA" name="ADVANCED_COND" value="// code sample : use input_row to define the condition.&#xA;// input_row.columnName1.equals(&quot;foo&quot;) ||!(input_row.columnName2.equals(&quot;bar&quot;))&#xA;// replace the following expression by your own filter condition &#xA;input_row.protocol.contains(&quot;REST&quot;)&#xA;&#x9;&#x9;&#x9;"/>
+    <elementParameter field="TEXT" name="LABEL" value="REST"/>
+    <elementParameter field="TEXT" name="CONNECTION_FORMAT" value="row"/>
+    <metadata connector="FLOW" label="mapped" name="tFilterRow_14">
+      <column comment="" key="false" length="-1" name="uuid" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="url" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="protocol" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+    </metadata>
+    <metadata connector="FILTER" label="mapped" name="FILTER">
+      <column comment="" key="false" length="-1" name="uuid" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="url" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="protocol" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+    </metadata>
+    <metadata connector="REJECT" label="mapped" name="REJECT">
+      <column comment="" key="false" length="-1" name="uuid" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="url" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="protocol" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column defaultValue="" key="false" length="255" name="errorMessage" nullable="true" precision="0" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+    </metadata>
+  </node>
+  <node componentName="tUniqRow" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="-5984" posY="832">
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="tUniqRow_2" show="false"/>
+    <elementParameter field="TABLE" name="UNIQUE_KEY">
+      <elementValue elementRef="SCHEMA_COLUMN" value="uuid"/>
+      <elementValue elementRef="KEY_ATTRIBUTE" value="true"/>
+      <elementValue elementRef="CASE_SENSITIVE" value="false"/>
+      <elementValue elementRef="SCHEMA_COLUMN" value="url"/>
+      <elementValue elementRef="KEY_ATTRIBUTE" value="true"/>
+      <elementValue elementRef="CASE_SENSITIVE" value="false"/>
+      <elementValue elementRef="SCHEMA_COLUMN" value="protocol"/>
+      <elementValue elementRef="KEY_ATTRIBUTE" value="true"/>
+      <elementValue elementRef="CASE_SENSITIVE" value="false"/>
+    </elementParameter>
+    <elementParameter field="CHECK" name="ONLY_ONCE_EACH_DUPLICATED_KEY" value="false"/>
+    <elementParameter field="CHECK" name="IS_VIRTUAL_COMPONENT" value="false"/>
+    <elementParameter field="OPENED_LIST" name="BUFFER_SIZE" value="M" show="false"/>
+    <elementParameter field="DIRECTORY" name="TEMP_DIRECTORY" value="" show="false"/>
+    <elementParameter field="CHECK" name="CHANGE_HASH_AND_EQUALS_FOR_BIGDECIMAL" value="false"/>
+    <elementParameter field="TEXT" name="CONNECTION_FORMAT" value="row"/>
+    <metadata connector="FLOW" label="mapped" name="tUniqRow_2">
+      <column comment="" key="false" length="-1" name="uuid" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="url" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="protocol" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+    </metadata>
+    <metadata connector="UNIQUE" label="mapped" name="UNIQUE">
+      <column comment="" key="false" length="-1" name="uuid" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="url" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="protocol" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+    </metadata>
+    <metadata connector="DUPLICATE" label="mapped" name="DUPLICATE">
+      <column comment="" key="false" length="-1" name="uuid" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="url" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="protocol" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+    </metadata>
+  </node>
+  <node componentName="tAggregateRow" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="-5888" posY="832">
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="tAggregateRow_10" show="false"/>
+    <elementParameter field="TABLE" name="GROUPBYS">
+      <elementValue elementRef="OUTPUT_COLUMN" value="uuid"/>
+      <elementValue elementRef="INPUT_COLUMN" value="uuid"/>
+    </elementParameter>
+    <elementParameter field="TABLE" name="OPERATIONS">
+      <elementValue elementRef="OUTPUT_COLUMN" value="url"/>
+      <elementValue elementRef="FUNCTION" value="list"/>
+      <elementValue elementRef="INPUT_COLUMN" value="url"/>
+      <elementValue elementRef="IGNORE_NULL" value="true"/>
+      <elementValue elementRef="OUTPUT_COLUMN" value="protocol"/>
+      <elementValue elementRef="FUNCTION" value="list"/>
+      <elementValue elementRef="INPUT_COLUMN" value="protocol"/>
+      <elementValue elementRef="IGNORE_NULL" value="true"/>
+    </elementParameter>
+    <elementParameter field="TEXT" name="LIST_DELIMITER" value="&quot;|&quot;"/>
+    <elementParameter field="CHECK" name="USE_FINANCIAL_PRECISION" value="true"/>
+    <elementParameter field="CHECK" name="CHECK_TYPE_OVERFLOW" value="false"/>
+    <elementParameter field="CHECK" name="CHECK_ULP" value="false"/>
+    <elementParameter field="TEXT" name="LABEL" value="REST"/>
+    <elementParameter field="TEXT" name="CONNECTION_FORMAT" value="row"/>
+    <metadata connector="FLOW" label="mapped" name="tAggregateRow_10">
+      <column comment="" key="false" length="-1" name="uuid" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="url" nullable="true" precision="-1" sourceType="id_String" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="protocol" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
   </node>
   <node componentName="tFileInputDelimited" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="-7712" posY="320">
@@ -6139,6 +6707,8 @@
       <elementValue elementRef="TRIM" value="false"/>
       <elementValue elementRef="SCHEMA_COLUMN" value="idpTopics"/>
       <elementValue elementRef="TRIM" value="false"/>
+      <elementValue elementRef="SCHEMA_COLUMN" value="restApi"/>
+      <elementValue elementRef="TRIM" value="false"/>
     </elementParameter>
     <elementParameter field="CHECK" name="CHECK_FIELDS_NUM" value="false"/>
     <elementParameter field="CHECK" name="CHECK_DATE" value="false"/>
@@ -6211,6 +6781,8 @@
       <elementValue elementRef="DECODE" value="false"/>
       <elementValue elementRef="SCHEMA_COLUMN" value="idpTopics"/>
       <elementValue elementRef="DECODE" value="false"/>
+      <elementValue elementRef="SCHEMA_COLUMN" value="restApi"/>
+      <elementValue elementRef="DECODE" value="false"/>
     </elementParameter>
     <elementParameter field="TEXT" name="DESTINATION" value="" show="false"/>
     <elementParameter field="TEXT" name="SCHEMA_OPT_NUM" value="100" show="false"/>
@@ -6249,6 +6821,7 @@
       <column comment="" key="false" length="-1" name="referenceFlag" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="wms" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="idpTopics" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="restApi" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
     <metadata connector="REJECT" label="metadata" name="REJECT">
       <column comment="" key="false" length="-1" name="uuid" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="-1" type="id_String" usefulColumn="true"/>
@@ -6283,6 +6856,7 @@
       <column comment="" key="false" length="-1" name="referenceFlag" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="wms" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="idpTopics" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="restApi" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column defaultValue="" key="false" length="255" name="errorCode" nullable="true" precision="0" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column defaultValue="" key="false" length="255" name="errorMessage" nullable="true" precision="0" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
@@ -6356,6 +6930,8 @@
       <elementValue elementRef="INPUT_COLUMN" value="wms"/>
       <elementValue elementRef="OUTPUT_COLUMN" value="idpTopics"/>
       <elementValue elementRef="INPUT_COLUMN" value="idpTopics"/>
+      <elementValue elementRef="OUTPUT_COLUMN" value="restApi"/>
+      <elementValue elementRef="INPUT_COLUMN" value="restApi"/>
     </elementParameter>
     <elementParameter field="TABLE" name="OPERATIONS"/>
     <elementParameter field="TEXT" name="LIST_DELIMITER" value="&quot;,&quot;"/>
@@ -6397,6 +6973,7 @@
       <column comment="" key="false" length="-1" name="referenceFlag" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="wms" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="idpTopics" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="restApi" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
   </node>
   <node componentName="tFileOutputDelimited" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="-7584" posY="640">
@@ -6462,6 +7039,7 @@
       <column comment="" key="false" length="-1" name="referenceFlag" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="wms" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="idpTopics" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="restApi" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
   </node>
   <node componentName="tRunJob" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="-7424" posY="640">
@@ -6744,6 +7322,9 @@
       <elementValue elementRef="TRACE_COLUMN" value="idpTopics"/>
       <elementValue elementRef="TRACE_COLUMN_CHECKED" value="true"/>
       <elementValue elementRef="TRACE_COLUMN_CONDITION" value=""/>
+      <elementValue elementRef="TRACE_COLUMN" value="restApi"/>
+      <elementValue elementRef="TRACE_COLUMN_CHECKED" value="true"/>
+      <elementValue elementRef="TRACE_COLUMN_CONDITION" value=""/>
     </elementParameter>
     <elementParameter field="CHECK" name="MONITOR_CONNECTION" value="false"/>
     <elementParameter field="TEXT" name="UNIQUE_NAME" value="map" show="false"/>
@@ -6932,6 +7513,26 @@
     <elementParameter field="CHECK" name="MONITOR_CONNECTION" value="false"/>
     <elementParameter field="TEXT" name="UNIQUE_NAME" value="row40" show="false"/>
   </connection>
+  <connection connectorName="FLOW" label="row41" lineStyle="0" metaname="tFileInputXML_14" offsetLabelX="0" offsetLabelY="0" source="tFileInputXML_14" target="tXMLMap_9">
+    <elementParameter field="CHECK" name="MONITOR_CONNECTION" value="false"/>
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="row41" show="false"/>
+  </connection>
+  <connection connectorName="FLOW" label="copyOfcopyOfmap" lineStyle="0" metaname="copyOfcopyOfmap" offsetLabelX="0" offsetLabelY="0" source="tXMLMap_9" target="tFilterRow_14">
+    <elementParameter field="CHECK" name="MONITOR_CONNECTION" value="false"/>
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="copyOfcopyOfmap" show="false"/>
+  </connection>
+  <connection connectorName="FILTER" label="row42" lineStyle="0" metaname="tFilterRow_14" offsetLabelX="0" offsetLabelY="0" source="tFilterRow_14" target="tUniqRow_2">
+    <elementParameter field="CHECK" name="MONITOR_CONNECTION" value="false"/>
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="row42" show="false"/>
+  </connection>
+  <connection connectorName="UNIQUE" label="row43" lineStyle="0" metaname="tUniqRow_2" offsetLabelX="0" offsetLabelY="0" source="tUniqRow_2" target="tAggregateRow_10">
+    <elementParameter field="CHECK" name="MONITOR_CONNECTION" value="false"/>
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="row43" show="false"/>
+  </connection>
+  <connection connectorName="FLOW" label="row44" lineStyle="8" metaname="tAggregateRow_10" offsetLabelX="0" offsetLabelY="0" source="tAggregateRow_10" target="tMap_2">
+    <elementParameter field="CHECK" name="MONITOR_CONNECTION" value="false"/>
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="row44" show="false"/>
+  </connection>
   <connection connectorName="FLOW" label="row3" lineStyle="0" metaname="tFileInputDelimited_1" offsetLabelX="0" offsetLabelY="0" source="tFileInputDelimited_1" target="tAggregateRow_1">
     <elementParameter field="TABLE" name="TRACES_CONNECTION_FILTER" show="false">
       <elementValue elementRef="TRACE_COLUMN" value="distributionFormat"/>
@@ -6959,6 +7560,9 @@
       <elementValue elementRef="TRACE_COLUMN_CHECKED" value="true"/>
       <elementValue elementRef="TRACE_COLUMN_CONDITION" value=""/>
       <elementValue elementRef="TRACE_COLUMN" value="idpTopics"/>
+      <elementValue elementRef="TRACE_COLUMN_CHECKED" value="true"/>
+      <elementValue elementRef="TRACE_COLUMN_CONDITION" value=""/>
+      <elementValue elementRef="TRACE_COLUMN" value="restApi"/>
       <elementValue elementRef="TRACE_COLUMN_CHECKED" value="true"/>
       <elementValue elementRef="TRACE_COLUMN_CONDITION" value=""/>
     </elementParameter>

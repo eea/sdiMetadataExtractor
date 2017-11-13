@@ -877,6 +877,54 @@ private class TalendException extends Exception {
 					tFileInputXML_13_onSubJobError(exception, errorComponent, globalMap);
 			}
 			
+			public void tFileInputXML_14_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+				end_Hash.put(errorComponent, System.currentTimeMillis());
+				
+								if(!(exception instanceof TDieException)){
+									
+										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
+									
+									tAssertCatcher_1Process(globalMap);
+								}
+								
+				status = "failure";
+				
+					tFileInputXML_14_onSubJobError(exception, errorComponent, globalMap);
+			}
+			
+			public void tFilterRow_14_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+				end_Hash.put(errorComponent, System.currentTimeMillis());
+				
+								if(!(exception instanceof TDieException)){
+									
+										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
+									
+									tAssertCatcher_1Process(globalMap);
+								}
+								
+				status = "failure";
+				
+					tFileInputXML_14_onSubJobError(exception, errorComponent, globalMap);
+			}
+			
+			public void tUniqRow_2_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+				end_Hash.put(errorComponent, System.currentTimeMillis());
+				
+								if(!(exception instanceof TDieException)){
+									
+										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
+									
+									tAssertCatcher_1Process(globalMap);
+								}
+								
+				status = "failure";
+				
+					tFileInputXML_14_onSubJobError(exception, errorComponent, globalMap);
+			}
+			
 			public void tFileInputDelimited_1_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
 				
 				end_Hash.put(errorComponent, System.currentTimeMillis());
@@ -1147,6 +1195,22 @@ private class TalendException extends Exception {
 				status = "failure";
 				
 					tFileInputXML_13_onSubJobError(exception, errorComponent, globalMap);
+			}
+			
+			public void tAdvancedHash_row44_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+				end_Hash.put(errorComponent, System.currentTimeMillis());
+				
+								if(!(exception instanceof TDieException)){
+									
+										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
+									
+									tAssertCatcher_1Process(globalMap);
+								}
+								
+				status = "failure";
+				
+					tFileInputXML_14_onSubJobError(exception, errorComponent, globalMap);
 			}
 			
 			public void tAggregateRow_3_AGGOUT_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
@@ -1501,6 +1565,50 @@ private class TalendException extends Exception {
 					tFileInputXML_13_onSubJobError(exception, errorComponent, globalMap);
 			}
 			
+			public void tXMLMap_9_TXMLMAP_OUT_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+							tXMLMap_9_TXMLMAP_IN_error(exception, errorComponent, globalMap);
+						
+						}
+					
+			public void tXMLMap_9_TXMLMAP_IN_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+				end_Hash.put(errorComponent, System.currentTimeMillis());
+				
+								if(!(exception instanceof TDieException)){
+									
+										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
+									
+									tAssertCatcher_1Process(globalMap);
+								}
+								
+				status = "failure";
+				
+					tFileInputXML_14_onSubJobError(exception, errorComponent, globalMap);
+			}
+			
+			public void tAggregateRow_10_AGGOUT_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+							tAggregateRow_10_AGGIN_error(exception, errorComponent, globalMap);
+						
+						}
+					
+			public void tAggregateRow_10_AGGIN_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+				end_Hash.put(errorComponent, System.currentTimeMillis());
+				
+								if(!(exception instanceof TDieException)){
+									
+										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
+									
+									tAssertCatcher_1Process(globalMap);
+								}
+								
+				status = "failure";
+				
+					tFileInputXML_14_onSubJobError(exception, errorComponent, globalMap);
+			}
+			
 			public void tAggregateRow_1_AGGOUT_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
 				
 							tAggregateRow_1_AGGIN_error(exception, errorComponent, globalMap);
@@ -1589,6 +1697,11 @@ resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThrea
 
 			}
 			public void tFileInputXML_13_onSubJobError(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+
+resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThread().getId()+ "", "FATAL", "", exception.getMessage(), ResumeUtil.getExceptionStackTrace(exception),"");
+
+			}
+			public void tFileInputXML_14_onSubJobError(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
 
 resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThread().getId()+ "", "FATAL", "", exception.getMessage(), ResumeUtil.getExceptionStackTrace(exception),"");
 
@@ -2048,6 +2161,12 @@ public static class row31Struct implements routines.system.IPersistableRow<row31
 					return this.idpTopics;
 				}
 				
+			    public String restApi;
+
+				public String getRestApi () {
+					return this.restApi;
+				}
+				
 
 
 
@@ -2172,6 +2291,8 @@ public static class row31Struct implements routines.system.IPersistableRow<row31
 					this.wms = readString(dis);
 					
 					this.idpTopics = readString(dis);
+					
+					this.restApi = readString(dis);
 					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
@@ -2339,6 +2460,10 @@ public static class row31Struct implements routines.system.IPersistableRow<row31
 				
 						writeString(this.idpTopics,dos);
 					
+					// String
+				
+						writeString(this.restApi,dos);
+					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
         }
@@ -2384,6 +2509,7 @@ public static class row31Struct implements routines.system.IPersistableRow<row31
 		sb.append(",referenceFlag="+referenceFlag);
 		sb.append(",wms="+wms);
 		sb.append(",idpTopics="+idpTopics);
+		sb.append(",restApi="+restApi);
 	    sb.append("]");
 
 	    return sb.toString();
@@ -2621,6 +2747,12 @@ public static class mapStruct implements routines.system.IPersistableRow<mapStru
 					return this.idpTopics;
 				}
 				
+			    public String restApi;
+
+				public String getRestApi () {
+					return this.restApi;
+				}
+				
 
 
 
@@ -2745,6 +2877,8 @@ public static class mapStruct implements routines.system.IPersistableRow<mapStru
 					this.wms = readString(dis);
 					
 					this.idpTopics = readString(dis);
+					
+					this.restApi = readString(dis);
 					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
@@ -2912,6 +3046,10 @@ public static class mapStruct implements routines.system.IPersistableRow<mapStru
 				
 						writeString(this.idpTopics,dos);
 					
+					// String
+				
+						writeString(this.restApi,dos);
+					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
         }
@@ -2957,6 +3095,7 @@ public static class mapStruct implements routines.system.IPersistableRow<mapStru
 		sb.append(",referenceFlag="+referenceFlag);
 		sb.append(",wms="+wms);
 		sb.append(",idpTopics="+idpTopics);
+		sb.append(",restApi="+restApi);
 	    sb.append("]");
 
 	    return sb.toString();
@@ -4016,6 +4155,7 @@ public void tFileInputXML_5Process(final java.util.Map<String, Object> globalMap
 		tFileInputXML_11Process(globalMap);
 		tFileInputXML_12Process(globalMap);
 		tFileInputXML_13Process(globalMap);
+		tFileInputXML_14Process(globalMap);
 
 		row2Struct row2 = new row2Struct();
 mapStruct map = new mapStruct();
@@ -4091,7 +4231,7 @@ String fileName_tFileOutputDelimited_1 = "";
         if(filetFileOutputDelimited_1.exists()){
             isFileGenerated_tFileOutputDelimited_1 = false;
         }
-                String[] headColutFileOutputDelimited_1=new String[32];
+                String[] headColutFileOutputDelimited_1=new String[33];
             class CSVBasicSet_tFileOutputDelimited_1{
                 private char field_Delim;
                 private char row_Delim;
@@ -4240,6 +4380,7 @@ String fileName_tFileOutputDelimited_1 = "";
                                     headColutFileOutputDelimited_1[29]="referenceFlag";
                                     headColutFileOutputDelimited_1[30]="wms";
                                     headColutFileOutputDelimited_1[31]="idpTopics";
+                                    headColutFileOutputDelimited_1[32]="restApi";
                             CsvWritertFileOutputDelimited_1.writeNext(headColutFileOutputDelimited_1);
                             CsvWritertFileOutputDelimited_1.flush();
                         }
@@ -4459,6 +4600,16 @@ row34Struct row34Default = new row34Struct();
 
 row40Struct row40HashKey = new row40Struct();
 row40Struct row40Default = new row40Struct();
+	
+		org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<row44Struct> tHash_Lookup_row44 = (org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<row44Struct>) 
+				((org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<row44Struct>) 
+					globalMap.get( "tHash_Lookup_row44" ))
+					;					
+					
+	
+
+row44Struct row44HashKey = new row44Struct();
+row44Struct row44Default = new row44Struct();
 // ###############################        
 
 // ###############################
@@ -6475,6 +6626,101 @@ if(row2 != null) {
 	                    		  	
 		                    
 	            	
+	           	
+	            	
+	            	
+	            
+
+				///////////////////////////////////////////////
+				// Starting Lookup Table "row44" 
+				///////////////////////////////////////////////
+
+
+				
+				
+                            
+ 					    boolean forceLooprow44 = false;
+       		  	    	
+       		  	    	
+ 							row44Struct row44ObjectFromLookup = null;
+                          
+		           		  	if(!rejectedInnerJoin_tMap_2) { // G_TM_M_020
+
+								
+								hasCasePrimitiveKeyWithNull_tMap_2 = false;
+								
+                        		    		row44HashKey.uuid = row2.uuid ;
+                        		    		
+
+								
+		                        	row44HashKey.hashCodeDirty = true;
+                        		
+	  					
+	  							
+			  					
+			  					
+	  					
+		  							tHash_Lookup_row44.lookup( row44HashKey );
+
+	  							
+
+	  							
+
+ 								
+		  				
+	  								
+						
+									
+  									  		
+ 								
+
+
+
+							} // G_TM_M_020
+			           		  	  
+							
+				           		if(tHash_Lookup_row44 != null && tHash_Lookup_row44.getCount(row44HashKey) > 1) { // G 071
+			  							
+			  						
+									 		
+									//System.out.println("WARNING: UNIQUE MATCH is configured for the lookup 'row44' and it contains more one result from keys :  row44.uuid = '" + row44HashKey.uuid + "'");
+								} // G 071
+							
+
+							row44Struct row44 = null;
+                    		  	 
+							   
+                    		  	 
+	       		  	    	row44Struct fromLookup_row44 = null;
+							row44 = row44Default;
+										 
+							
+								 
+							
+							
+								if (tHash_Lookup_row44 !=null && tHash_Lookup_row44.hasNext()) { // G 099
+								
+							
+								
+								fromLookup_row44 = tHash_Lookup_row44.next();
+
+							
+							
+								} // G 099
+							
+							
+
+							if(fromLookup_row44 != null) {
+								row44 = fromLookup_row44;
+							}
+							
+							
+							
+			  							
+								
+	                    		  	
+		                    
+	            	
 	            	
 	            // ###############################
         { // start of Var scope
@@ -6522,6 +6768,7 @@ map_tmp.shortName = shortname.keyword ;
 map_tmp.referenceFlag = row27.keyword ;
 map_tmp.wms = row34.url ;
 map_tmp.idpTopics = row40.keyword ;
+map_tmp.restApi = row44.url ;
 map = map_tmp;
 // ###############################
 
@@ -6644,6 +6891,8 @@ if(map != null) {
 	        
 	        row31.idpTopics = map.idpTopics;
 	        
+	        row31.restApi = map.restApi;
+	        
     nb_line_tReplace_1++;
 
  
@@ -6681,7 +6930,7 @@ if(map != null) {
 		
 
 
-                        String[] rowtFileOutputDelimited_1=new String[32];
+                        String[] rowtFileOutputDelimited_1=new String[33];
                             rowtFileOutputDelimited_1[0]=row31.uuid == null ? null : row31.uuid;
                             rowtFileOutputDelimited_1[1]=row31.dataset_id == null ? null : row31.dataset_id;
                             rowtFileOutputDelimited_1[2]=row31.datestamp == null ? null : row31.datestamp;
@@ -6714,6 +6963,7 @@ if(map != null) {
                             rowtFileOutputDelimited_1[29]=row31.referenceFlag == null ? null : row31.referenceFlag;
                             rowtFileOutputDelimited_1[30]=row31.wms == null ? null : row31.wms;
                             rowtFileOutputDelimited_1[31]=row31.idpTopics == null ? null : row31.idpTopics;
+                            rowtFileOutputDelimited_1[32]=row31.restApi == null ? null : row31.restApi;
                 nb_line_tFileOutputDelimited_1++;
                 resourceMap.put("nb_line_tFileOutputDelimited_1", nb_line_tFileOutputDelimited_1);
                                        CsvWritertFileOutputDelimited_1.writeNext(rowtFileOutputDelimited_1);
@@ -6875,6 +7125,14 @@ end_Hash.put("tFileInputXML_5", System.currentTimeMillis());
 						tHash_Lookup_row40.endGet();
 					}
 					globalMap.remove( "tHash_Lookup_row40" );
+
+					
+					
+				
+					if(tHash_Lookup_row44 != null) {
+						tHash_Lookup_row44.endGet();
+					}
+					globalMap.remove( "tHash_Lookup_row44" );
 
 					
 					
@@ -7043,6 +7301,9 @@ end_Hash.put("tFileOutputDelimited_1", System.currentTimeMillis());
 				     			
 					     			//free memory for "tMap_2"
 					     			globalMap.remove("tHash_Lookup_row40"); 
+				     			
+					     			//free memory for "tMap_2"
+					     			globalMap.remove("tHash_Lookup_row44"); 
 				     			
 				try{
 					
@@ -7477,15 +7738,35 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 	
 	
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row7", 3, 0);
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row29", 3, 0);
+	       				runStat.updateStatOnConnection("row9", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row40", 3, 0);
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row25", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row17", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row24", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("mapped", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row10", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7497,7 +7778,7 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row26", 3, 0);
+	       				runStat.updateStatOnConnection("row1", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7505,11 +7786,67 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
+	       				runStat.updateStatOnConnection("row22", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row34", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("map", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row22", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("copyOfmapped3", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row6", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row35", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row43", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("copyOfcopyOfmapped2", 3, 0);
+					}           			
+				
+					if(execStat){				
 	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row38", 3, 0);
+	       				runStat.updateStatOnConnection("copyOfcopyOfmap", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7517,7 +7854,7 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row19", 3, 0);
+	       				runStat.updateStatOnConnection("row33", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7525,7 +7862,31 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row18", 3, 0);
+	       				runStat.updateStatOnConnection("row39", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row20", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row27", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row23", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row41", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7541,127 +7902,7 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("shortname", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row31", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row24", 3, 0);
-					}           			
-				
-					if(execStat){				
 	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row10", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row25", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfcopyOfmapped2", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row13", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row27", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row37", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row20", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row6", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row32", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row21", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("mapped", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row35", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row12", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfmapped3_0", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("denominator", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row30", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row27", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row8", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row22", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnComponentOk1", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row6", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row9", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row23", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7669,11 +7910,15 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("shortname", 3, 0);
+	       				runStat.updateStatOnConnection("row34", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row1", 3, 0);
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row30", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7681,19 +7926,31 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfcopyOfmapped3_0", 3, 0);
+	       				runStat.updateStatOnConnection("row26", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row5", 3, 0);
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row11", 3, 0);
+	       				runStat.updateStatOnConnection("OnComponentOk1", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("mapped3", 3, 0);
+	       				runStat.updateStatOnConnection("row44", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("copyOfmapped3_0", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row31", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7705,15 +7962,7 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+	       				runStat.updateStatOnConnection("row15", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7726,6 +7975,42 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 				
 					if(execStat){				
 	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row27", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row15", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row42", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row2", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row6", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row29", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("shortname", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7733,27 +8018,11 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row34", 3, 0);
+	       				runStat.updateStatOnConnection("row19", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row15", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row15", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfmap", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row39", 3, 0);
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7765,35 +8034,11 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+	       				runStat.updateStatOnConnection("row8", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("map", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row36", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfmapped3", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row17", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row33", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+	       				runStat.updateStatOnConnection("row23", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7801,7 +8046,67 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row34", 3, 0);
+	       				runStat.updateStatOnConnection("row44", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row12", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row21", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("shortname", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row7", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row40", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row18", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("mapped3", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row32", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row37", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("denominator", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row11", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("copyOfcopyOfmapped3_0", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row38", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -7813,27 +8118,19 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row22", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row2", 3, 0);
-					}           			
-				
-					if(execStat){				
 	       				runStat.updateStatOnConnection("row19", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row23", 3, 0);
+	       				runStat.updateStatOnConnection("copyOfmap", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+	       				runStat.updateStatOnConnection("row36", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+	       				runStat.updateStatOnConnection("row13", 3, 0);
 					}           			
 				
 				if(execStat){
@@ -9781,7 +10078,7 @@ end_Hash.put("tAggregateRow_3_AGGOUT", System.currentTimeMillis());
 
 			   		// connection name:row8
 			   		// source node:tAggregateRow_3_AGGIN - inputs:(OnRowsEnd) outputs:(row8,row8) | target node:tAdvancedHash_row8 - inputs:(row8) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row8 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -11732,7 +12029,7 @@ end_Hash.put("tAggregateRow_2_AGGOUT", System.currentTimeMillis());
 
 			   		// connection name:row6
 			   		// source node:tAggregateRow_2_AGGIN - inputs:(OnRowsEnd) outputs:(row6,row6) | target node:tAdvancedHash_row6 - inputs:(row6) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row6 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -13795,7 +14092,7 @@ end_Hash.put("tAggregateRow_5_AGGOUT", System.currentTimeMillis());
 
 			   		// connection name:row13
 			   		// source node:tAggregateRow_5_AGGIN - inputs:(OnRowsEnd) outputs:(row13,row13) | target node:tAdvancedHash_row13 - inputs:(row13) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row13 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -16646,7 +16943,7 @@ end_Hash.put("tAggregateRow_4_AGGOUT", System.currentTimeMillis());
 
 			   		// connection name:row15
 			   		// source node:tAggregateRow_4_AGGIN - inputs:(OnRowsEnd) outputs:(row15,row15) | target node:tAdvancedHash_row15 - inputs:(row15) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row15 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -19582,7 +19879,7 @@ end_Hash.put("tAggregateRow_6_AGGOUT", System.currentTimeMillis());
 
 			   		// connection name:row19
 			   		// source node:tAggregateRow_6_AGGIN - inputs:(OnRowsEnd) outputs:(row19,row19) | target node:tAdvancedHash_row19 - inputs:(row19) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row19 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -22178,7 +22475,7 @@ end_Hash.put("tAggregateRow_8_AGGOUT", System.currentTimeMillis());
 
 			   		// connection name:row22
 			   		// source node:tAggregateRow_8_AGGIN - inputs:(OnRowsEnd) outputs:(row22,row22) | target node:tAdvancedHash_row22 - inputs:(row22) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row22 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -23613,7 +23910,7 @@ end_Hash.put("tXMLMap_5_TXMLMAP_OUT", System.currentTimeMillis());
 
 			   		// connection name:row23
 			   		// source node:tXMLMap_5_TXMLMAP_IN - inputs:(OnRowsEnd) outputs:(row23,row23) | target node:tAdvancedHash_row23 - inputs:(row23) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row23 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -25281,7 +25578,7 @@ end_Hash.put("tXMLMap_3_TXMLMAP_OUT", System.currentTimeMillis());
 
 			   		// connection name:row27
 			   		// source node:tFilterRow_8 - inputs:(row26) outputs:(row27,row27) | target node:tAdvancedHash_row27 - inputs:(row27) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row27 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -27532,7 +27829,7 @@ end_Hash.put("tXMLMap_6_TXMLMAP_OUT", System.currentTimeMillis());
 
 			   		// connection name:shortname
 			   		// source node:tMap_4 - inputs:(row30) outputs:(shortname,shortname) | target node:tAdvancedHash_shortname - inputs:(shortname) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_shortname = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -31067,7 +31364,7 @@ end_Hash.put("tAggregateRow_7_AGGOUT", System.currentTimeMillis());
 
 			   		// connection name:row34
 			   		// source node:tAggregateRow_7_AGGIN - inputs:(OnRowsEnd) outputs:(row34,row34) | target node:tAdvancedHash_row34 - inputs:(row34) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row34 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -34656,7 +34953,7 @@ end_Hash.put("tAggregateRow_9_AGGOUT", System.currentTimeMillis());
 
 			   		// connection name:row40
 			   		// source node:tAggregateRow_9_AGGIN - inputs:(OnRowsEnd) outputs:(row40,row40) | target node:tAdvancedHash_row40 - inputs:(row40) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row40 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -35182,6 +35479,3001 @@ end_Hash.put("tAdvancedHash_row40", System.currentTimeMillis());
 	
 
 
+public static class row44Struct implements routines.system.IPersistableComparableLookupRow<row44Struct> {
+    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+	protected static final int DEFAULT_HASHCODE = 1;
+    protected static final int PRIME = 31;
+    protected int hashCode = DEFAULT_HASHCODE;
+    public boolean hashCodeDirty = true;
+
+    public String loopKey;
+
+
+
+	
+			    public String uuid;
+
+				public String getUuid () {
+					return this.uuid;
+				}
+				
+			    public String url;
+
+				public String getUrl () {
+					return this.url;
+				}
+				
+			    public String protocol;
+
+				public String getProtocol () {
+					return this.protocol;
+				}
+				
+
+
+	@Override
+	public int hashCode() {
+		if (this.hashCodeDirty) {
+			final int prime = PRIME;
+			int result = DEFAULT_HASHCODE;
+	
+						result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
+					
+    		this.hashCode = result;
+    		this.hashCodeDirty = false;
+		}
+		return this.hashCode;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		final row44Struct other = (row44Struct) obj;
+		
+						if (this.uuid == null) {
+							if (other.uuid != null)
+								return false;
+						
+						} else if (!this.uuid.equals(other.uuid))
+						
+							return false;
+					
+
+		return true;
+    }
+
+	public void copyDataTo(row44Struct other) {
+
+		other.uuid = this.uuid;
+	            other.url = this.url;
+	            other.protocol = this.protocol;
+	            
+	}
+
+	public void copyKeysDataTo(row44Struct other) {
+
+		other.uuid = this.uuid;
+	            	
+	}
+
+
+
+
+	private String readString(ObjectInputStream dis) throws IOException{
+		String strReturn = null;
+		int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			strReturn = null;
+		} else {
+			if(length > commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length) {
+				if(length < 1024 && commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length == 0) {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[1024];
+				} else {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[2 * length];
+   				}
+			}
+			dis.readFully(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length);
+			strReturn = new String(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length, utf8Charset);
+		}
+		return strReturn;
+	}
+
+    private void writeString(String str, ObjectOutputStream dos) throws IOException{
+		if(str == null) {
+            dos.writeInt(-1);
+		} else {
+            byte[] byteArray = str.getBytes(utf8Charset);
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+    }
+
+	private String readString(DataInputStream dis, ObjectInputStream ois) throws IOException{
+		String strReturn = null;
+		int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			strReturn = null;
+		} else {
+			byte[] byteArray = new byte[length];
+			dis.read(byteArray);
+			strReturn = new String(byteArray, utf8Charset);
+		}
+		return strReturn;
+	}
+
+	private void writeString(String str, DataOutputStream dos, ObjectOutputStream oos) throws IOException{
+		if(str == null) {
+            dos.writeInt(-1);
+		} else {
+            byte[] byteArray = str.getBytes(utf8Charset);
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+	}
+
+    public void readKeysData(ObjectInputStream dis) {
+
+		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
+
+        	try {
+
+        		int length = 0;
+		
+					this.uuid = readString(dis);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+
+		
+
+        }
+
+		
+
+      }
+
+
+    }
+
+    public void writeKeysData(ObjectOutputStream dos) {
+        try {
+
+		
+					// String
+				
+						writeString(this.uuid,dos);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
+
+    /**
+     * Fill Values data by reading ObjectInputStream.
+     */
+    public void readValuesData(DataInputStream dis, ObjectInputStream ois) {
+        try {
+
+			int length = 0;
+		
+						this.url = readString(dis,ois);
+					
+						this.protocol = readString(dis,ois);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+
+		
+
+        }
+
+		
+
+    }
+
+    /**
+     * Return a byte array which represents Values data.
+     */
+    public void writeValuesData(DataOutputStream dos, ObjectOutputStream oos) {
+        try {
+
+		
+						writeString(this.url, dos, oos);
+					
+						writeString(this.protocol, dos, oos);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+        	}
+
+    }
+
+
+    public String toString() {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString());
+		sb.append("[");
+		sb.append("uuid="+uuid);
+		sb.append(",url="+url);
+		sb.append(",protocol="+protocol);
+	    sb.append("]");
+
+	    return sb.toString();
+    }
+
+    /**
+     * Compare keys
+     */
+    public int compareTo(row44Struct other) {
+
+		int returnValue = -1;
+		
+						returnValue = checkNullsAndCompare(this.uuid, other.uuid);
+						if(returnValue != 0) {
+							return returnValue;
+						}
+
+					
+	    return returnValue;
+    }
+
+
+    private int checkNullsAndCompare(Object object1, Object object2) {
+        int returnValue = 0;
+		if (object1 instanceof Comparable && object2 instanceof Comparable) {
+            returnValue = ((Comparable) object1).compareTo(object2);
+        } else if (object1 != null && object2 != null) {
+            returnValue = compareStrings(object1.toString(), object2.toString());
+        } else if (object1 == null && object2 != null) {
+            returnValue = 1;
+        } else if (object1 != null && object2 == null) {
+            returnValue = -1;
+        } else {
+            returnValue = 0;
+        }
+
+        return returnValue;
+    }
+
+    private int compareStrings(String string1, String string2) {
+        return string1.compareTo(string2);
+    }
+
+
+}
+
+public static class OnRowsEndStructtAggregateRow_10 implements routines.system.IPersistableRow<OnRowsEndStructtAggregateRow_10> {
+    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+
+	
+			    public String uuid;
+
+				public String getUuid () {
+					return this.uuid;
+				}
+				
+			    public String url;
+
+				public String getUrl () {
+					return this.url;
+				}
+				
+			    public String protocol;
+
+				public String getProtocol () {
+					return this.protocol;
+				}
+				
+
+
+
+	private String readString(ObjectInputStream dis) throws IOException{
+		String strReturn = null;
+		int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			strReturn = null;
+		} else {
+			if(length > commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length) {
+				if(length < 1024 && commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length == 0) {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[1024];
+				} else {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[2 * length];
+   				}
+			}
+			dis.readFully(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length);
+			strReturn = new String(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length, utf8Charset);
+		}
+		return strReturn;
+	}
+
+    private void writeString(String str, ObjectOutputStream dos) throws IOException{
+		if(str == null) {
+            dos.writeInt(-1);
+		} else {
+            byte[] byteArray = str.getBytes(utf8Charset);
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+    }
+
+    public void readData(ObjectInputStream dis) {
+
+		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
+
+        	try {
+
+        		int length = 0;
+		
+					this.uuid = readString(dis);
+					
+					this.url = readString(dis);
+					
+					this.protocol = readString(dis);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+
+		
+
+        }
+
+		
+
+      }
+
+
+    }
+
+    public void writeData(ObjectOutputStream dos) {
+        try {
+
+		
+					// String
+				
+						writeString(this.uuid,dos);
+					
+					// String
+				
+						writeString(this.url,dos);
+					
+					// String
+				
+						writeString(this.protocol,dos);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
+    public String toString() {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString());
+		sb.append("[");
+		sb.append("uuid="+uuid);
+		sb.append(",url="+url);
+		sb.append(",protocol="+protocol);
+	    sb.append("]");
+
+	    return sb.toString();
+    }
+
+    /**
+     * Compare keys
+     */
+    public int compareTo(OnRowsEndStructtAggregateRow_10 other) {
+
+		int returnValue = -1;
+		
+	    return returnValue;
+    }
+
+
+    private int checkNullsAndCompare(Object object1, Object object2) {
+        int returnValue = 0;
+		if (object1 instanceof Comparable && object2 instanceof Comparable) {
+            returnValue = ((Comparable) object1).compareTo(object2);
+        } else if (object1 != null && object2 != null) {
+            returnValue = compareStrings(object1.toString(), object2.toString());
+        } else if (object1 == null && object2 != null) {
+            returnValue = 1;
+        } else if (object1 != null && object2 == null) {
+            returnValue = -1;
+        } else {
+            returnValue = 0;
+        }
+
+        return returnValue;
+    }
+
+    private int compareStrings(String string1, String string2) {
+        return string1.compareTo(string2);
+    }
+
+
+}
+
+public static class row43Struct implements routines.system.IPersistableRow<row43Struct> {
+    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+
+	
+			    public String uuid;
+
+				public String getUuid () {
+					return this.uuid;
+				}
+				
+			    public String url;
+
+				public String getUrl () {
+					return this.url;
+				}
+				
+			    public String protocol;
+
+				public String getProtocol () {
+					return this.protocol;
+				}
+				
+
+
+
+	private String readString(ObjectInputStream dis) throws IOException{
+		String strReturn = null;
+		int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			strReturn = null;
+		} else {
+			if(length > commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length) {
+				if(length < 1024 && commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length == 0) {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[1024];
+				} else {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[2 * length];
+   				}
+			}
+			dis.readFully(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length);
+			strReturn = new String(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length, utf8Charset);
+		}
+		return strReturn;
+	}
+
+    private void writeString(String str, ObjectOutputStream dos) throws IOException{
+		if(str == null) {
+            dos.writeInt(-1);
+		} else {
+            byte[] byteArray = str.getBytes(utf8Charset);
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+    }
+
+    public void readData(ObjectInputStream dis) {
+
+		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
+
+        	try {
+
+        		int length = 0;
+		
+					this.uuid = readString(dis);
+					
+					this.url = readString(dis);
+					
+					this.protocol = readString(dis);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+
+		
+
+        }
+
+		
+
+      }
+
+
+    }
+
+    public void writeData(ObjectOutputStream dos) {
+        try {
+
+		
+					// String
+				
+						writeString(this.uuid,dos);
+					
+					// String
+				
+						writeString(this.url,dos);
+					
+					// String
+				
+						writeString(this.protocol,dos);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
+    public String toString() {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString());
+		sb.append("[");
+		sb.append("uuid="+uuid);
+		sb.append(",url="+url);
+		sb.append(",protocol="+protocol);
+	    sb.append("]");
+
+	    return sb.toString();
+    }
+
+    /**
+     * Compare keys
+     */
+    public int compareTo(row43Struct other) {
+
+		int returnValue = -1;
+		
+	    return returnValue;
+    }
+
+
+    private int checkNullsAndCompare(Object object1, Object object2) {
+        int returnValue = 0;
+		if (object1 instanceof Comparable && object2 instanceof Comparable) {
+            returnValue = ((Comparable) object1).compareTo(object2);
+        } else if (object1 != null && object2 != null) {
+            returnValue = compareStrings(object1.toString(), object2.toString());
+        } else if (object1 == null && object2 != null) {
+            returnValue = 1;
+        } else if (object1 != null && object2 == null) {
+            returnValue = -1;
+        } else {
+            returnValue = 0;
+        }
+
+        return returnValue;
+    }
+
+    private int compareStrings(String string1, String string2) {
+        return string1.compareTo(string2);
+    }
+
+
+}
+
+public static class row42Struct implements routines.system.IPersistableRow<row42Struct> {
+    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+
+	
+			    public String uuid;
+
+				public String getUuid () {
+					return this.uuid;
+				}
+				
+			    public String url;
+
+				public String getUrl () {
+					return this.url;
+				}
+				
+			    public String protocol;
+
+				public String getProtocol () {
+					return this.protocol;
+				}
+				
+
+
+
+	private String readString(ObjectInputStream dis) throws IOException{
+		String strReturn = null;
+		int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			strReturn = null;
+		} else {
+			if(length > commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length) {
+				if(length < 1024 && commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length == 0) {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[1024];
+				} else {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[2 * length];
+   				}
+			}
+			dis.readFully(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length);
+			strReturn = new String(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length, utf8Charset);
+		}
+		return strReturn;
+	}
+
+    private void writeString(String str, ObjectOutputStream dos) throws IOException{
+		if(str == null) {
+            dos.writeInt(-1);
+		} else {
+            byte[] byteArray = str.getBytes(utf8Charset);
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+    }
+
+    public void readData(ObjectInputStream dis) {
+
+		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
+
+        	try {
+
+        		int length = 0;
+		
+					this.uuid = readString(dis);
+					
+					this.url = readString(dis);
+					
+					this.protocol = readString(dis);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+
+		
+
+        }
+
+		
+
+      }
+
+
+    }
+
+    public void writeData(ObjectOutputStream dos) {
+        try {
+
+		
+					// String
+				
+						writeString(this.uuid,dos);
+					
+					// String
+				
+						writeString(this.url,dos);
+					
+					// String
+				
+						writeString(this.protocol,dos);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
+    public String toString() {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString());
+		sb.append("[");
+		sb.append("uuid="+uuid);
+		sb.append(",url="+url);
+		sb.append(",protocol="+protocol);
+	    sb.append("]");
+
+	    return sb.toString();
+    }
+
+    /**
+     * Compare keys
+     */
+    public int compareTo(row42Struct other) {
+
+		int returnValue = -1;
+		
+	    return returnValue;
+    }
+
+
+    private int checkNullsAndCompare(Object object1, Object object2) {
+        int returnValue = 0;
+		if (object1 instanceof Comparable && object2 instanceof Comparable) {
+            returnValue = ((Comparable) object1).compareTo(object2);
+        } else if (object1 != null && object2 != null) {
+            returnValue = compareStrings(object1.toString(), object2.toString());
+        } else if (object1 == null && object2 != null) {
+            returnValue = 1;
+        } else if (object1 != null && object2 == null) {
+            returnValue = -1;
+        } else {
+            returnValue = 0;
+        }
+
+        return returnValue;
+    }
+
+    private int compareStrings(String string1, String string2) {
+        return string1.compareTo(string2);
+    }
+
+
+}
+
+public static class copyOfcopyOfmapStruct implements routines.system.IPersistableRow<copyOfcopyOfmapStruct> {
+    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+
+	
+			    public String uuid;
+
+				public String getUuid () {
+					return this.uuid;
+				}
+				
+			    public String url;
+
+				public String getUrl () {
+					return this.url;
+				}
+				
+			    public String protocol;
+
+				public String getProtocol () {
+					return this.protocol;
+				}
+				
+
+
+
+	private String readString(ObjectInputStream dis) throws IOException{
+		String strReturn = null;
+		int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			strReturn = null;
+		} else {
+			if(length > commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length) {
+				if(length < 1024 && commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length == 0) {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[1024];
+				} else {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[2 * length];
+   				}
+			}
+			dis.readFully(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length);
+			strReturn = new String(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length, utf8Charset);
+		}
+		return strReturn;
+	}
+
+    private void writeString(String str, ObjectOutputStream dos) throws IOException{
+		if(str == null) {
+            dos.writeInt(-1);
+		} else {
+            byte[] byteArray = str.getBytes(utf8Charset);
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+    }
+
+    public void readData(ObjectInputStream dis) {
+
+		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
+
+        	try {
+
+        		int length = 0;
+		
+					this.uuid = readString(dis);
+					
+					this.url = readString(dis);
+					
+					this.protocol = readString(dis);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+
+		
+
+        }
+
+		
+
+      }
+
+
+    }
+
+    public void writeData(ObjectOutputStream dos) {
+        try {
+
+		
+					// String
+				
+						writeString(this.uuid,dos);
+					
+					// String
+				
+						writeString(this.url,dos);
+					
+					// String
+				
+						writeString(this.protocol,dos);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
+    public String toString() {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString());
+		sb.append("[");
+		sb.append("uuid="+uuid);
+		sb.append(",url="+url);
+		sb.append(",protocol="+protocol);
+	    sb.append("]");
+
+	    return sb.toString();
+    }
+
+    /**
+     * Compare keys
+     */
+    public int compareTo(copyOfcopyOfmapStruct other) {
+
+		int returnValue = -1;
+		
+	    return returnValue;
+    }
+
+
+    private int checkNullsAndCompare(Object object1, Object object2) {
+        int returnValue = 0;
+		if (object1 instanceof Comparable && object2 instanceof Comparable) {
+            returnValue = ((Comparable) object1).compareTo(object2);
+        } else if (object1 != null && object2 != null) {
+            returnValue = compareStrings(object1.toString(), object2.toString());
+        } else if (object1 == null && object2 != null) {
+            returnValue = 1;
+        } else if (object1 != null && object2 == null) {
+            returnValue = -1;
+        } else {
+            returnValue = 0;
+        }
+
+        return returnValue;
+    }
+
+    private int compareStrings(String string1, String string2) {
+        return string1.compareTo(string2);
+    }
+
+
+}
+
+public static class row41Struct implements routines.system.IPersistableRow<row41Struct> {
+    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+
+	
+			    public routines.system.Document xmldoc;
+
+				public routines.system.Document getXmldoc () {
+					return this.xmldoc;
+				}
+				
+
+
+
+    public void readData(ObjectInputStream dis) {
+
+		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
+
+        	try {
+
+        		int length = 0;
+		
+						this.xmldoc = (routines.system.Document) dis.readObject();
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+
+		
+			} catch(ClassNotFoundException eCNFE) {
+				 throw new RuntimeException(eCNFE);
+		
+
+        }
+
+		
+
+      }
+
+
+    }
+
+    public void writeData(ObjectOutputStream dos) {
+        try {
+
+		
+					// Document
+				
+       			    	dos.writeObject(this.xmldoc);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
+    public String toString() {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString());
+		sb.append("[");
+		sb.append("xmldoc="+String.valueOf(xmldoc));
+	    sb.append("]");
+
+	    return sb.toString();
+    }
+
+    /**
+     * Compare keys
+     */
+    public int compareTo(row41Struct other) {
+
+		int returnValue = -1;
+		
+	    return returnValue;
+    }
+
+
+    private int checkNullsAndCompare(Object object1, Object object2) {
+        int returnValue = 0;
+		if (object1 instanceof Comparable && object2 instanceof Comparable) {
+            returnValue = ((Comparable) object1).compareTo(object2);
+        } else if (object1 != null && object2 != null) {
+            returnValue = compareStrings(object1.toString(), object2.toString());
+        } else if (object1 == null && object2 != null) {
+            returnValue = 1;
+        } else if (object1 != null && object2 == null) {
+            returnValue = -1;
+        } else {
+            returnValue = 0;
+        }
+
+        return returnValue;
+    }
+
+    private int compareStrings(String string1, String string2) {
+        return string1.compareTo(string2);
+    }
+
+
+}
+public void tFileInputXML_14Process(final java.util.Map<String, Object> globalMap) throws TalendException {
+	globalMap.put("tFileInputXML_14_SUBPROCESS_STATE", 0);
+
+ final boolean execStat = this.execStat;
+		String currentVirtualComponent = null;
+	
+		String iterateId = "";
+	
+	
+	String currentComponent = "";
+	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
+
+	try {
+
+			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
+			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+				globalResumeTicket = true;
+
+
+
+		row41Struct row41 = new row41Struct();
+copyOfcopyOfmapStruct copyOfcopyOfmap = new copyOfcopyOfmapStruct();
+row42Struct row42 = new row42Struct();
+row43Struct row43 = new row43Struct();
+row44Struct row44 = new row44Struct();
+
+
+
+
+	
+	/**
+	 * [tXMLMap_9_TXMLMAP_OUT begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tXMLMap_9_TXMLMAP_OUT", false);
+		start_Hash.put("tXMLMap_9_TXMLMAP_OUT", System.currentTimeMillis());
+		
+	
+		currentVirtualComponent = "tXMLMap_9";
+	
+	currentComponent="tXMLMap_9_TXMLMAP_OUT";
+
+	
+			if (execStat) {
+				if(resourceMap.get("inIterateVComp") == null){
+					
+						runStat.updateStatOnConnection("row41" + iterateId, 0, 0);
+					
+				}
+			} 
+
+		
+		int tos_count_tXMLMap_9_TXMLMAP_OUT = 0;
+		
+    	class BytesLimit65535_tXMLMap_9_TXMLMAP_OUT{
+    		public void limitLog4jByte() throws Exception{
+    			
+    		}
+    	}
+    	
+        new BytesLimit65535_tXMLMap_9_TXMLMAP_OUT().limitLog4jByte();
+
+	
+	
+//===============================input xml init part===============================
+class XML_API_tXMLMap_9_TXMLMAP_OUT{
+	public boolean isDefNull(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null && node instanceof org.dom4j.Element) {
+        	org.dom4j.Attribute attri = ((org.dom4j.Element)node).attribute("nil");
+        	if(attri != null && ("true").equals(attri.getText())){
+            	return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isMissing(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        return node == null ? true : false;
+    }
+
+    public boolean isEmpty(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null) {
+            return node.getText().length() == 0;
+        }
+        return false;
+    }
+}
+	class Var__tXMLMap_9_TXMLMAP_OUT__Struct {
+	}
+	Var__tXMLMap_9_TXMLMAP_OUT__Struct Var__tXMLMap_9_TXMLMAP_OUT = new Var__tXMLMap_9_TXMLMAP_OUT__Struct();
+// ###############################
+// # Outputs initialization
+copyOfcopyOfmapStruct copyOfcopyOfmap_tmp = new copyOfcopyOfmapStruct();
+copyOfcopyOfmapStruct copyOfcopyOfmap_save = null;
+//the aggregate variable
+copyOfcopyOfmapStruct copyOfcopyOfmap_aggregate = null;
+//init the resultset for aggregate
+java.util.List<Object> allOutsForAggregate_tXMLMap_9 = new java.util.ArrayList<Object>();
+globalMap.put("allOutsForAggregate_tXMLMap_9",allOutsForAggregate_tXMLMap_9);
+// ###############################
+class TreeNode_API_tXMLMap_9_TXMLMAP_OUT {
+	java.util.Map<String, String> xpath_value_map = new java.util.HashMap<String, String>();
+	
+	void clear(){
+		xpath_value_map.clear();
+	}
+	
+	void put(String xpath, String value){
+		xpath_value_map.put(xpath, value);
+	}
+	String get_null(String xpath) {
+		return null;
+	}
+	String get_String(String xpath){
+		return xpath_value_map.get(xpath);
+	}
+	java.util.Date get_Date(String xpath, String pattern){
+		String content = xpath_value_map.get(xpath);
+		if(content==null || content.length()==0) return null;
+		return ParserUtils.parseTo_Date(content, pattern);
+	}
+	Integer get_Integer(String xpath){
+		String content = xpath_value_map.get(xpath);
+		if(content==null || content.length()==0) return null;
+		return ParserUtils.parseTo_Integer(content);
+	}
+	Character get_Character(String xpath){
+		String content = xpath_value_map.get(xpath);
+		if(content==null || content.length()==0) return null;
+		return ParserUtils.parseTo_Character(content);
+	}
+	Float get_Float(String xpath){
+		String content = xpath_value_map.get(xpath);
+		if(content==null || content.length()==0) return null;
+		return ParserUtils.parseTo_Float(content);
+	}
+	Double get_Double(String xpath){
+		String content = xpath_value_map.get(xpath);
+		if(content==null || content.length()==0) return null;
+		return ParserUtils.parseTo_Double(content);
+	}
+}
+			TreeNode_API_tXMLMap_9_TXMLMAP_OUT treeNodeAPI_tXMLMap_9_TXMLMAP_OUT = new TreeNode_API_tXMLMap_9_TXMLMAP_OUT();
+			NameSpaceTool nsTool_tXMLMap_9_TXMLMAP_OUT = new NameSpaceTool();
+		int nb_line_tXMLMap_9_TXMLMAP_OUT = 0; 
+	
+    XML_API_tXMLMap_9_TXMLMAP_OUT xml_api_tXMLMap_9_TXMLMAP_OUT = new XML_API_tXMLMap_9_TXMLMAP_OUT();
+
+	//the map store the previous value of aggregate columns
+	java.util.Map<String,Object> aggregateCacheMap_tXMLMap_9_TXMLMAP_OUT = new java.util.HashMap<String,Object>();
+
+	            
+ 
+
+
+
+/**
+ * [tXMLMap_9_TXMLMAP_OUT begin ] stop
+ */
+
+
+
+	
+	/**
+	 * [tFileInputXML_14 begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tFileInputXML_14", false);
+		start_Hash.put("tFileInputXML_14", System.currentTimeMillis());
+		
+	
+	currentComponent="tFileInputXML_14";
+
+	
+		int tos_count_tFileInputXML_14 = 0;
+		
+    	class BytesLimit65535_tFileInputXML_14{
+    		public void limitLog4jByte() throws Exception{
+    			
+    		}
+    	}
+    	
+        new BytesLimit65535_tFileInputXML_14().limitLog4jByte();
+
+	
+
+int nb_line_tFileInputXML_14 = 0;
+
+	String os_tFileInputXML_14 = System.getProperty("os.name").toLowerCase();
+	boolean isWindows_tFileInputXML_14=false;
+	if(os_tFileInputXML_14.indexOf("windows") > -1 || os_tFileInputXML_14.indexOf("nt") > -1){
+		isWindows_tFileInputXML_14=true;
+	}
+class NameSpaceTool_tFileInputXML_14 {
+
+    public java.util.HashMap<String, String> xmlNameSpaceMap = new java.util.HashMap<String, String>();
+    
+	private java.util.List<String> defualtNSPath = new java.util.ArrayList<String>();
+
+    public void countNSMap(org.dom4j.Element el) {
+        for (org.dom4j.Namespace ns : (java.util.List<org.dom4j.Namespace>) el.declaredNamespaces()) {
+            if (ns.getPrefix().trim().length() == 0) {
+                xmlNameSpaceMap.put("pre"+defualtNSPath.size(), ns.getURI());
+                String path = "";
+                org.dom4j.Element elTmp = el;
+                while (elTmp != null) {
+                	if (elTmp.getNamespacePrefix() != null && elTmp.getNamespacePrefix().length() > 0) {
+                        path = "/" + elTmp.getNamespacePrefix() + ":" + elTmp.getName() + path;
+                    } else {
+                        path = "/" + elTmp.getName() + path;
+                    }
+                    elTmp = elTmp.getParent();
+                }
+                defualtNSPath.add(path);
+            } else {
+                xmlNameSpaceMap.put(ns.getPrefix(), ns.getURI());
+            }
+
+        }
+        for (org.dom4j.Element e : (java.util.List<org.dom4j.Element>) el.elements()) {
+            countNSMap(e);
+        }
+    }
+    
+    private final org.talend.xpath.XPathUtil util = new  org.talend.xpath.XPathUtil();
+    
+    {
+    	util.setDefaultNSPath(defualtNSPath);
+    }
+    
+	public String addDefaultNSPrefix(String path) {
+		return util.addDefaultNSPrefix(path);
+	}
+	
+	public String addDefaultNSPrefix(String relativeXpression, String basePath) {
+		return util.addDefaultNSPrefix(relativeXpression,basePath);
+	}
+    
+}
+
+class XML_API_tFileInputXML_14{
+	public boolean isDefNull(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null && node instanceof org.dom4j.Element) {
+        	org.dom4j.Attribute attri = ((org.dom4j.Element)node).attribute("nil");
+        	if(attri != null && ("true").equals(attri.getText())){
+            	return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isMissing(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        return node == null ? true : false;
+    }
+
+    public boolean isEmpty(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null) {
+            return node.getText().length() == 0;
+        }
+        return false;
+    }
+}
+
+
+org.dom4j.io.SAXReader reader_tFileInputXML_14 = new org.dom4j.io.SAXReader();
+Object filename_tFileInputXML_14 = null;
+try {
+	filename_tFileInputXML_14 = System.getProperty("java.io.tmpdir") + "/sdiDump/tmp/out.xml";
+} catch(java.lang.Exception e) {
+	
+	
+	System.err.println(e.getMessage());
+	
+}
+if(filename_tFileInputXML_14 != null && filename_tFileInputXML_14 instanceof String && filename_tFileInputXML_14.toString().startsWith("//")){
+	if (!isWindows_tFileInputXML_14){
+		filename_tFileInputXML_14 = filename_tFileInputXML_14.toString().replaceFirst("//","/");
+	}
+}
+
+boolean isValidFile_tFileInputXML_14 = true;
+org.dom4j.Document doc_tFileInputXML_14 = null;
+java.io.Closeable toClose_tFileInputXML_14 = null;
+try{
+	if(filename_tFileInputXML_14 instanceof java.io.InputStream){
+		java.io.InputStream inputStream_tFileInputXML_14 = (java.io.InputStream)filename_tFileInputXML_14;
+		toClose_tFileInputXML_14 = inputStream_tFileInputXML_14;
+		doc_tFileInputXML_14 = reader_tFileInputXML_14.read(inputStream_tFileInputXML_14);
+	}else{
+		java.io.Reader unicodeReader_tFileInputXML_14 = new UnicodeReader(new java.io.FileInputStream(String.valueOf(filename_tFileInputXML_14)),"ISO-8859-15");
+		toClose_tFileInputXML_14 = unicodeReader_tFileInputXML_14;
+		org.xml.sax.InputSource in_tFileInputXML_14= new org.xml.sax.InputSource(unicodeReader_tFileInputXML_14);
+		doc_tFileInputXML_14 = reader_tFileInputXML_14.read(in_tFileInputXML_14);
+	}
+}catch(java.lang.Exception e){
+	
+	System.err.println(e.getMessage());
+	isValidFile_tFileInputXML_14 = false;
+} finally {
+	if(toClose_tFileInputXML_14!=null) {
+		toClose_tFileInputXML_14.close();
+	}
+}
+if(isValidFile_tFileInputXML_14){
+NameSpaceTool_tFileInputXML_14 nsTool_tFileInputXML_14 = new NameSpaceTool_tFileInputXML_14();
+nsTool_tFileInputXML_14.countNSMap(doc_tFileInputXML_14.getRootElement());
+java.util.HashMap<String,String> xmlNameSpaceMap_tFileInputXML_14 = nsTool_tFileInputXML_14.xmlNameSpaceMap;  
+
+org.dom4j.XPath x_tFileInputXML_14 = doc_tFileInputXML_14.createXPath(nsTool_tFileInputXML_14.addDefaultNSPrefix("/csw:GetRecordsResponse"));  
+x_tFileInputXML_14.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_14); 
+
+java.util.List<org.dom4j.tree.AbstractNode> nodeList_tFileInputXML_14 = (java.util.List<org.dom4j.tree.AbstractNode>)x_tFileInputXML_14.selectNodes(doc_tFileInputXML_14);	
+XML_API_tFileInputXML_14 xml_api_tFileInputXML_14 = new XML_API_tFileInputXML_14();
+String str_tFileInputXML_14 = "";
+org.dom4j.Node node_tFileInputXML_14 = null;
+
+//init all mapping xpaths
+for (org.dom4j.tree.AbstractNode temp_tFileInputXML_14: nodeList_tFileInputXML_14) {
+	nb_line_tFileInputXML_14++;
+	row41 = null;			
+	boolean whetherReject_tFileInputXML_14 = false;
+	row41 = new row41Struct();
+	try{
+	org.dom4j.XPath xTmp0_tFileInputXML_14 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_14.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
+	xTmp0_tFileInputXML_14.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_14);
+    Object obj0_tFileInputXML_14 = xTmp0_tFileInputXML_14.evaluate(temp_tFileInputXML_14);
+    if(obj0_tFileInputXML_14 == null) {
+    	node_tFileInputXML_14 = null;
+		str_tFileInputXML_14 = null;
+    	
+    } else if(obj0_tFileInputXML_14 instanceof org.dom4j.Node) {
+    	node_tFileInputXML_14 = (org.dom4j.Node)obj0_tFileInputXML_14;
+		str_tFileInputXML_14 = node_tFileInputXML_14.asXML();
+    } else if(obj0_tFileInputXML_14 instanceof String || obj0_tFileInputXML_14 instanceof Number){
+    	node_tFileInputXML_14 = temp_tFileInputXML_14;
+    	str_tFileInputXML_14 = String.valueOf(obj0_tFileInputXML_14);
+    } else if(obj0_tFileInputXML_14 instanceof java.util.List){
+    	java.util.List<org.dom4j.Node> nodes_tFileInputXML_14 = (java.util.List<org.dom4j.Node>)obj0_tFileInputXML_14;
+    	node_tFileInputXML_14 = nodes_tFileInputXML_14.size()>0 ? nodes_tFileInputXML_14.get(0) : null;
+		str_tFileInputXML_14 = node_tFileInputXML_14==null?null:node_tFileInputXML_14.asXML();
+	}
+								row41.xmldoc = ParserUtils.parseTo_Document(str_tFileInputXML_14,false,"ISO-8859-15"); 
+			
+    } catch (java.lang.Exception e) {
+        whetherReject_tFileInputXML_14 = true;
+                System.err.println(e.getMessage());
+                row41 = null;
+    }
+			
+			
+
+ 
+
+
+
+/**
+ * [tFileInputXML_14 begin ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_14 main ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_14";
+
+	
+
+ 
+
+
+	tos_count_tFileInputXML_14++;
+
+/**
+ * [tFileInputXML_14 main ] stop
+ */
+// Start of branch "row41"
+if(row41 != null) { 
+
+
+
+	
+	/**
+	 * [tXMLMap_9_TXMLMAP_OUT main ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_9";
+	
+	currentComponent="tXMLMap_9_TXMLMAP_OUT";
+
+	
+
+			//row41
+			//row41
+
+
+			
+				if(execStat){
+					runStat.updateStatOnConnection("row41"+iterateId,1, 1);
+				} 
+			
+
+		
+
+	boolean rejectedInnerJoin_tXMLMap_9_TXMLMAP_OUT = false;
+	boolean rejectedDocInnerJoin_tXMLMap_9_TXMLMAP_OUT = false;
+	boolean mainRowRejected_tXMLMap_9_TXMLMAP_OUT = false;
+	boolean isMatchDocRowtXMLMap_9_TXMLMAP_OUT = false;
+	  
+	
+			
+
+		
+		
+				//init document to flat tool
+				routines.system.DocumentToFlat docToFlat_tXMLMap_9_TXMLMAP_OUT = new routines.system.DocumentToFlat();
+				docToFlat_tXMLMap_9_TXMLMAP_OUT.setOriginalLoop("/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource");
+				docToFlat_tXMLMap_9_TXMLMAP_OUT.setIsOptional(false);
+				if(row41.xmldoc == null || row41.xmldoc.getDocument() == null) {
+					throw new RuntimeException("row41.xmldoc can't be empty");
+				}
+				org.dom4j.Document doc_tXMLMap_9_TXMLMAP_OUT = row41.xmldoc.getDocument();
+				docToFlat_tXMLMap_9_TXMLMAP_OUT.setDoc(doc_tXMLMap_9_TXMLMAP_OUT);
+				docToFlat_tXMLMap_9_TXMLMAP_OUT.setDefineNS(true);
+				docToFlat_tXMLMap_9_TXMLMAP_OUT.setNamespaceTool(nsTool_tXMLMap_9_TXMLMAP_OUT);
+				
+					java.util.HashMap<String,String> xmlNameSpaceMap_tXMLMap_9_TXMLMAP_OUT = new java.util.HashMap<String,String>();
+					xmlNameSpaceMap_tXMLMap_9_TXMLMAP_OUT.put("gco","http://www.isotc211.org/2005/gco");xmlNameSpaceMap_tXMLMap_9_TXMLMAP_OUT.put("gmx","http://www.isotc211.org/2005/gmx");xmlNameSpaceMap_tXMLMap_9_TXMLMAP_OUT.put("csw","http://www.opengis.net/cat/csw/2.0.2");xmlNameSpaceMap_tXMLMap_9_TXMLMAP_OUT.put("gml","http://www.opengis.net/gml");xmlNameSpaceMap_tXMLMap_9_TXMLMAP_OUT.put("gmd","http://www.isotc211.org/2005/gmd");
+				
+				docToFlat_tXMLMap_9_TXMLMAP_OUT.setXmlNameSpaceMap(xmlNameSpaceMap_tXMLMap_9_TXMLMAP_OUT);
+				
+				String[] absolutePathMappings_tXMLMap_9_TXMLMAP_OUT = new String[3];
+				String[] relativePathMappings_tXMLMap_9_TXMLMAP_OUT = new String[3];
+				
+				absolutePathMappings_tXMLMap_9_TXMLMAP_OUT[0] = "row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:fileIdentifier/gco:CharacterString";
+				relativePathMappings_tXMLMap_9_TXMLMAP_OUT[0] = "../../../../../../gmd:fileIdentifier/gco:CharacterString";
+				
+				absolutePathMappings_tXMLMap_9_TXMLMAP_OUT[1] = "row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString";
+				relativePathMappings_tXMLMap_9_TXMLMAP_OUT[1] = "gmd:protocol/gco:CharacterString";
+				
+				absolutePathMappings_tXMLMap_9_TXMLMAP_OUT[2] = "row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL";
+				relativePathMappings_tXMLMap_9_TXMLMAP_OUT[2] = "gmd:linkage/gmd:URL";
+				
+				docToFlat_tXMLMap_9_TXMLMAP_OUT.setAbsolutePathMappings(absolutePathMappings_tXMLMap_9_TXMLMAP_OUT);
+				docToFlat_tXMLMap_9_TXMLMAP_OUT.setCurrentRelativePathMappings(relativePathMappings_tXMLMap_9_TXMLMAP_OUT);
+				//generate document to flat data
+				docToFlat_tXMLMap_9_TXMLMAP_OUT.flat();
+				//get flat data
+				java.util.List<java.util.Map<String, String>> resultSet_tXMLMap_9_TXMLMAP_OUT = docToFlat_tXMLMap_9_TXMLMAP_OUT.getResultSet();
+				
+				for (java.util.Map<String,String> oneRow_tXMLMap_9_TXMLMAP_OUT: resultSet_tXMLMap_9_TXMLMAP_OUT) { // G_TXM_M_001
+					nb_line_tXMLMap_9_TXMLMAP_OUT++;
+			    	rejectedInnerJoin_tXMLMap_9_TXMLMAP_OUT = false;
+			    	rejectedDocInnerJoin_tXMLMap_9_TXMLMAP_OUT = false;
+					mainRowRejected_tXMLMap_9_TXMLMAP_OUT=false;
+				    isMatchDocRowtXMLMap_9_TXMLMAP_OUT = false;
+					
+			    	treeNodeAPI_tXMLMap_9_TXMLMAP_OUT.clear();
+			    	for(java.util.Map.Entry<String, String> entry_tXMLMap_9_TXMLMAP_OUT : oneRow_tXMLMap_9_TXMLMAP_OUT.entrySet()) {
+						treeNodeAPI_tXMLMap_9_TXMLMAP_OUT.put(entry_tXMLMap_9_TXMLMAP_OUT.getKey(),entry_tXMLMap_9_TXMLMAP_OUT.getValue());
+					}
+					
+
+
+			
+{ // start of Var scope
+
+	// ###############################
+	// # Vars tables
+
+Var__tXMLMap_9_TXMLMAP_OUT__Struct Var = Var__tXMLMap_9_TXMLMAP_OUT;
+		// ###############################
+		// # Output tables
+
+copyOfcopyOfmap = null;
+
+
+// # Output table : 'copyOfcopyOfmap'
+
+copyOfcopyOfmap_tmp = new copyOfcopyOfmapStruct();
+copyOfcopyOfmap_tmp.uuid = treeNodeAPI_tXMLMap_9_TXMLMAP_OUT.get_String("row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:fileIdentifier/gco:CharacterString");
+copyOfcopyOfmap_tmp.url = treeNodeAPI_tXMLMap_9_TXMLMAP_OUT.get_String("row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL");
+copyOfcopyOfmap_tmp.protocol = treeNodeAPI_tXMLMap_9_TXMLMAP_OUT.get_String("row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString");allOutsForAggregate_tXMLMap_9.add(copyOfcopyOfmap_tmp);
+
+// ###############################
+
+} // end of Var scope
+
+rejectedInnerJoin_tXMLMap_9_TXMLMAP_OUT = false;
+
+
+		}//G_TXM_M_001 close
+	
+
+ 
+
+
+	tos_count_tXMLMap_9_TXMLMAP_OUT++;
+
+/**
+ * [tXMLMap_9_TXMLMAP_OUT main ] stop
+ */
+
+} // End of branch "row41"
+
+
+
+
+	
+	/**
+	 * [tFileInputXML_14 end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_14";
+
+	
+
+
+}
+	}
+	globalMap.put("tFileInputXML_14_NB_LINE",nb_line_tFileInputXML_14);
+
+	
+ 
+
+ok_Hash.put("tFileInputXML_14", true);
+end_Hash.put("tFileInputXML_14", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tFileInputXML_14 end ] stop
+ */
+
+	
+	/**
+	 * [tXMLMap_9_TXMLMAP_OUT end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_9";
+	
+	currentComponent="tXMLMap_9_TXMLMAP_OUT";
+
+	
+
+
+
+
+			if(execStat){
+				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
+			 		runStat.updateStatOnConnection("row41"+iterateId,2, 0); 
+			 	}
+			}
+		
+ 
+
+ok_Hash.put("tXMLMap_9_TXMLMAP_OUT", true);
+end_Hash.put("tXMLMap_9_TXMLMAP_OUT", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tXMLMap_9_TXMLMAP_OUT end ] stop
+ */
+
+
+
+
+	
+	/**
+	 * [tAggregateRow_10_AGGOUT begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tAggregateRow_10_AGGOUT", false);
+		start_Hash.put("tAggregateRow_10_AGGOUT", System.currentTimeMillis());
+		
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGOUT";
+
+	
+			if (execStat) {
+				if(resourceMap.get("inIterateVComp") == null){
+					
+						runStat.updateStatOnConnection("row43" + iterateId, 0, 0);
+					
+				}
+			} 
+
+		
+		int tos_count_tAggregateRow_10_AGGOUT = 0;
+		
+    	class BytesLimit65535_tAggregateRow_10_AGGOUT{
+    		public void limitLog4jByte() throws Exception{
+    			
+    		}
+    	}
+    	
+        new BytesLimit65535_tAggregateRow_10_AGGOUT().limitLog4jByte();
+
+// ------------ Seems it is not used
+
+java.util.Map hashAggreg_tAggregateRow_10 = new java.util.HashMap(); 
+
+// ------------
+
+	class UtilClass_tAggregateRow_10 { // G_OutBegin_AggR_144
+
+		public double sd(Double[] data) {
+	        final int n = data.length;
+        	if (n < 2) {
+	            return Double.NaN;
+        	}
+        	double d1 = 0d;
+        	double d2 =0d;
+	        
+	        for (int i = 0; i < data.length; i++) {
+            	d1 += (data[i]*data[i]);
+            	d2 += data[i];
+        	}
+        
+	        return Math.sqrt((n*d1 - d2*d2)/n/(n-1));
+	    }
+	    
+		public void checkedIADD(byte a, byte b, boolean checkTypeOverFlow, boolean checkUlp) {
+		    byte r = (byte) (a + b);
+		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'short/Short'", "'byte/Byte'"));
+		    }
+		}
+		
+		public void checkedIADD(short a, short b, boolean checkTypeOverFlow, boolean checkUlp) {
+		    short r = (short) (a + b);
+		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'int/Integer'", "'short/Short'"));
+		    }
+		}
+		
+		public void checkedIADD(int a, int b, boolean checkTypeOverFlow, boolean checkUlp) {
+		    int r = a + b;
+		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'long/Long'", "'int/Integer'"));
+		    }
+		}
+		
+		public void checkedIADD(long a, long b, boolean checkTypeOverFlow, boolean checkUlp) {
+		    long r = a + b;
+		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'long/Long'"));
+		    }
+		}
+		
+		public void checkedIADD(float a, float b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+			if(checkUlp) {
+			    float minAddedValue = Math.ulp(a);
+			    if (minAddedValue > Math.abs(b)) {
+			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(b), "'double' or 'BigDecimal'", "'float/Float'"));
+			    }
+			}
+			
+		    if (checkTypeOverFlow && ((double) a + (double) b > (double) Float.MAX_VALUE) || ((double) a + (double) b < (double) -Float.MAX_VALUE)) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'double' or 'BigDecimal'", "'float/Float'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, double b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+			if(checkUlp) {
+			    double minAddedValue = Math.ulp(a);
+			    if (minAddedValue > Math.abs(b)) {
+			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
+			    }
+			}
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, byte b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, short b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, int b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, float b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+			if(checkUlp) {
+			    double minAddedValue = Math.ulp(a);
+			    if (minAddedValue > Math.abs(b)) {
+			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
+			    }
+			}
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		private String buildOverflowMessage(String a, String b, String advicedTypes, String originalType) {
+		    return "Type overflow when adding " + b + " to " + a
+		    + ", to resolve this problem, increase the precision by using "+ advicedTypes +" type in place of "+ originalType +".";
+		}
+		
+		private String buildPrecisionMessage(String a, String b, String advicedTypes, String originalType) {
+		    return "The double precision is unsufficient to add the value " + b + " to " + a
+		    + ", to resolve this problem, increase the precision by using "+ advicedTypes +" type in place of "+ originalType +".";
+		}
+
+	} // G_OutBegin_AggR_144
+
+	UtilClass_tAggregateRow_10 utilClass_tAggregateRow_10 = new UtilClass_tAggregateRow_10();
+
+	
+
+	class AggOperationStruct_tAggregateRow_10 { // G_OutBegin_AggR_100
+
+		private static final int DEFAULT_HASHCODE = 1;
+	    private static final int PRIME = 31;
+	    private int hashCode = DEFAULT_HASHCODE;
+	    public boolean hashCodeDirty = true;
+
+    				String uuid;StringBuilder url_list = new StringBuilder();
+           			boolean url_list_firstEmpty = false;
+           			StringBuilder protocol_list = new StringBuilder();
+           			boolean protocol_list_firstEmpty = false;
+           			
+        
+	    @Override
+		public int hashCode() {
+			if (this.hashCodeDirty) {
+				final int prime = PRIME;
+				int result = DEFAULT_HASHCODE;
+		
+							result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
+							
+	    		this.hashCode = result;
+	    		this.hashCodeDirty = false;		
+			}
+			return this.hashCode;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (getClass() != obj.getClass()) return false;
+			final AggOperationStruct_tAggregateRow_10 other = (AggOperationStruct_tAggregateRow_10) obj;
+			
+							if (this.uuid == null) {
+								if (other.uuid != null) 
+									return false;
+							} else if (!this.uuid.equals(other.uuid)) 
+								return false;
+						
+			
+			return true;
+		}
+  
+        
+	} // G_OutBegin_AggR_100
+
+	AggOperationStruct_tAggregateRow_10 operation_result_tAggregateRow_10 = null;
+	AggOperationStruct_tAggregateRow_10 operation_finder_tAggregateRow_10 = new AggOperationStruct_tAggregateRow_10();
+	java.util.Map<AggOperationStruct_tAggregateRow_10,AggOperationStruct_tAggregateRow_10> hash_tAggregateRow_10 = new java.util.HashMap<AggOperationStruct_tAggregateRow_10,AggOperationStruct_tAggregateRow_10>();
+	
+	String delimiter_tAggregateRow_10 = "|";
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_10_AGGOUT begin ] stop
+ */
+
+
+
+	
+	/**
+	 * [tUniqRow_2 begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tUniqRow_2", false);
+		start_Hash.put("tUniqRow_2", System.currentTimeMillis());
+		
+	
+	currentComponent="tUniqRow_2";
+
+	
+			if (execStat) {
+				if(resourceMap.get("inIterateVComp") == null){
+					
+						runStat.updateStatOnConnection("row42" + iterateId, 0, 0);
+					
+				}
+			} 
+
+		
+		int tos_count_tUniqRow_2 = 0;
+		
+    	class BytesLimit65535_tUniqRow_2{
+    		public void limitLog4jByte() throws Exception{
+    			
+    		}
+    	}
+    	
+        new BytesLimit65535_tUniqRow_2().limitLog4jByte();
+
+	
+		class KeyStruct_tUniqRow_2 {
+	
+			private static final int DEFAULT_HASHCODE = 1;
+		    private static final int PRIME = 31;
+		    private int hashCode = DEFAULT_HASHCODE;
+		    public boolean hashCodeDirty = true;
+	
+	        
+					String uuid;
+					String url;
+					String protocol;        
+	        
+		    @Override
+			public int hashCode() {
+				if (this.hashCodeDirty) {
+					final int prime = PRIME;
+					int result = DEFAULT_HASHCODE;
+			
+								result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
+								
+								result = prime * result + ((this.url == null) ? 0 : this.url.hashCode());
+								
+								result = prime * result + ((this.protocol == null) ? 0 : this.protocol.hashCode());
+								
+		    		this.hashCode = result;
+		    		this.hashCodeDirty = false;		
+				}
+				return this.hashCode;
+			}
+			
+			@Override
+			public boolean equals(Object obj) {
+				if (this == obj) return true;
+				if (obj == null) return false;
+				if (getClass() != obj.getClass()) return false;
+				final KeyStruct_tUniqRow_2 other = (KeyStruct_tUniqRow_2) obj;
+				
+									if (this.uuid == null) {
+										if (other.uuid != null) 
+											return false;
+								
+									} else if (!this.uuid.equals(other.uuid))
+								 
+										return false;
+								
+									if (this.url == null) {
+										if (other.url != null) 
+											return false;
+								
+									} else if (!this.url.equals(other.url))
+								 
+										return false;
+								
+									if (this.protocol == null) {
+										if (other.protocol != null) 
+											return false;
+								
+									} else if (!this.protocol.equals(other.protocol))
+								 
+										return false;
+								
+				
+				return true;
+			}
+	  
+	        
+		}
+
+	
+int nb_uniques_tUniqRow_2 = 0;
+int nb_duplicates_tUniqRow_2 = 0;
+KeyStruct_tUniqRow_2 finder_tUniqRow_2 = new KeyStruct_tUniqRow_2();
+java.util.Set<KeyStruct_tUniqRow_2> keystUniqRow_2 = new java.util.HashSet<KeyStruct_tUniqRow_2>(); 
+
+ 
+
+
+
+/**
+ * [tUniqRow_2 begin ] stop
+ */
+
+
+
+	
+	/**
+	 * [tFilterRow_14 begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tFilterRow_14", false);
+		start_Hash.put("tFilterRow_14", System.currentTimeMillis());
+		
+	
+	currentComponent="tFilterRow_14";
+
+	
+			if (execStat) {
+				if(resourceMap.get("inIterateVComp") == null){
+					
+						runStat.updateStatOnConnection("copyOfcopyOfmap" + iterateId, 0, 0);
+					
+				}
+			} 
+
+		
+		int tos_count_tFilterRow_14 = 0;
+		
+    	class BytesLimit65535_tFilterRow_14{
+    		public void limitLog4jByte() throws Exception{
+    			
+    		}
+    	}
+    	
+        new BytesLimit65535_tFilterRow_14().limitLog4jByte();
+    int nb_line_tFilterRow_14 = 0;
+    int nb_line_ok_tFilterRow_14 = 0;
+    int nb_line_reject_tFilterRow_14 = 0;
+
+    class Operator_tFilterRow_14 {
+      private String sErrorMsg = "";
+      private boolean bMatchFlag = true;
+      private String sUnionFlag = "&&";
+
+      public Operator_tFilterRow_14(String unionFlag){
+        sUnionFlag = unionFlag;
+        bMatchFlag =  "||".equals(unionFlag) ? false : true;
+      }
+
+      public String getErrorMsg() {
+        if (sErrorMsg != null && sErrorMsg.length() > 1)
+          return sErrorMsg.substring(1);
+        else 
+          return null;
+      }
+
+      public boolean getMatchFlag() {
+        return bMatchFlag;
+      }
+
+      public void matches(boolean partMatched, String reason) {
+        // no need to care about the next judgement
+        if ("||".equals(sUnionFlag) && bMatchFlag){
+          return;
+        }
+
+        if (!partMatched) {
+          sErrorMsg += "|" + reason;
+        }
+
+        if ("||".equals(sUnionFlag))
+          bMatchFlag = bMatchFlag || partMatched;
+        else
+          bMatchFlag = bMatchFlag && partMatched;
+      }
+    }
+
+ 
+
+
+
+/**
+ * [tFilterRow_14 begin ] stop
+ */
+
+
+
+	
+	/**
+	 * [tXMLMap_9_TXMLMAP_IN begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tXMLMap_9_TXMLMAP_IN", false);
+		start_Hash.put("tXMLMap_9_TXMLMAP_IN", System.currentTimeMillis());
+		
+	
+		currentVirtualComponent = "tXMLMap_9";
+	
+	currentComponent="tXMLMap_9_TXMLMAP_IN";
+
+	
+		int tos_count_tXMLMap_9_TXMLMAP_IN = 0;
+		
+    	class BytesLimit65535_tXMLMap_9_TXMLMAP_IN{
+    		public void limitLog4jByte() throws Exception{
+    			
+    		}
+    	}
+    	
+        new BytesLimit65535_tXMLMap_9_TXMLMAP_IN().limitLog4jByte();
+java.util.List<Object> outs_tXMLMap_9 = (java.util.List<Object>)globalMap.get("allOutsForAggregate_tXMLMap_9");
+for(Object  row_out_tXMLMap_9_TXMLMAP_IN : outs_tXMLMap_9) {//TD512
+ 
+
+
+
+/**
+ * [tXMLMap_9_TXMLMAP_IN begin ] stop
+ */
+	
+	/**
+	 * [tXMLMap_9_TXMLMAP_IN main ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_9";
+	
+	currentComponent="tXMLMap_9_TXMLMAP_IN";
+
+	
+
+	copyOfcopyOfmap = null;
+	if(row_out_tXMLMap_9_TXMLMAP_IN!=null && row_out_tXMLMap_9_TXMLMAP_IN instanceof copyOfcopyOfmapStruct) {
+		copyOfcopyOfmap = (copyOfcopyOfmapStruct)row_out_tXMLMap_9_TXMLMAP_IN;		
+	}
+ 
+
+
+	tos_count_tXMLMap_9_TXMLMAP_IN++;
+
+/**
+ * [tXMLMap_9_TXMLMAP_IN main ] stop
+ */
+// Start of branch "copyOfcopyOfmap"
+if(copyOfcopyOfmap != null) { 
+
+
+
+	
+	/**
+	 * [tFilterRow_14 main ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_14";
+
+	
+
+			//copyOfcopyOfmap
+			//copyOfcopyOfmap
+
+
+			
+				if(execStat){
+					runStat.updateStatOnConnection("copyOfcopyOfmap"+iterateId,1, 1);
+				} 
+			
+
+		
+
+          row42 = null;
+    Operator_tFilterRow_14 ope_tFilterRow_14 = new Operator_tFilterRow_14("&&");
+      ope_tFilterRow_14.matches((// code sample : use copyOfcopyOfmap to define the condition.
+// copyOfcopyOfmap.columnName1.equals("foo") ||!(copyOfcopyOfmap.columnName2.equals("bar"))
+// replace the following expression by your own filter condition 
+copyOfcopyOfmap.protocol.contains("REST")
+			), "advanced condition failed");
+    
+    if (ope_tFilterRow_14.getMatchFlag()) {
+              if(row42 == null){ 
+                row42 = new row42Struct();
+              }
+               row42.uuid = copyOfcopyOfmap.uuid;
+               row42.url = copyOfcopyOfmap.url;
+               row42.protocol = copyOfcopyOfmap.protocol;    
+      nb_line_ok_tFilterRow_14++;
+    } else {
+      nb_line_reject_tFilterRow_14++;
+    }
+
+nb_line_tFilterRow_14++;
+
+ 
+
+
+	tos_count_tFilterRow_14++;
+
+/**
+ * [tFilterRow_14 main ] stop
+ */
+// Start of branch "row42"
+if(row42 != null) { 
+
+
+
+	
+	/**
+	 * [tUniqRow_2 main ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tUniqRow_2";
+
+	
+
+			//row42
+			//row42
+
+
+			
+				if(execStat){
+					runStat.updateStatOnConnection("row42"+iterateId,1, 1);
+				} 
+			
+
+		
+row43 = null;			
+if(row42.uuid == null){
+	finder_tUniqRow_2.uuid = null;
+}else{
+	finder_tUniqRow_2.uuid = row42.uuid.toLowerCase();
+}
+if(row42.url == null){
+	finder_tUniqRow_2.url = null;
+}else{
+	finder_tUniqRow_2.url = row42.url.toLowerCase();
+}
+if(row42.protocol == null){
+	finder_tUniqRow_2.protocol = null;
+}else{
+	finder_tUniqRow_2.protocol = row42.protocol.toLowerCase();
+}	
+finder_tUniqRow_2.hashCodeDirty = true;
+if (!keystUniqRow_2.contains(finder_tUniqRow_2)) {
+		KeyStruct_tUniqRow_2 new_tUniqRow_2 = new KeyStruct_tUniqRow_2();
+
+		
+if(row42.uuid == null){
+	new_tUniqRow_2.uuid = null;
+}else{
+	new_tUniqRow_2.uuid = row42.uuid.toLowerCase();
+}
+if(row42.url == null){
+	new_tUniqRow_2.url = null;
+}else{
+	new_tUniqRow_2.url = row42.url.toLowerCase();
+}
+if(row42.protocol == null){
+	new_tUniqRow_2.protocol = null;
+}else{
+	new_tUniqRow_2.protocol = row42.protocol.toLowerCase();
+}
+		
+		keystUniqRow_2.add(new_tUniqRow_2);if(row43 == null){ 
+	
+	row43 = new row43Struct();
+}row43.uuid = row42.uuid;			row43.url = row42.url;			row43.protocol = row42.protocol;					
+		nb_uniques_tUniqRow_2++;
+	} else {
+	  nb_duplicates_tUniqRow_2++;
+	}
+
+ 
+
+
+	tos_count_tUniqRow_2++;
+
+/**
+ * [tUniqRow_2 main ] stop
+ */
+// Start of branch "row43"
+if(row43 != null) { 
+
+
+
+	
+	/**
+	 * [tAggregateRow_10_AGGOUT main ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGOUT";
+
+	
+
+			//row43
+			//row43
+
+
+			
+				if(execStat){
+					runStat.updateStatOnConnection("row43"+iterateId,1, 1);
+				} 
+			
+
+		
+	
+operation_finder_tAggregateRow_10.uuid = row43.uuid;
+			
+
+	operation_finder_tAggregateRow_10.hashCodeDirty = true;
+	
+	operation_result_tAggregateRow_10 = hash_tAggregateRow_10.get(operation_finder_tAggregateRow_10);
+
+	
+
+	if(operation_result_tAggregateRow_10 == null) { // G_OutMain_AggR_001
+
+		operation_result_tAggregateRow_10 = new AggOperationStruct_tAggregateRow_10();
+
+		operation_result_tAggregateRow_10.uuid = operation_finder_tAggregateRow_10.uuid;
+				
+		
+		
+
+		hash_tAggregateRow_10.put(operation_result_tAggregateRow_10, operation_result_tAggregateRow_10);
+	
+	} // G_OutMain_AggR_001
+
+
+	
+				if(row43.url != null) { // G_OutMain_AggR_546
+				
+				if(operation_result_tAggregateRow_10.url_list.length() > 0) {
+					operation_result_tAggregateRow_10.url_list.append("|");
+				} 
+				else if(operation_result_tAggregateRow_10.url_list_firstEmpty){
+					operation_result_tAggregateRow_10.url_list.append("|");
+				}
+					if(operation_result_tAggregateRow_10.url_list != null) {
+						if(operation_result_tAggregateRow_10.url_list_firstEmpty==false && ("").equals(String.valueOf(row43.url))){
+							operation_result_tAggregateRow_10.url_list_firstEmpty = true;
+						}
+						operation_result_tAggregateRow_10.url_list = operation_result_tAggregateRow_10.url_list.append(String.valueOf(row43.url));
+					}
+				
+				} // G_OutMain_AggR_546
+				
+				if(row43.protocol != null) { // G_OutMain_AggR_546
+				
+				if(operation_result_tAggregateRow_10.protocol_list.length() > 0) {
+					operation_result_tAggregateRow_10.protocol_list.append("|");
+				} 
+				else if(operation_result_tAggregateRow_10.protocol_list_firstEmpty){
+					operation_result_tAggregateRow_10.protocol_list.append("|");
+				}
+					if(operation_result_tAggregateRow_10.protocol_list != null) {
+						if(operation_result_tAggregateRow_10.protocol_list_firstEmpty==false && ("").equals(String.valueOf(row43.protocol))){
+							operation_result_tAggregateRow_10.protocol_list_firstEmpty = true;
+						}
+						operation_result_tAggregateRow_10.protocol_list = operation_result_tAggregateRow_10.protocol_list.append(String.valueOf(row43.protocol));
+					}
+				
+				} // G_OutMain_AggR_546
+				
+
+
+ 
+
+
+	tos_count_tAggregateRow_10_AGGOUT++;
+
+/**
+ * [tAggregateRow_10_AGGOUT main ] stop
+ */
+
+} // End of branch "row43"
+
+
+
+
+
+} // End of branch "row42"
+
+
+
+
+
+} // End of branch "copyOfcopyOfmap"
+
+
+
+
+	
+	/**
+	 * [tXMLMap_9_TXMLMAP_IN end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_9";
+	
+	currentComponent="tXMLMap_9_TXMLMAP_IN";
+
+	
+
+}//TD512
+ 
+
+ok_Hash.put("tXMLMap_9_TXMLMAP_IN", true);
+end_Hash.put("tXMLMap_9_TXMLMAP_IN", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tXMLMap_9_TXMLMAP_IN end ] stop
+ */
+
+	
+	/**
+	 * [tFilterRow_14 end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_14";
+
+	
+    globalMap.put("tFilterRow_14_NB_LINE", nb_line_tFilterRow_14);
+    globalMap.put("tFilterRow_14_NB_LINE_OK", nb_line_ok_tFilterRow_14);
+    globalMap.put("tFilterRow_14_NB_LINE_REJECT", nb_line_reject_tFilterRow_14);
+    
+
+			if(execStat){
+				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
+			 		runStat.updateStatOnConnection("copyOfcopyOfmap"+iterateId,2, 0); 
+			 	}
+			}
+		
+ 
+
+ok_Hash.put("tFilterRow_14", true);
+end_Hash.put("tFilterRow_14", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tFilterRow_14 end ] stop
+ */
+
+	
+	/**
+	 * [tUniqRow_2 end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tUniqRow_2";
+
+	
+
+globalMap.put("tUniqRow_2_NB_UNIQUES",nb_uniques_tUniqRow_2);
+globalMap.put("tUniqRow_2_NB_DUPLICATES",nb_duplicates_tUniqRow_2);
+
+			if(execStat){
+				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
+			 		runStat.updateStatOnConnection("row42"+iterateId,2, 0); 
+			 	}
+			}
+		
+ 
+
+ok_Hash.put("tUniqRow_2", true);
+end_Hash.put("tUniqRow_2", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tUniqRow_2 end ] stop
+ */
+
+	
+	/**
+	 * [tAggregateRow_10_AGGOUT end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGOUT";
+
+	
+
+			if(execStat){
+				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
+			 		runStat.updateStatOnConnection("row43"+iterateId,2, 0); 
+			 	}
+			}
+		
+ 
+
+ok_Hash.put("tAggregateRow_10_AGGOUT", true);
+end_Hash.put("tAggregateRow_10_AGGOUT", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tAggregateRow_10_AGGOUT end ] stop
+ */
+
+
+	
+	/**
+	 * [tAdvancedHash_row44 begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tAdvancedHash_row44", false);
+		start_Hash.put("tAdvancedHash_row44", System.currentTimeMillis());
+		
+	
+	currentComponent="tAdvancedHash_row44";
+
+	
+			if (execStat) {
+				if(resourceMap.get("inIterateVComp") == null){
+					
+						runStat.updateStatOnConnection("row44" + iterateId, 0, 0);
+					
+				}
+			} 
+
+		
+		int tos_count_tAdvancedHash_row44 = 0;
+		
+    	class BytesLimit65535_tAdvancedHash_row44{
+    		public void limitLog4jByte() throws Exception{
+    			
+    		}
+    	}
+    	
+        new BytesLimit65535_tAdvancedHash_row44().limitLog4jByte();
+
+			   		// connection name:row44
+			   		// source node:tAggregateRow_10_AGGIN - inputs:(OnRowsEnd) outputs:(row44,row44) | target node:tAdvancedHash_row44 - inputs:(row44) outputs:()
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row15,row19,row22,row23,row27,shortname,row34,row40,row44) outputs:(map)
+			   
+			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row44 = 
+			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
+			   			
+			   
+	   			org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<row44Struct> tHash_Lookup_row44 =org.talend.designer.components.lookup.memory.AdvancedMemoryLookup.
+	   						<row44Struct>getLookup(matchingModeEnum_row44);
+	   						   
+		   	   	   globalMap.put("tHash_Lookup_row44", tHash_Lookup_row44);
+		   	   	   
+				
+           
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row44 begin ] stop
+ */
+
+
+
+	
+	/**
+	 * [tAggregateRow_10_AGGIN begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tAggregateRow_10_AGGIN", false);
+		start_Hash.put("tAggregateRow_10_AGGIN", System.currentTimeMillis());
+		
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGIN";
+
+	
+		int tos_count_tAggregateRow_10_AGGIN = 0;
+		
+    	class BytesLimit65535_tAggregateRow_10_AGGIN{
+    		public void limitLog4jByte() throws Exception{
+    			
+    		}
+    	}
+    	
+        new BytesLimit65535_tAggregateRow_10_AGGIN().limitLog4jByte();
+
+java.util.Collection<AggOperationStruct_tAggregateRow_10> values_tAggregateRow_10 = hash_tAggregateRow_10.values();
+
+globalMap.put("tAggregateRow_10_NB_LINE", values_tAggregateRow_10.size());
+
+for(AggOperationStruct_tAggregateRow_10 aggregated_row_tAggregateRow_10 : values_tAggregateRow_10) { // G_AggR_600
+
+
+
+ 
+
+
+
+/**
+ * [tAggregateRow_10_AGGIN begin ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_10_AGGIN main ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGIN";
+
+	
+
+            				    row44.uuid = aggregated_row_tAggregateRow_10.uuid;
+            				    
+    								row44.url = aggregated_row_tAggregateRow_10.url_list.toString();
+	    						
+    								row44.protocol = aggregated_row_tAggregateRow_10.protocol_list.toString();
+	    						
+
+ 
+
+
+	tos_count_tAggregateRow_10_AGGIN++;
+
+/**
+ * [tAggregateRow_10_AGGIN main ] stop
+ */
+
+	
+	/**
+	 * [tAdvancedHash_row44 main ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row44";
+
+	
+
+			//row44
+			//row44
+
+
+			
+				if(execStat){
+					runStat.updateStatOnConnection("row44"+iterateId,1, 1);
+				} 
+			
+
+		
+
+
+			   
+			   
+
+					row44Struct row44_HashRow = new row44Struct();
+		   	   	   
+				
+				row44_HashRow.uuid = row44.uuid;
+				
+				row44_HashRow.url = row44.url;
+				
+				row44_HashRow.protocol = row44.protocol;
+				
+			tHash_Lookup_row44.put(row44_HashRow);
+			
+            
+
+
+
+
+ 
+
+
+	tos_count_tAdvancedHash_row44++;
+
+/**
+ * [tAdvancedHash_row44 main ] stop
+ */
+
+
+
+	
+	/**
+	 * [tAggregateRow_10_AGGIN end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGIN";
+
+	
+
+} // G_AggR_600
+
+ 
+
+ok_Hash.put("tAggregateRow_10_AGGIN", true);
+end_Hash.put("tAggregateRow_10_AGGIN", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tAggregateRow_10_AGGIN end ] stop
+ */
+
+	
+	/**
+	 * [tAdvancedHash_row44 end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row44";
+
+	
+
+tHash_Lookup_row44.endPut();
+
+			if(execStat){
+				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
+			 		runStat.updateStatOnConnection("row44"+iterateId,2, 0); 
+			 	}
+			}
+		
+ 
+
+ok_Hash.put("tAdvancedHash_row44", true);
+end_Hash.put("tAdvancedHash_row44", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tAdvancedHash_row44 end ] stop
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				}//end the resume
+
+				
+
+
+
+	
+			}catch(java.lang.Exception e){	
+				
+				TalendException te = new TalendException(e, currentComponent, globalMap);
+				
+					te.setVirtualComponentName(currentVirtualComponent);
+				
+				throw te;
+			}catch(java.lang.Error error){	
+				
+					runStat.stopThreadStat();
+				
+				throw error;
+			}finally{
+				
+							//free memory for "tAggregateRow_10_AGGIN"
+							globalMap.remove("tAggregateRow_10");
+						
+				try{
+					
+	
+	/**
+	 * [tFileInputXML_14 finally ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_14";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_14 finally ] stop
+ */
+
+	
+	/**
+	 * [tXMLMap_9_TXMLMAP_OUT finally ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_9";
+	
+	currentComponent="tXMLMap_9_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_9_TXMLMAP_OUT finally ] stop
+ */
+
+	
+	/**
+	 * [tXMLMap_9_TXMLMAP_IN finally ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_9";
+	
+	currentComponent="tXMLMap_9_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_9_TXMLMAP_IN finally ] stop
+ */
+
+	
+	/**
+	 * [tFilterRow_14 finally ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_14";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_14 finally ] stop
+ */
+
+	
+	/**
+	 * [tUniqRow_2 finally ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tUniqRow_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tUniqRow_2 finally ] stop
+ */
+
+	
+	/**
+	 * [tAggregateRow_10_AGGOUT finally ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_10_AGGOUT finally ] stop
+ */
+
+	
+	/**
+	 * [tAggregateRow_10_AGGIN finally ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_10_AGGIN finally ] stop
+ */
+
+	
+	/**
+	 * [tAdvancedHash_row44 finally ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row44";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row44 finally ] stop
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				}catch(java.lang.Exception e){	
+					//ignore
+				}catch(java.lang.Error error){
+					//ignore
+				}
+				resourceMap = null;
+			}
+		
+
+		globalMap.put("tFileInputXML_14_SUBPROCESS_STATE", 1);
+	}
+	
+
+
 public static class row4Struct implements routines.system.IPersistableRow<row4Struct> {
     final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
     static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
@@ -35379,6 +38671,12 @@ public static class row4Struct implements routines.system.IPersistableRow<row4St
 					return this.idpTopics;
 				}
 				
+			    public String restApi;
+
+				public String getRestApi () {
+					return this.restApi;
+				}
+				
 
 
 
@@ -35503,6 +38801,8 @@ public static class row4Struct implements routines.system.IPersistableRow<row4St
 					this.wms = readString(dis);
 					
 					this.idpTopics = readString(dis);
+					
+					this.restApi = readString(dis);
 					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
@@ -35670,6 +38970,10 @@ public static class row4Struct implements routines.system.IPersistableRow<row4St
 				
 						writeString(this.idpTopics,dos);
 					
+					// String
+				
+						writeString(this.restApi,dos);
+					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
         }
@@ -35715,6 +39019,7 @@ public static class row4Struct implements routines.system.IPersistableRow<row4St
 		sb.append(",referenceFlag="+referenceFlag);
 		sb.append(",wms="+wms);
 		sb.append(",idpTopics="+idpTopics);
+		sb.append(",restApi="+restApi);
 	    sb.append("]");
 
 	    return sb.toString();
@@ -35952,6 +39257,12 @@ public static class OnRowsEndStructtAggregateRow_1 implements routines.system.IP
 					return this.idpTopics;
 				}
 				
+			    public String restApi;
+
+				public String getRestApi () {
+					return this.restApi;
+				}
+				
 
 
 
@@ -36076,6 +39387,8 @@ public static class OnRowsEndStructtAggregateRow_1 implements routines.system.IP
 					this.wms = readString(dis);
 					
 					this.idpTopics = readString(dis);
+					
+					this.restApi = readString(dis);
 					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
@@ -36243,6 +39556,10 @@ public static class OnRowsEndStructtAggregateRow_1 implements routines.system.IP
 				
 						writeString(this.idpTopics,dos);
 					
+					// String
+				
+						writeString(this.restApi,dos);
+					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
         }
@@ -36288,6 +39605,7 @@ public static class OnRowsEndStructtAggregateRow_1 implements routines.system.IP
 		sb.append(",referenceFlag="+referenceFlag);
 		sb.append(",wms="+wms);
 		sb.append(",idpTopics="+idpTopics);
+		sb.append(",restApi="+restApi);
 	    sb.append("]");
 
 	    return sb.toString();
@@ -36525,6 +39843,12 @@ public static class row3Struct implements routines.system.IPersistableRow<row3St
 					return this.idpTopics;
 				}
 				
+			    public String restApi;
+
+				public String getRestApi () {
+					return this.restApi;
+				}
+				
 
 
 
@@ -36649,6 +39973,8 @@ public static class row3Struct implements routines.system.IPersistableRow<row3St
 					this.wms = readString(dis);
 					
 					this.idpTopics = readString(dis);
+					
+					this.restApi = readString(dis);
 					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
@@ -36816,6 +40142,10 @@ public static class row3Struct implements routines.system.IPersistableRow<row3St
 				
 						writeString(this.idpTopics,dos);
 					
+					// String
+				
+						writeString(this.restApi,dos);
+					
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
         }
@@ -36861,6 +40191,7 @@ public static class row3Struct implements routines.system.IPersistableRow<row3St
 		sb.append(",referenceFlag="+referenceFlag);
 		sb.append(",wms="+wms);
 		sb.append(",idpTopics="+idpTopics);
+		sb.append(",restApi="+restApi);
 	    sb.append("]");
 
 	    return sb.toString();
@@ -37008,6 +40339,7 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
     				String referenceFlag;
     				String wms;
     				String idpTopics;
+    				String restApi;
         
 	    @Override
 		public int hashCode() {
@@ -37078,6 +40410,8 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							result = prime * result + ((this.wms == null) ? 0 : this.wms.hashCode());
 							
 							result = prime * result + ((this.idpTopics == null) ? 0 : this.idpTopics.hashCode());
+							
+							result = prime * result + ((this.restApi == null) ? 0 : this.restApi.hashCode());
 							
 	    		this.hashCode = result;
 	    		this.hashCodeDirty = false;		
@@ -37282,6 +40616,12 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 								if (other.idpTopics != null) 
 									return false;
 							} else if (!this.idpTopics.equals(other.idpTopics)) 
+								return false;
+						
+							if (this.restApi == null) {
+								if (other.restApi != null) 
+									return false;
+							} else if (!this.restApi.equals(other.restApi)) 
 								return false;
 						
 			
@@ -37559,6 +40899,8 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							row3.wms = null;
 					
 							row3.idpTopics = null;
+					
+							row3.restApi = null;
 					
 				}else{
 					
@@ -38200,6 +41542,24 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 						
 						
 					
+						columnIndexWithD_tFileInputDelimited_1 = 32;
+						
+						
+						
+						if(columnIndexWithD_tFileInputDelimited_1 < rowtFileInputDelimited_1.length){
+						
+						
+							
+									row3.restApi = rowtFileInputDelimited_1[columnIndexWithD_tFileInputDelimited_1];
+									
+							
+						
+						}else{
+							row3.restApi = null;
+						}
+						
+						
+					
 				}
 				
 									
@@ -38310,6 +41670,7 @@ operation_finder_tAggregateRow_1.uuid = row3.uuid;
 			operation_finder_tAggregateRow_1.referenceFlag = row3.referenceFlag;
 			operation_finder_tAggregateRow_1.wms = row3.wms;
 			operation_finder_tAggregateRow_1.idpTopics = row3.idpTopics;
+			operation_finder_tAggregateRow_1.restApi = row3.restApi;
 			
 
 	operation_finder_tAggregateRow_1.hashCodeDirty = true;
@@ -38354,6 +41715,7 @@ operation_finder_tAggregateRow_1.uuid = row3.uuid;
 				operation_result_tAggregateRow_1.referenceFlag = operation_finder_tAggregateRow_1.referenceFlag;
 				operation_result_tAggregateRow_1.wms = operation_finder_tAggregateRow_1.wms;
 				operation_result_tAggregateRow_1.idpTopics = operation_finder_tAggregateRow_1.idpTopics;
+				operation_result_tAggregateRow_1.restApi = operation_finder_tAggregateRow_1.restApi;
 				
 		
 		
@@ -38518,7 +41880,7 @@ String fileName_tFileOutputDelimited_3 = "";
     boolean isFileGenerated_tFileOutputDelimited_3 = true;
     java.io.File filetFileOutputDelimited_3 = new java.io.File(fileName_tFileOutputDelimited_3);
     globalMap.put("tFileOutputDelimited_3_FILE_NAME",fileName_tFileOutputDelimited_3);
-                String[] headColutFileOutputDelimited_3=new String[32];
+                String[] headColutFileOutputDelimited_3=new String[33];
             class CSVBasicSet_tFileOutputDelimited_3{
                 private char field_Delim;
                 private char row_Delim;
@@ -38671,6 +42033,7 @@ String fileName_tFileOutputDelimited_3 = "";
                                     headColutFileOutputDelimited_3[29]="referenceFlag";
                                     headColutFileOutputDelimited_3[30]="wms";
                                     headColutFileOutputDelimited_3[31]="idpTopics";
+                                    headColutFileOutputDelimited_3[32]="restApi";
                             CsvWritertFileOutputDelimited_3.writeNext(headColutFileOutputDelimited_3);
                             CsvWritertFileOutputDelimited_3.flush();
                         }
@@ -38815,6 +42178,8 @@ for(AggOperationStruct_tAggregateRow_1 aggregated_row_tAggregateRow_1 : values_t
             				    
             				    row4.idpTopics = aggregated_row_tAggregateRow_1.idpTopics;
             				    
+            				    row4.restApi = aggregated_row_tAggregateRow_1.restApi;
+            				    
 
  
 
@@ -38851,7 +42216,7 @@ for(AggOperationStruct_tAggregateRow_1 aggregated_row_tAggregateRow_1 : values_t
 		
 
 
-                        String[] rowtFileOutputDelimited_3=new String[32];
+                        String[] rowtFileOutputDelimited_3=new String[33];
                             rowtFileOutputDelimited_3[0]=row4.uuid == null ? null : row4.uuid;
                             rowtFileOutputDelimited_3[1]=row4.dataset_id == null ? null : row4.dataset_id;
                             rowtFileOutputDelimited_3[2]=row4.datestamp == null ? null : row4.datestamp;
@@ -38884,6 +42249,7 @@ for(AggOperationStruct_tAggregateRow_1 aggregated_row_tAggregateRow_1 : values_t
                             rowtFileOutputDelimited_3[29]=row4.referenceFlag == null ? null : row4.referenceFlag;
                             rowtFileOutputDelimited_3[30]=row4.wms == null ? null : row4.wms;
                             rowtFileOutputDelimited_3[31]=row4.idpTopics == null ? null : row4.idpTopics;
+                            rowtFileOutputDelimited_3[32]=row4.restApi == null ? null : row4.restApi;
                 nb_line_tFileOutputDelimited_3++;
                 resourceMap.put("nb_line_tFileOutputDelimited_3", nb_line_tFileOutputDelimited_3);
                                        CsvWritertFileOutputDelimited_3.writeNext(rowtFileOutputDelimited_3);
@@ -40351,6 +43717,6 @@ if (execStat) {
     ResumeUtil resumeUtil = null;
 }
 /************************************************************************************************
- *     1013350 characters generated by Talend Open Studio for Big Data 
- *     on the October 27, 2017 2:04:04 PM CEST
+ *     1093868 characters generated by Talend Open Studio for Big Data 
+ *     on the November 13, 2017 10:34:22 AM CET
  ************************************************************************************************/
