@@ -207,6 +207,8 @@
       <elementValue elementRef="TRIM" value="false"/>
       <elementValue elementRef="SCHEMA_COLUMN" value="restApi"/>
       <elementValue elementRef="TRIM" value="false"/>
+      <elementValue elementRef="SCHEMA_COLUMN" value="status"/>
+      <elementValue elementRef="TRIM" value="false"/>
     </elementParameter>
     <elementParameter field="CHECK" name="CHECK_FIELDS_NUM" value="false"/>
     <elementParameter field="CHECK" name="CHECK_DATE" value="false"/>
@@ -281,6 +283,8 @@
       <elementValue elementRef="DECODE" value="false"/>
       <elementValue elementRef="SCHEMA_COLUMN" value="restApi"/>
       <elementValue elementRef="DECODE" value="false"/>
+      <elementValue elementRef="SCHEMA_COLUMN" value="status"/>
+      <elementValue elementRef="DECODE" value="false"/>
     </elementParameter>
     <elementParameter field="TEXT" name="DESTINATION" value="" show="false"/>
     <elementParameter field="TEXT" name="SCHEMA_OPT_NUM" value="100" show="false"/>
@@ -297,10 +301,10 @@
       <column comment="" key="false" length="-1" name="custodian" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="inspire_themes" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="gemet_concepts" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="13" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="stype" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="scaleres" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="tbegin" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
@@ -320,6 +324,7 @@
       <column comment="" key="false" length="-1" name="wms" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="idpTopics" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="restApi" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="status" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
     <metadata connector="REJECT" label="metadata" name="REJECT">
       <column comment="" key="false" length="-1" name="uuid" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
@@ -332,10 +337,10 @@
       <column comment="" key="false" length="-1" name="custodian" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="inspire_themes" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="gemet_concepts" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="13" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="stype" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="scaleres" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="tbegin" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
@@ -355,6 +360,7 @@
       <column comment="" key="false" length="-1" name="wms" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="idpTopics" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="restApi" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="status" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column defaultValue="" key="false" length="255" name="errorCode" nullable="true" precision="0" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column defaultValue="" key="false" length="255" name="errorMessage" nullable="true" precision="0" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
@@ -382,10 +388,10 @@
       <column comment="" key="false" length="-1" name="custodian" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="inspire_themes" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="gemet_concepts" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="13" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="stype" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="scaleres" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="tbegin" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
@@ -405,6 +411,7 @@
       <column comment="" key="false" length="-1" name="wms" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="idpTopics" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="restApi" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="status" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
     <nodeData xsi:type="MapperData">
       <uiProperties shellMaximized="true"/>
@@ -443,6 +450,7 @@
         <mapperTableEntries name="wms" expression="row1.wms " type="id_String" nullable="true"/>
         <mapperTableEntries name="idpTopics" expression="row1.idpTopics" type="id_String" nullable="true"/>
         <mapperTableEntries name="restApi" expression="row1.restApi " type="id_String" nullable="true"/>
+        <mapperTableEntries name="status" expression="row1.status " type="id_String" nullable="true"/>
       </outputTables>
       <inputTables sizeState="INTERMEDIATE" name="row1" matchingMode="UNIQUE_MATCH" lookupMode="LOAD_ONCE">
         <mapperTableEntries name="uuid" type="id_String" nullable="true"/>
@@ -478,6 +486,7 @@
         <mapperTableEntries name="wms" type="id_String" nullable="true"/>
         <mapperTableEntries name="idpTopics" type="id_String" nullable="true"/>
         <mapperTableEntries name="restApi" type="id_String" nullable="true"/>
+        <mapperTableEntries name="status" type="id_String" nullable="true"/>
       </inputTables>
       <inputTables sizeState="INTERMEDIATE" name="row2" matchingMode="UNIQUE_MATCH" lookupMode="LOAD_ONCE">
         <mapperTableEntries name="permalink" expression="row1.sdiurl " type="id_String" nullable="true" operator="="/>
@@ -555,10 +564,10 @@
       <column comment="" key="false" length="-1" name="custodian" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="inspire_themes" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="gemet_concepts" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="13" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="stype" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="scaleres" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="tbegin" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
@@ -578,6 +587,7 @@
       <column comment="" key="false" length="-1" name="wms" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="idpTopics" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="restApi" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="status" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
   </node>
   <node componentName="tFileOutputDelimited" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="832" posY="96">
@@ -621,10 +631,10 @@
       <column comment="" key="false" length="-1" name="custodian" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="inspire_themes" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="gemet_concepts" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="13" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="stype" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="scaleres" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="tbegin" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
@@ -644,6 +654,7 @@
       <column comment="" key="false" length="-1" name="wms" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="idpTopics" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="restApi" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="status" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
   </node>
   <node componentName="tSQLiteOutput" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="832" posY="224">
@@ -828,6 +839,11 @@
       <elementValue elementRef="DELETE_KEY" value="false"/>
       <elementValue elementRef="UPDATABLE" value="true"/>
       <elementValue elementRef="INSERTABLE" value="true"/>
+      <elementValue elementRef="SCHEMA_COLUMN" value="status"/>
+      <elementValue elementRef="UPDATE_KEY" value="false"/>
+      <elementValue elementRef="DELETE_KEY" value="false"/>
+      <elementValue elementRef="UPDATABLE" value="true"/>
+      <elementValue elementRef="INSERTABLE" value="true"/>
     </elementParameter>
     <elementParameter field="CHECK" name="ENABLE_DEBUG_MODE" value="false"/>
     <elementParameter field="CHECK" name="SUPPORT_NULL_WHERE" value="false"/>
@@ -846,10 +862,10 @@
       <column comment="" key="false" length="-1" name="custodian" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" sourceType="VARCHAR" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="inspire_themes" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" sourceType="VARCHAR" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="gemet_concepts" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" sourceType="VARCHAR" type="id_String" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="13" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="stype" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" sourceType="VARCHAR" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="scaleres" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" sourceType="VARCHAR" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="tbegin" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" sourceType="VARCHAR" type="id_String" usefulColumn="true"/>
@@ -869,6 +885,7 @@
       <column comment="" key="false" length="-1" name="wms" nullable="true" pattern="" precision="-1" sourceType="VARCHAR" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="idpTopics" nullable="true" pattern="" precision="-1" sourceType="VARCHAR" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="restApi" nullable="true" pattern="" precision="-1" sourceType="VARCHAR" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="status" nullable="true" pattern="" precision="-1" sourceType="VARCHAR" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
     <metadata connector="REJECT" label="metadata" name="REJECT">
       <column comment="" key="false" length="-1" name="uuid" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" sourceType="VARCHAR" type="id_String" usefulColumn="true"/>
@@ -881,10 +898,10 @@
       <column comment="" key="false" length="-1" name="custodian" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" sourceType="VARCHAR" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="inspire_themes" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" sourceType="VARCHAR" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="gemet_concepts" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" sourceType="VARCHAR" type="id_String" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="13" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" sourceType="FLOAT" type="id_Float" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="stype" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" sourceType="VARCHAR" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="scaleres" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" sourceType="VARCHAR" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="tbegin" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" sourceType="VARCHAR" type="id_String" usefulColumn="true"/>
@@ -904,6 +921,7 @@
       <column comment="" key="false" length="-1" name="wms" nullable="true" pattern="" precision="-1" sourceType="VARCHAR" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="idpTopics" nullable="true" pattern="" precision="-1" sourceType="VARCHAR" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="restApi" nullable="true" pattern="" precision="-1" sourceType="VARCHAR" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="status" nullable="true" pattern="" precision="-1" sourceType="VARCHAR" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column defaultValue="" key="false" length="255" name="errorCode" nullable="true" precision="0" sourceType="VARCHAR" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column defaultValue="" key="false" length="255" name="errorMessage" nullable="true" precision="0" sourceType="VARCHAR" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
@@ -991,6 +1009,8 @@
       <elementValue elementRef="IS_AUTO_SIZE" value="false"/>
       <elementValue elementRef="SCHEMA_COLUMN" value="restApi"/>
       <elementValue elementRef="IS_AUTO_SIZE" value="false"/>
+      <elementValue elementRef="SCHEMA_COLUMN" value="status"/>
+      <elementValue elementRef="IS_AUTO_SIZE" value="false"/>
     </elementParameter>
     <elementParameter field="CHECK" name="CREATE" value="true"/>
     <elementParameter field="CHECK" name="FLUSHONROW" value="false" show="false"/>
@@ -1016,10 +1036,10 @@
       <column comment="" key="false" length="-1" name="custodian" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="inspire_themes" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="gemet_concepts" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="13" type="id_Float" usefulColumn="true"/>
-      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="6" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="wlon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="elon" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="slat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="nlat" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="20" type="id_Float" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="stype" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="scaleres" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="tbegin" nullable="true" pattern="&quot;dd-MM-yyyy&quot;" precision="0" type="id_String" usefulColumn="true"/>
@@ -1039,6 +1059,7 @@
       <column comment="" key="false" length="-1" name="wms" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="idpTopics" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
       <column comment="" key="false" length="-1" name="restApi" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="false" length="-1" name="status" nullable="true" pattern="" precision="-1" sourceType="" type="id_String" originalLength="-1" usefulColumn="true"/>
     </metadata>
   </node>
   <node componentName="tFileDelete" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="96" posY="224">
@@ -1112,6 +1133,9 @@
       <elementValue elementRef="TRACE_COLUMN" value="restApi"/>
       <elementValue elementRef="TRACE_COLUMN_CHECKED" value="true"/>
       <elementValue elementRef="TRACE_COLUMN_CONDITION" value=""/>
+      <elementValue elementRef="TRACE_COLUMN" value="status"/>
+      <elementValue elementRef="TRACE_COLUMN_CHECKED" value="true"/>
+      <elementValue elementRef="TRACE_COLUMN_CONDITION" value=""/>
     </elementParameter>
     <elementParameter field="CHECK" name="MONITOR_CONNECTION" value="false"/>
     <elementParameter field="TEXT" name="UNIQUE_NAME" value="row1" show="false"/>
@@ -1146,6 +1170,9 @@
       <elementValue elementRef="TRACE_COLUMN_CHECKED" value="true"/>
       <elementValue elementRef="TRACE_COLUMN_CONDITION" value=""/>
       <elementValue elementRef="TRACE_COLUMN" value="restApi"/>
+      <elementValue elementRef="TRACE_COLUMN_CHECKED" value="true"/>
+      <elementValue elementRef="TRACE_COLUMN_CONDITION" value=""/>
+      <elementValue elementRef="TRACE_COLUMN" value="status"/>
       <elementValue elementRef="TRACE_COLUMN_CHECKED" value="true"/>
       <elementValue elementRef="TRACE_COLUMN_CONDITION" value=""/>
     </elementParameter>
