@@ -183,6 +183,21 @@
       <relatedItems xmi:id="_zvNxGxrfEeilNY2giDklrg" id="GeometryOperation" version="Latest" type="routine"/>
       <relatedItems xmi:id="_zvNxHBrfEeilNY2giDklrg" id="Mathematical" version="Latest" type="routine"/>
     </ItemsRelations>
+    <ItemsRelations xmi:id="_GVS3UBvQEeip686LOJb-VA">
+      <baseItem xmi:id="_GVS3URvQEeip686LOJb-VA" id="_8m0m4BvPEeip686LOJb-VA" version="0.1" type="job"/>
+      <relatedItems xmi:id="_GVS3UhvQEeip686LOJb-VA" id="Numeric" version="Latest" type="routine"/>
+      <relatedItems xmi:id="_GVS3UxvQEeip686LOJb-VA" id="Relational" version="Latest" type="routine"/>
+      <relatedItems xmi:id="_GVS3VBvQEeip686LOJb-VA" id="TalendString" version="Latest" type="routine"/>
+      <relatedItems xmi:id="_GVS3VRvQEeip686LOJb-VA" id="OpenStreetMap" version="Latest" type="routine"/>
+      <relatedItems xmi:id="_GVS3VhvQEeip686LOJb-VA" id="DataOperation" version="Latest" type="routine"/>
+      <relatedItems xmi:id="_GVS3VxvQEeip686LOJb-VA" id="GeometryUtility" version="Latest" type="routine"/>
+      <relatedItems xmi:id="_GVS3WBvQEeip686LOJb-VA" id="StringHandling" version="Latest" type="routine"/>
+      <relatedItems xmi:id="_GVS3WRvQEeip686LOJb-VA" id="TalendDataGenerator" version="Latest" type="routine"/>
+      <relatedItems xmi:id="_GVS3WhvQEeip686LOJb-VA" id="GeoOperation" version="Latest" type="routine"/>
+      <relatedItems xmi:id="_GVS3WxvQEeip686LOJb-VA" id="TalendDate" version="Latest" type="routine"/>
+      <relatedItems xmi:id="_GVS3XBvQEeip686LOJb-VA" id="GeometryOperation" version="Latest" type="routine"/>
+      <relatedItems xmi:id="_GVS3XRvQEeip686LOJb-VA" id="Mathematical" version="Latest" type="routine"/>
+    </ItemsRelations>
     <migrationTask xmi:id="_qlUdwA2AEeihKsNaqyTUkg" id="org.talend.repository.hadoopcluster.model.migration.MoveHDFSAndHCatalogToHadoopFolderMigrationTask" breaks="5.3.0" version="5.3.0" status="ok"/>
     <migrationTask xmi:id="_qlUdwQ2AEeihKsNaqyTUkg" id="org.talend.repository.model.migration.UpdateExistentMigrationTasksToAdaptNewMigrationSystemMigrationTask" breaks="5.1.1" version="5.1.2" status="ok"/>
     <migrationTask xmi:id="_qlUdwg2AEeihKsNaqyTUkg" id="org.talend.repository.localprovider.RemoveRoutineFolderTask" breaks="5.1.1" version="5.1.2" status="ok"/>
