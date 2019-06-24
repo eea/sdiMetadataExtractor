@@ -18,14 +18,11 @@
 package local_project.sdimetadataextractor_0_1;
 
 import routines.DataOperation;
-import routines.OpenStreetMap;
 import routines.TalendDataGenerator;
 import routines.Relational;
 import routines.Mathematical;
-import routines.GeometryUtility;
 import routines.Numeric;
-import routines.GeoOperation;
-import routines.GeometryOperation;
+import routines.TalendStringUtil;
 import routines.TalendString;
 import routines.StringHandling;
 import routines.TalendDate;
@@ -59,11 +56,18 @@ import java.util.Comparator;
  * Job: sdiMetadataExtractor Purpose: <br>
  * Description:  <br>
  * @author user@talend.com
- * @version 6.3.1.20161216_1026
+ * @version 7.2.1.20181218_1206-M1
  * @status 
  */
 public class sdiMetadataExtractor implements TalendJob {
 
+protected static void logIgnoredError(String message, Throwable cause) {
+       System.err.println(message);
+       if (cause != null) {
+               cause.printStackTrace();
+       }
+
+}
 
 
 	public final Object obj = new Object();
@@ -83,11 +87,31 @@ public class sdiMetadataExtractor implements TalendJob {
 
 	
 	private final static String utf8Charset = "UTF-8";
-
+	//contains type for every context property
+	public class PropertiesWithType extends java.util.Properties {
+		private static final long serialVersionUID = 1L;
+		private java.util.Map<String,String> propertyTypes = new java.util.HashMap<>();
+		
+		public PropertiesWithType(java.util.Properties properties){
+			super(properties);
+		}
+		public PropertiesWithType(){
+			super();
+		}
+		
+		public void setContextType(String key, String type) {
+			propertyTypes.put(key,type);
+		}
+	
+		public String getContextType(String key) {
+			return propertyTypes.get(key);
+		}
+	}
+	
 	// create and load default properties
 	private java.util.Properties defaultProps = new java.util.Properties();
 	// create application properties with default
-	public class ContextProperties extends java.util.Properties {
+	public class ContextProperties extends PropertiesWithType {
 
 		private static final long serialVersionUID = 1L;
 
@@ -124,8 +148,8 @@ public String username;
 public String getUsername(){
 	return this.username;
 }
-public String password;
-public String getPassword(){
+public java.lang.String password;
+public java.lang.String getPassword(){
 	return this.password;
 }
 public String outputDir;
@@ -133,7 +157,7 @@ public String getOutputDir(){
 	return this.outputDir;
 }
 	}
-	private ContextProperties context = new ContextProperties();
+	protected ContextProperties context = new ContextProperties(); // will be instanciated by MS.
 	public ContextProperties getContext() {
 		return this.context;
 	}
@@ -156,6 +180,8 @@ private RunStat runStat = new RunStat();
 
 	// OSGi DataSource
 	private final static String KEY_DB_DATASOURCES = "KEY_DB_DATASOURCES";
+	
+	private final static String KEY_DB_DATASOURCES_RAW = "KEY_DB_DATASOURCES_RAW";
 
 	public void setDataSources(java.util.Map<String, javax.sql.DataSource> dataSources) {
 		java.util.Map<String, routines.system.TalendDataSource> talendDataSources = new java.util.HashMap<String, routines.system.TalendDataSource>();
@@ -163,6 +189,7 @@ private RunStat runStat = new RunStat();
 			talendDataSources.put(dataSourceEntry.getKey(), new routines.system.TalendDataSource(dataSourceEntry.getValue()));
 		}
 		globalMap.put(KEY_DB_DATASOURCES, talendDataSources);
+		globalMap.put(KEY_DB_DATASOURCES_RAW, new java.util.HashMap<String, javax.sql.DataSource>(dataSources));
 	}
 
 	AssertCatcherUtils tAssertCatcher_1 = new AssertCatcherUtils();
@@ -239,8 +266,8 @@ private class TalendException extends Exception {
 			if(virtualComponentName!=null && currentComponent.indexOf(virtualComponentName+"_")==0){
 				globalMap.put(virtualComponentName+"_ERROR_MESSAGE",getExceptionCauseMessage(e));
 			}
-			 globalMap.put(currentComponent+"_ERROR_MESSAGE",getExceptionCauseMessage(e));
-			System.err.println("Exception in component " + currentComponent);
+			globalMap.put(currentComponent+"_ERROR_MESSAGE",getExceptionCauseMessage(e));
+			System.err.println("Exception in component " + currentComponent + " (" + jobName + ")");
 		}
 		if (!(e instanceof TDieException)) {
 			if(e instanceof TalendException){
@@ -637,54 +664,6 @@ private class TalendException extends Exception {
 					tFileInputXML_12_onSubJobError(exception, errorComponent, globalMap);
 			}
 			
-			public void tFileInputXML_14_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
-				
-				end_Hash.put(errorComponent, System.currentTimeMillis());
-				
-								if(!(exception instanceof TDieException)){
-									
-										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
-									
-									tAssertCatcher_1Process(globalMap);
-								}
-								
-				status = "failure";
-				
-					tFileInputXML_14_onSubJobError(exception, errorComponent, globalMap);
-			}
-			
-			public void tFilterRow_14_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
-				
-				end_Hash.put(errorComponent, System.currentTimeMillis());
-				
-								if(!(exception instanceof TDieException)){
-									
-										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
-									
-									tAssertCatcher_1Process(globalMap);
-								}
-								
-				status = "failure";
-				
-					tFileInputXML_14_onSubJobError(exception, errorComponent, globalMap);
-			}
-			
-			public void tUniqRow_2_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
-				
-				end_Hash.put(errorComponent, System.currentTimeMillis());
-				
-								if(!(exception instanceof TDieException)){
-									
-										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
-									
-									tAssertCatcher_1Process(globalMap);
-								}
-								
-				status = "failure";
-				
-					tFileInputXML_14_onSubJobError(exception, errorComponent, globalMap);
-			}
-			
 			public void tFileInputXML_15_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
 				
 				end_Hash.put(errorComponent, System.currentTimeMillis());
@@ -909,6 +888,54 @@ private class TalendException extends Exception {
 					tFileInputXML_1_onSubJobError(exception, errorComponent, globalMap);
 			}
 			
+			public void tFileInputXML_8_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+				end_Hash.put(errorComponent, System.currentTimeMillis());
+				
+								if(!(exception instanceof TDieException)){
+									
+										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
+									
+									tAssertCatcher_1Process(globalMap);
+								}
+								
+				status = "failure";
+				
+					tFileInputXML_8_onSubJobError(exception, errorComponent, globalMap);
+			}
+			
+			public void tFilterRow_14_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+				end_Hash.put(errorComponent, System.currentTimeMillis());
+				
+								if(!(exception instanceof TDieException)){
+									
+										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
+									
+									tAssertCatcher_1Process(globalMap);
+								}
+								
+				status = "failure";
+				
+					tFileInputXML_8_onSubJobError(exception, errorComponent, globalMap);
+			}
+			
+			public void tUniqRow_2_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+				end_Hash.put(errorComponent, System.currentTimeMillis());
+				
+								if(!(exception instanceof TDieException)){
+									
+										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
+									
+									tAssertCatcher_1Process(globalMap);
+								}
+								
+				status = "failure";
+				
+					tFileInputXML_8_onSubJobError(exception, errorComponent, globalMap);
+			}
+			
 			public void tFileInputDelimited_1_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
 				
 				end_Hash.put(errorComponent, System.currentTimeMillis());
@@ -1117,22 +1144,6 @@ private class TalendException extends Exception {
 					tFileInputXML_12_onSubJobError(exception, errorComponent, globalMap);
 			}
 			
-			public void tAdvancedHash_row44_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
-				
-				end_Hash.put(errorComponent, System.currentTimeMillis());
-				
-								if(!(exception instanceof TDieException)){
-									
-										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
-									
-									tAssertCatcher_1Process(globalMap);
-								}
-								
-				status = "failure";
-				
-					tFileInputXML_14_onSubJobError(exception, errorComponent, globalMap);
-			}
-			
 			public void tAdvancedHash_status_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
 				
 				end_Hash.put(errorComponent, System.currentTimeMillis());
@@ -1211,6 +1222,22 @@ private class TalendException extends Exception {
 				status = "failure";
 				
 					tFileInputXML_1_onSubJobError(exception, errorComponent, globalMap);
+			}
+			
+			public void tAdvancedHash_row44_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+				end_Hash.put(errorComponent, System.currentTimeMillis());
+				
+								if(!(exception instanceof TDieException)){
+									
+										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
+									
+									tAssertCatcher_1Process(globalMap);
+								}
+								
+				status = "failure";
+				
+					tFileInputXML_8_onSubJobError(exception, errorComponent, globalMap);
 			}
 			
 			public void tAggregateRow_3_AGGOUT_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
@@ -1433,50 +1460,6 @@ private class TalendException extends Exception {
 					tFileInputXML_12_onSubJobError(exception, errorComponent, globalMap);
 			}
 			
-			public void tXMLMap_9_TXMLMAP_OUT_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
-				
-							tXMLMap_9_TXMLMAP_IN_error(exception, errorComponent, globalMap);
-						
-						}
-					
-			public void tXMLMap_9_TXMLMAP_IN_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
-				
-				end_Hash.put(errorComponent, System.currentTimeMillis());
-				
-								if(!(exception instanceof TDieException)){
-									
-										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
-									
-									tAssertCatcher_1Process(globalMap);
-								}
-								
-				status = "failure";
-				
-					tFileInputXML_14_onSubJobError(exception, errorComponent, globalMap);
-			}
-			
-			public void tAggregateRow_10_AGGOUT_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
-				
-							tAggregateRow_10_AGGIN_error(exception, errorComponent, globalMap);
-						
-						}
-					
-			public void tAggregateRow_10_AGGIN_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
-				
-				end_Hash.put(errorComponent, System.currentTimeMillis());
-				
-								if(!(exception instanceof TDieException)){
-									
-										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
-									
-									tAssertCatcher_1Process(globalMap);
-								}
-								
-				status = "failure";
-				
-					tFileInputXML_14_onSubJobError(exception, errorComponent, globalMap);
-			}
-			
 			public void tXMLMap_10_TXMLMAP_OUT_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
 				
 							tXMLMap_10_TXMLMAP_IN_error(exception, errorComponent, globalMap);
@@ -1631,6 +1614,50 @@ private class TalendException extends Exception {
 					tFileInputXML_1_onSubJobError(exception, errorComponent, globalMap);
 			}
 			
+			public void tXMLMap_2_TXMLMAP_OUT_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+							tXMLMap_2_TXMLMAP_IN_error(exception, errorComponent, globalMap);
+						
+						}
+					
+			public void tXMLMap_2_TXMLMAP_IN_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+				end_Hash.put(errorComponent, System.currentTimeMillis());
+				
+								if(!(exception instanceof TDieException)){
+									
+										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
+									
+									tAssertCatcher_1Process(globalMap);
+								}
+								
+				status = "failure";
+				
+					tFileInputXML_8_onSubJobError(exception, errorComponent, globalMap);
+			}
+			
+			public void tAggregateRow_10_AGGOUT_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+							tAggregateRow_10_AGGIN_error(exception, errorComponent, globalMap);
+						
+						}
+					
+			public void tAggregateRow_10_AGGIN_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+				
+				end_Hash.put(errorComponent, System.currentTimeMillis());
+				
+								if(!(exception instanceof TDieException)){
+									
+										tAssertCatcher_1.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
+									
+									tAssertCatcher_1Process(globalMap);
+								}
+								
+				status = "failure";
+				
+					tFileInputXML_8_onSubJobError(exception, errorComponent, globalMap);
+			}
+			
 			public void tAggregateRow_1_AGGOUT_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
 				
 							tAggregateRow_1_AGGIN_error(exception, errorComponent, globalMap);
@@ -1703,11 +1730,6 @@ resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThrea
 resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThread().getId()+ "", "FATAL", "", exception.getMessage(), ResumeUtil.getExceptionStackTrace(exception),"");
 
 			}
-			public void tFileInputXML_14_onSubJobError(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
-
-resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThread().getId()+ "", "FATAL", "", exception.getMessage(), ResumeUtil.getExceptionStackTrace(exception),"");
-
-			}
 			public void tFileInputXML_15_onSubJobError(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
 
 resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThread().getId()+ "", "FATAL", "", exception.getMessage(), ResumeUtil.getExceptionStackTrace(exception),"");
@@ -1729,6 +1751,11 @@ resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThrea
 
 			}
 			public void tFileInputXML_1_onSubJobError(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+
+resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThread().getId()+ "", "FATAL", "", exception.getMessage(), ResumeUtil.getExceptionStackTrace(exception),"");
+
+			}
+			public void tFileInputXML_8_onSubJobError(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
 
 resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThread().getId()+ "", "FATAL", "", exception.getMessage(), ResumeUtil.getExceptionStackTrace(exception),"");
 
@@ -1758,7 +1785,7 @@ resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThrea
 resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThread().getId()+ "", "FATAL", "", exception.getMessage(), ResumeUtil.getExceptionStackTrace(exception),"");
 
 			}
-		
+	
 
 
 
@@ -1776,10 +1803,13 @@ public void tHttpRequest_1Process(final java.util.Map<String, Object> globalMap)
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -1805,13 +1835,6 @@ public void tHttpRequest_1Process(final java.util.Map<String, Object> globalMap)
 	
 		int tos_count_tHttpRequest_1 = 0;
 		
-    	class BytesLimit65535_tHttpRequest_1{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tHttpRequest_1().limitLog4jByte();
 
  
 
@@ -1858,7 +1881,6 @@ urlConn_tHttpRequest_1.setUseCaches(false);
   urlConn_tHttpRequest_1.setRequestProperty("Content-Type", "text/xml");
 boolean connected_tHttpRequest_1 = false;
 int responseCode_tHttpRequest_1 = 0;
-String responseMessage_tHttpRequest_1 = null;
 globalMap.put("tHttpRequest_1_CONNECTED", false);
 try{
     urlConn_tHttpRequest_1.connect();
@@ -1879,7 +1901,6 @@ try{
 
     responseCode_tHttpRequest_1 = urlConn_tHttpRequest_1.getResponseCode();
     globalMap.put("tHttpRequest_1_RESPONSE_CODE", responseCode_tHttpRequest_1);
-    responseMessage_tHttpRequest_1 = urlConn_tHttpRequest_1.getResponseMessage();
 
     if (java.net.HttpURLConnection.HTTP_OK == responseCode_tHttpRequest_1) {
         java.io.InputStream bis_tHttpRequest_1 = new java.io.BufferedInputStream(urlConn_tHttpRequest_1.getInputStream());
@@ -1890,6 +1911,27 @@ try{
             bosContent_tHttpRequest_1.close();
         bis_tHttpRequest_1.close();
     } else {
+    	String responseMessage_tHttpRequest_1 = urlConn_tHttpRequest_1.getResponseMessage();
+    
+        //get details response information which will be used when error appear
+        java.io.InputStream err_stream_tHttpRequest_1 = urlConn_tHttpRequest_1.getErrorStream();
+        if(err_stream_tHttpRequest_1!=null) {
+            java.io.InputStream es_tHttpRequest_1 = new java.io.BufferedInputStream(err_stream_tHttpRequest_1);
+        	java.io.ByteArrayOutputStream baos_tHttpRequest_1 = new java.io.ByteArrayOutputStream();
+        	
+        	byte[] buf_tHttpRequest_1 = new byte[1024];
+            int read_tHttpRequest_1 = -1;
+        	try {
+            	while ((read_tHttpRequest_1 = es_tHttpRequest_1.read(buf_tHttpRequest_1)) > 0) {
+            		baos_tHttpRequest_1.write(buf_tHttpRequest_1, 0, read_tHttpRequest_1);
+            	}
+        	} finally {
+        		es_tHttpRequest_1.close();
+        	}
+        
+        	responseMessage_tHttpRequest_1 += ("\n" + new String(baos_tHttpRequest_1.toByteArray()));
+        }
+    	
             System.err.println(responseCode_tHttpRequest_1 + " " + responseMessage_tHttpRequest_1);
             globalMap.put("tHttpRequest_1" + "_ERROR_MESSAGE","Request failed:" + responseCode_tHttpRequest_1 + " " + responseMessage_tHttpRequest_1);
     }
@@ -1907,6 +1949,46 @@ try{
 
 /**
  * [tHttpRequest_1 main ] stop
+ */
+	
+	/**
+	 * [tHttpRequest_1 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tHttpRequest_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tHttpRequest_1 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tHttpRequest_1 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tHttpRequest_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tHttpRequest_1 process_data_end ] stop
  */
 	
 	/**
@@ -4190,10 +4272,13 @@ public void tFileInputXML_5Process(final java.util.Map<String, Object> globalMap
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -4204,12 +4289,12 @@ public void tFileInputXML_5Process(final java.util.Map<String, Object> globalMap
 		tFileInputXML_7Process(globalMap);
 		tFileInputXML_9Process(globalMap);
 		tFileInputXML_12Process(globalMap);
-		tFileInputXML_14Process(globalMap);
 		tFileInputXML_15Process(globalMap);
 		tFileInputXML_11Process(globalMap);
 		tFileInputXML_13Process(globalMap);
 		tFileInputXML_10Process(globalMap);
 		tFileInputXML_1Process(globalMap);
+		tFileInputXML_8Process(globalMap);
 
 		row2Struct row2 = new row2Struct();
 mapStruct map = new mapStruct();
@@ -4247,13 +4332,6 @@ row31Struct row31 = new row31Struct();
 		
 		int tos_count_tFileOutputDelimited_1 = 0;
 		
-    	class BytesLimit65535_tFileOutputDelimited_1{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileOutputDelimited_1().limitLog4jByte();
 
 String fileName_tFileOutputDelimited_1 = "";
     fileName_tFileOutputDelimited_1 = (new java.io.File(System.getProperty("java.io.tmpdir") + "/sdiDump/tmp/out.csv")).getAbsolutePath().replace("\\","/");
@@ -4377,7 +4455,6 @@ String fileName_tFileOutputDelimited_1 = "";
             }
 
             int nb_line_tFileOutputDelimited_1 = 0;
-            int splitEvery_tFileOutputDelimited_1 = 1000;
             int splitedFileNo_tFileOutputDelimited_1 =0;
             int currentRow_tFileOutputDelimited_1 = 0;
 
@@ -4485,13 +4562,6 @@ resourceMap.put("nb_line_tFileOutputDelimited_1", nb_line_tFileOutputDelimited_1
 		
 		int tos_count_tReplace_1 = 0;
 		
-    	class BytesLimit65535_tReplace_1{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tReplace_1().limitLog4jByte();
 
 
 int nb_line_tReplace_1 = 0;
@@ -4532,13 +4602,6 @@ int nb_line_tReplace_1 = 0;
 		
 		int tos_count_tMap_2 = 0;
 		
-    	class BytesLimit65535_tMap_2{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tMap_2().limitLog4jByte();
 
 
 
@@ -4732,13 +4795,6 @@ mapStruct map_tmp = new mapStruct();
 	
 		int tos_count_tFileInputXML_5 = 0;
 		
-    	class BytesLimit65535_tFileInputXML_5{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileInputXML_5().limitLog4jByte();
 
 	
 
@@ -4873,15 +4929,161 @@ String str_tFileInputXML_5 = "";
 org.dom4j.Node node_tFileInputXML_5 = null;
 
 //init all mapping xpaths
+java.util.Map<Integer,org.dom4j.XPath> xpaths_tFileInputXML_5=new java.util.HashMap<Integer,org.dom4j.XPath>();
+	class XPathUtil_tFileInputXML_5{
+	
+			   public void initXPaths_0(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_5 nsTool,
+			       java.util.HashMap<String,String> xmlNameSpaceMap){
+			
+	org.dom4j.XPath xpath_0 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:fileIdentifier/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_0.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(0,xpath_0);
+			
+	org.dom4j.XPath xpath_1 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:identifier/gmd:RS_Identifier/gmd:code/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_1.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(1,xpath_1);
+			
+	org.dom4j.XPath xpath_2 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:dateStamp/gco:DateTime","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_2.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(2,xpath_2);
+			
+	org.dom4j.XPath xpath_3 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/gmd:RS_Identifier/gmd:code/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_3.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(3,xpath_3);
+			
+	org.dom4j.XPath xpath_4 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_4.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(4,xpath_4);
+			
+	org.dom4j.XPath xpath_5 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:edition/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_5.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(5,xpath_5);
+			
+	org.dom4j.XPath xpath_6 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:abstract/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_6.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(6,xpath_6);
+			
+	org.dom4j.XPath xpath_7 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:role/gmd:CI_RoleCode[@codeListValue=\"custodian\"]/../../gmd:organisationName/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_7.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(7,xpath_7);
+			
+	org.dom4j.XPath xpath_8 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:graphicOverview/gmd:MD_BrowseGraphic/gmd:fileName/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_8.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(8,xpath_8);
+			
+	org.dom4j.XPath xpath_9 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:type/gmd:MD_KeywordTypeCode[@codeListValue='place']/../../gmd:keyword/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_9.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(9,xpath_9);
+			
+	org.dom4j.XPath xpath_10 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:westBoundLongitude/gco:Decimal","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_10.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(10,xpath_10);
+			
+	org.dom4j.XPath xpath_11 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:eastBoundLongitude/gco:Decimal","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_11.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(11,xpath_11);
+			
+	org.dom4j.XPath xpath_12 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:southBoundLatitude/gco:Decimal","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_12.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(12,xpath_12);
+			
+	org.dom4j.XPath xpath_13 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:northBoundLatitude/gco:Decimal","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_13.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(13,xpath_13);
+			
+	org.dom4j.XPath xpath_14 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialRepresentationType/gmd:MD_SpatialRepresentationTypeCode/@codeListValue","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_14.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(14,xpath_14);
+			
+	org.dom4j.XPath xpath_15 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution/gmd:MD_Resolution/gmd:equivalentScale/gmd:MD_RepresentativeFraction/gmd:denominator/gco:Integer","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_15.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(15,xpath_15);
+			
+	org.dom4j.XPath xpath_16 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution[1]/gmd:MD_Resolution/gmd:distance/gco:Distance","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_16.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(16,xpath_16);
+			
+	org.dom4j.XPath xpath_17 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution[1]/gmd:MD_Resolution/gmd:distance/gco:Distance/@uom","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_17.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(17,xpath_17);
+			
+	org.dom4j.XPath xpath_18 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod/gml:beginPosition","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_18.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(18,xpath_18);
+			
+	org.dom4j.XPath xpath_19 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod/gml:begin/gml:TimeInstant/gml:timePosition","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_19.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(19,xpath_19);
+			
+	org.dom4j.XPath xpath_20 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod/gml:endPosition","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_20.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(20,xpath_20);
+			
+	org.dom4j.XPath xpath_21 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod/gml:end/gml:TimeInstant/gml:timePosition","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_21.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(21,xpath_21);
+			
+	org.dom4j.XPath xpath_22 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:statement/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_22.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(22,xpath_22);
+			
+	org.dom4j.XPath xpath_23 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:source/@uuidref","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_23.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(23,xpath_23);
+			
+	org.dom4j.XPath xpath_24 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:dateType/gmd:CI_DateTypeCode/@codeListValue","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_24.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(24,xpath_24);
+			
+	org.dom4j.XPath xpath_25 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol[gco:CharacterString=\"WWW:LINK-1.0-http--link\"]/../gmd:linkage/gmd:URL","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
+	xpath_25.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(25,xpath_25);
+			
+	     }
+	   
+	      public void initXPaths(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_5 nsTool,
+			    java.util.HashMap<String,String> xmlNameSpaceMap){
+			    
+			        initXPaths_0(xpaths,nsTool, xmlNameSpaceMap);
+			    
+		   }
+	}
+	XPathUtil_tFileInputXML_5 xPathUtil_tFileInputXML_5 = new XPathUtil_tFileInputXML_5();
+	xPathUtil_tFileInputXML_5.initXPaths(xpaths_tFileInputXML_5, nsTool_tFileInputXML_5, xmlNameSpaceMap_tFileInputXML_5);
 for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5) {
-	nb_line_tFileInputXML_5++;
+		nb_line_tFileInputXML_5++;
+		
 	row2 = null;			
 	boolean whetherReject_tFileInputXML_5 = false;
 	row2 = new row2Struct();
 	try{
-	org.dom4j.XPath xTmp0_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:fileIdentifier/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp0_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj0_tFileInputXML_5 = xTmp0_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj0_tFileInputXML_5 = xpaths_tFileInputXML_5.get(0).evaluate(temp_tFileInputXML_5);
     if(obj0_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -4906,9 +5108,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.uuid = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp1_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:identifier/gmd:RS_Identifier/gmd:code/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp1_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj1_tFileInputXML_5 = xTmp1_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj1_tFileInputXML_5 = xpaths_tFileInputXML_5.get(1).evaluate(temp_tFileInputXML_5);
     if(obj1_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -4933,9 +5133,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.dataset_id = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp2_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:dateStamp/gco:DateTime","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp2_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj2_tFileInputXML_5 = xTmp2_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj2_tFileInputXML_5 = xpaths_tFileInputXML_5.get(2).evaluate(temp_tFileInputXML_5);
     if(obj2_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -4960,9 +5158,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.datestamp = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp3_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/gmd:RS_Identifier/gmd:code/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp3_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj3_tFileInputXML_5 = xTmp3_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj3_tFileInputXML_5 = xpaths_tFileInputXML_5.get(3).evaluate(temp_tFileInputXML_5);
     if(obj3_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -4987,9 +5183,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.crs = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp4_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp4_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj4_tFileInputXML_5 = xTmp4_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj4_tFileInputXML_5 = xpaths_tFileInputXML_5.get(4).evaluate(temp_tFileInputXML_5);
     if(obj4_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5014,9 +5208,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.title = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp5_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:edition/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp5_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj5_tFileInputXML_5 = xTmp5_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj5_tFileInputXML_5 = xpaths_tFileInputXML_5.get(5).evaluate(temp_tFileInputXML_5);
     if(obj5_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5041,9 +5233,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.edition = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp6_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:abstract/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp6_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj6_tFileInputXML_5 = xTmp6_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj6_tFileInputXML_5 = xpaths_tFileInputXML_5.get(6).evaluate(temp_tFileInputXML_5);
     if(obj6_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5068,9 +5258,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.abstracts = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp7_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:role/gmd:CI_RoleCode[@codeListValue=\"custodian\"]/../../gmd:organisationName/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp7_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj7_tFileInputXML_5 = xTmp7_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj7_tFileInputXML_5 = xpaths_tFileInputXML_5.get(7).evaluate(temp_tFileInputXML_5);
     if(obj7_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5095,9 +5283,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.custodian = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp8_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:graphicOverview/gmd:MD_BrowseGraphic/gmd:fileName/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp8_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj8_tFileInputXML_5 = xTmp8_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj8_tFileInputXML_5 = xpaths_tFileInputXML_5.get(8).evaluate(temp_tFileInputXML_5);
     if(obj8_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5122,9 +5308,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.browseGraphic = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp9_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:type/gmd:MD_KeywordTypeCode[@codeListValue='place']/../../gmd:keyword/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp9_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj9_tFileInputXML_5 = xTmp9_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj9_tFileInputXML_5 = xpaths_tFileInputXML_5.get(9).evaluate(temp_tFileInputXML_5);
     if(obj9_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5149,9 +5333,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.places = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp10_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:westBoundLongitude/gco:Decimal","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp10_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj10_tFileInputXML_5 = xTmp10_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj10_tFileInputXML_5 = xpaths_tFileInputXML_5.get(10).evaluate(temp_tFileInputXML_5);
     if(obj10_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5174,9 +5356,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 										}else{
 		row2.wlon = ParserUtils.parseTo_Float(str_tFileInputXML_5);
 	}
-	org.dom4j.XPath xTmp11_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:eastBoundLongitude/gco:Decimal","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp11_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj11_tFileInputXML_5 = xTmp11_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj11_tFileInputXML_5 = xpaths_tFileInputXML_5.get(11).evaluate(temp_tFileInputXML_5);
     if(obj11_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5199,9 +5379,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 										}else{
 		row2.elon = ParserUtils.parseTo_Float(str_tFileInputXML_5);
 	}
-	org.dom4j.XPath xTmp12_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:southBoundLatitude/gco:Decimal","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp12_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj12_tFileInputXML_5 = xTmp12_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj12_tFileInputXML_5 = xpaths_tFileInputXML_5.get(12).evaluate(temp_tFileInputXML_5);
     if(obj12_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5224,9 +5402,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 										}else{
 		row2.slat = ParserUtils.parseTo_Float(str_tFileInputXML_5);
 	}
-	org.dom4j.XPath xTmp13_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:northBoundLatitude/gco:Decimal","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp13_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj13_tFileInputXML_5 = xTmp13_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj13_tFileInputXML_5 = xpaths_tFileInputXML_5.get(13).evaluate(temp_tFileInputXML_5);
     if(obj13_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5249,9 +5425,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 										}else{
 		row2.nlat = ParserUtils.parseTo_Float(str_tFileInputXML_5);
 	}
-	org.dom4j.XPath xTmp14_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialRepresentationType/gmd:MD_SpatialRepresentationTypeCode/@codeListValue","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp14_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj14_tFileInputXML_5 = xTmp14_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj14_tFileInputXML_5 = xpaths_tFileInputXML_5.get(14).evaluate(temp_tFileInputXML_5);
     if(obj14_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5276,9 +5450,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.stype = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp15_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution/gmd:MD_Resolution/gmd:equivalentScale/gmd:MD_RepresentativeFraction/gmd:denominator/gco:Integer","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp15_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj15_tFileInputXML_5 = xTmp15_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj15_tFileInputXML_5 = xpaths_tFileInputXML_5.get(15).evaluate(temp_tFileInputXML_5);
     if(obj15_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5303,9 +5475,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.scaleres = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp16_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution[1]/gmd:MD_Resolution/gmd:distance/gco:Distance","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp16_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj16_tFileInputXML_5 = xTmp16_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj16_tFileInputXML_5 = xpaths_tFileInputXML_5.get(16).evaluate(temp_tFileInputXML_5);
     if(obj16_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5330,9 +5500,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.scaleres2 = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp17_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution[1]/gmd:MD_Resolution/gmd:distance/gco:Distance/@uom","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp17_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj17_tFileInputXML_5 = xTmp17_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj17_tFileInputXML_5 = xpaths_tFileInputXML_5.get(17).evaluate(temp_tFileInputXML_5);
     if(obj17_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5357,9 +5525,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.scaleres3 = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp18_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod/gml:beginPosition","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp18_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj18_tFileInputXML_5 = xTmp18_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj18_tFileInputXML_5 = xpaths_tFileInputXML_5.get(18).evaluate(temp_tFileInputXML_5);
     if(obj18_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5384,9 +5550,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.tbegin = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp19_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod/gml:begin/gml:TimeInstant/gml:timePosition","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp19_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj19_tFileInputXML_5 = xTmp19_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj19_tFileInputXML_5 = xpaths_tFileInputXML_5.get(19).evaluate(temp_tFileInputXML_5);
     if(obj19_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5411,9 +5575,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.tbegin2 = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp20_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod/gml:endPosition","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp20_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj20_tFileInputXML_5 = xTmp20_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj20_tFileInputXML_5 = xpaths_tFileInputXML_5.get(20).evaluate(temp_tFileInputXML_5);
     if(obj20_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5438,9 +5600,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.tend = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp21_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod/gml:end/gml:TimeInstant/gml:timePosition","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp21_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj21_tFileInputXML_5 = xTmp21_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj21_tFileInputXML_5 = xpaths_tFileInputXML_5.get(21).evaluate(temp_tFileInputXML_5);
     if(obj21_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5465,9 +5625,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.tend2 = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp22_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:statement/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp22_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj22_tFileInputXML_5 = xTmp22_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj22_tFileInputXML_5 = xpaths_tFileInputXML_5.get(22).evaluate(temp_tFileInputXML_5);
     if(obj22_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5492,9 +5650,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.lineage = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp23_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:source/@uuidref","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp23_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj23_tFileInputXML_5 = xTmp23_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj23_tFileInputXML_5 = xpaths_tFileInputXML_5.get(23).evaluate(temp_tFileInputXML_5);
     if(obj23_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5519,9 +5675,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.data_src = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp24_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:dateType/gmd:CI_DateTypeCode/@codeListValue","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp24_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj24_tFileInputXML_5 = xTmp24_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj24_tFileInputXML_5 = xpaths_tFileInputXML_5.get(24).evaluate(temp_tFileInputXML_5);
     if(obj24_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5546,9 +5700,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 									}else{
 		row2.publication = str_tFileInputXML_5;
 	}
-	org.dom4j.XPath xTmp25_tFileInputXML_5 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_5.addDefaultNSPrefix("gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol[gco:CharacterString=\"WWW:LINK-1.0-http--link\"]/../gmd:linkage/gmd:URL","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata"));
-	xTmp25_tFileInputXML_5.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_5);
-    Object obj25_tFileInputXML_5 = xTmp25_tFileInputXML_5.evaluate(temp_tFileInputXML_5);
+    Object obj25_tFileInputXML_5 = xpaths_tFileInputXML_5.get(25).evaluate(temp_tFileInputXML_5);
     if(obj25_tFileInputXML_5 == null) {
     	node_tFileInputXML_5 = null;
     	str_tFileInputXML_5 = "";
@@ -5609,6 +5761,26 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_5: nodeList_tFileInputXML_5)
 
 /**
  * [tFileInputXML_5 main ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_5 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_5";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_5 process_data_begin ] stop
  */
 // Start of branch "row2"
 if(row2 != null) { 
@@ -6954,6 +7126,26 @@ rejectedInnerJoin_tMap_2 = false;
 /**
  * [tMap_2 main ] stop
  */
+	
+	/**
+	 * [tMap_2 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tMap_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tMap_2 process_data_begin ] stop
+ */
 // Start of branch "map"
 if(map != null) { 
 
@@ -7066,6 +7258,26 @@ if(map != null) {
 /**
  * [tReplace_1 main ] stop
  */
+	
+	/**
+	 * [tReplace_1 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tReplace_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tReplace_1 process_data_begin ] stop
+ */
 
 	
 	/**
@@ -7143,21 +7355,121 @@ if(map != null) {
 /**
  * [tFileOutputDelimited_1 main ] stop
  */
+	
+	/**
+	 * [tFileOutputDelimited_1 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileOutputDelimited_1";
+
+	
+
+ 
 
 
 
+/**
+ * [tFileOutputDelimited_1 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tFileOutputDelimited_1 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileOutputDelimited_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileOutputDelimited_1 process_data_end ] stop
+ */
+
+
+
+	
+	/**
+	 * [tReplace_1 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tReplace_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tReplace_1 process_data_end ] stop
+ */
 
 } // End of branch "map"
 
 
 
 
+	
+	/**
+	 * [tMap_2 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tMap_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tMap_2 process_data_end ] stop
+ */
 
 } // End of branch "row2"
 
 
 
 
+	
+	/**
+	 * [tFileInputXML_5 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_5";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_5 process_data_end ] stop
+ */
 	
 	/**
 	 * [tFileInputXML_5 end ] start
@@ -7463,9 +7775,6 @@ end_Hash.put("tFileOutputDelimited_1", System.currentTimeMillis());
 					     			globalMap.remove("tHash_Lookup_row34"); 
 				     			
 					     			//free memory for "tMap_2"
-					     			globalMap.remove("tHash_Lookup_row44"); 
-				     			
-					     			//free memory for "tMap_2"
 					     			globalMap.remove("tHash_Lookup_status"); 
 				     			
 					     			//free memory for "tMap_2"
@@ -7479,6 +7788,9 @@ end_Hash.put("tFileOutputDelimited_1", System.currentTimeMillis());
 				     			
 					     			//free memory for "tMap_2"
 					     			globalMap.remove("tHash_Lookup_row15"); 
+				     			
+					     			//free memory for "tMap_2"
+					     			globalMap.remove("tHash_Lookup_row44"); 
 				     			
 				try{
 					
@@ -7831,10 +8143,13 @@ public void tLoop_1Process(final java.util.Map<String, Object> globalMap) throws
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -7864,13 +8179,6 @@ mappedStruct mapped = new mappedStruct();
 	
 		int tos_count_tLoop_1 = 0;
 		
-    	class BytesLimit65535_tLoop_1{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tLoop_1().limitLog4jByte();
 
 int current_iteration_tLoop_1 = 0;
 
@@ -7909,271 +8217,39 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 /**
  * [tLoop_1 main ] stop
  */
+	
+	/**
+	 * [tLoop_1 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tLoop_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tLoop_1 process_data_begin ] stop
+ */
 	NB_ITERATE_tJavaFlex_1++;
 	
 	
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row39", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("mapp", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("map1", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row7", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("mapped", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row6", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row15", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row21", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row13", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row34", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfcopyOfcopyOfmapped3_0", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row27", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row44", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row23", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfcopyOfmapped3_0", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row35", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row8", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row6", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row9", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("status", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row44", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row20", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfcopyOfmap", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row45", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("denominator", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row30", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row22", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row18", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row32", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row34", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("map", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row15", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("mapped3", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfmapped3_0", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row31", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row22", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row2", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row25", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row24", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row46", 3, 0);
-					}           			
-				
 					if(execStat){				
 	       				runStat.updateStatOnConnection("row26", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfmapped3_1", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row17", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row8", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row27", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+	       				runStat.updateStatOnConnection("OnComponentOk1", 3, 0);
 					}           			
 				
 					if(execStat){				
 	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row19", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnComponentOk2", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -8181,18 +8257,6 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row33", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row19", 3, 0);
-					}           			
-				
-					if(execStat){				
 	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
 					}           			
 				
@@ -8201,7 +8265,19 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row28", 3, 0);
+	       				runStat.updateStatOnConnection("copyOfmapped3_1", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("copyOfcopyOfcopyOfmap", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row46", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row20", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -8209,7 +8285,7 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfcopyOfmapped2", 3, 0);
+	       				runStat.updateStatOnConnection("row29", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -8217,7 +8293,35 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row14", 3, 0);
+	       				runStat.updateStatOnConnection("row6", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row45", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row25", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row28", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row42", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -8229,11 +8333,7 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row41", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row12", 3, 0);
+	       				runStat.updateStatOnConnection("denominator", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -8241,7 +8341,51 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+	       				runStat.updateStatOnConnection("row2", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row21", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row33", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row45", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("mapped3", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row24", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("copyOfmapped3_0", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row35", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row32", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row27", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row14", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -8249,47 +8393,7 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("copyOfmap", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row13", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row43", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row23", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row40", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("status", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("row36", 3, 0);
-					}           			
-				
-					if(execStat){				
-	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+	       				runStat.updateStatOnConnection("mapped", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -8297,7 +8401,95 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row29", 3, 0);
+	       				runStat.updateStatOnConnection("row11", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row8", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("copyOfcopyOfcopyOfmapped3_0", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("copyOfcopyOfmapped2", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row23", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row44", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row44", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row27", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row9", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row17", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row13", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row7", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("map", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row8", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row18", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row23", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row22", 3, 0);
 					}           			
 				
 					if(execStat){				
@@ -8309,15 +8501,151 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("OnComponentOk1", 3, 0);
+	       				runStat.updateStatOnConnection("row22", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row42", 3, 0);
+	       				runStat.updateStatOnConnection("status", 3, 0);
 					}           			
 				
 					if(execStat){				
-	       				runStat.updateStatOnConnection("row45", 3, 0);
+	       				runStat.updateStatOnConnection("row19", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row6", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row19", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row15", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("copyOfmap", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row40", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row43", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row30", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row13", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnComponentOk2", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row39", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("status", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row31", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("mapp", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row36", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row34", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row15", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("after_tFileInputXML_5", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row12", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("copyOfcopyOfmapped3_0", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("row34", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("map1", 3, 0);
+					}           			
+				
+					if(execStat){				
+	       				runStat.updateStatOnConnection("OnRowsEnd", 3, 0);
 					}           			
 				
 				if(execStat){
@@ -8355,13 +8683,6 @@ globalMap.put("tLoop_1_CURRENT_ITERATION",current_iteration_tLoop_1);
 		
 		int tos_count_tFileOutputDelimited_2 = 0;
 		
-    	class BytesLimit65535_tFileOutputDelimited_2{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileOutputDelimited_2().limitLog4jByte();
 
 String fileName_tFileOutputDelimited_2 = "";
     fileName_tFileOutputDelimited_2 = (new java.io.File(System.getProperty("java.io.tmpdir") + "/sdiDump/tmp/request.txt")).getAbsolutePath().replace("\\","/");
@@ -8391,7 +8712,6 @@ String fileName_tFileOutputDelimited_2 = "";
     java.io.File filetFileOutputDelimited_2 = new java.io.File(fileName_tFileOutputDelimited_2);
     globalMap.put("tFileOutputDelimited_2_FILE_NAME",fileName_tFileOutputDelimited_2);
             int nb_line_tFileOutputDelimited_2 = 0;
-            int splitEvery_tFileOutputDelimited_2 = 1000;
             int splitedFileNo_tFileOutputDelimited_2 = 0;
             int currentRow_tFileOutputDelimited_2 = 0;
 
@@ -8458,13 +8778,6 @@ resourceMap.put("nb_line_tFileOutputDelimited_2", nb_line_tFileOutputDelimited_2
 		
 		int tos_count_tMap_1 = 0;
 		
-    	class BytesLimit65535_tMap_1{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tMap_1().limitLog4jByte();
 
 
 
@@ -8528,13 +8841,6 @@ mappedStruct mapped_tmp = new mappedStruct();
 	
 		int tos_count_tJavaFlex_1 = 0;
 		
-    	class BytesLimit65535_tJavaFlex_1{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tJavaFlex_1().limitLog4jByte();
 
 
 // start part of your Java code
@@ -8575,6 +8881,26 @@ System.out.println("Fetching: " + ((Integer)globalMap.get("tLoop_1_CURRENT_VALUE
 
 /**
  * [tJavaFlex_1 main ] stop
+ */
+	
+	/**
+	 * [tJavaFlex_1 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tJavaFlex_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tJavaFlex_1 process_data_begin ] stop
  */
 
 	
@@ -8650,6 +8976,26 @@ rejectedInnerJoin_tMap_1 = false;
 /**
  * [tMap_1 main ] stop
  */
+	
+	/**
+	 * [tMap_1 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tMap_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tMap_1 process_data_begin ] stop
+ */
 // Start of branch "mapped"
 if(mapped != null) { 
 
@@ -8706,15 +9052,95 @@ if(mapped != null) {
 /**
  * [tFileOutputDelimited_2 main ] stop
  */
+	
+	/**
+	 * [tFileOutputDelimited_2 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileOutputDelimited_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileOutputDelimited_2 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tFileOutputDelimited_2 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileOutputDelimited_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileOutputDelimited_2 process_data_end ] stop
+ */
 
 } // End of branch "mapped"
 
 
 
 
+	
+	/**
+	 * [tMap_1 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tMap_1";
+
+	
+
+ 
 
 
 
+/**
+ * [tMap_1 process_data_end ] stop
+ */
+
+
+
+	
+	/**
+	 * [tJavaFlex_1 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tJavaFlex_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tJavaFlex_1 process_data_end ] stop
+ */
 	
 	/**
 	 * [tJavaFlex_1 end ] start
@@ -8849,6 +9275,26 @@ end_Hash.put("tFileOutputDelimited_2", System.currentTimeMillis());
 
 
 
+	
+	/**
+	 * [tLoop_1 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tLoop_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tLoop_1 process_data_end ] stop
+ */
 	
 	/**
 	 * [tLoop_1 end ] start
@@ -9578,10 +10024,13 @@ public void tFileInputXML_3Process(final java.util.Map<String, Object> globalMap
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -9621,13 +10070,6 @@ row8Struct row8 = new row8Struct();
 		
 		int tos_count_tAggregateRow_3_AGGOUT = 0;
 		
-    	class BytesLimit65535_tAggregateRow_3_AGGOUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_3_AGGOUT().limitLog4jByte();
 
 // ------------ Seems it is not used
 
@@ -9840,13 +10282,6 @@ java.util.Map hashAggreg_tAggregateRow_3 = new java.util.HashMap();
 	
 		int tos_count_tFileInputXML_3 = 0;
 		
-    	class BytesLimit65535_tFileInputXML_3{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileInputXML_3().limitLog4jByte();
 
 	
 
@@ -9981,15 +10416,41 @@ String str_tFileInputXML_3 = "";
 org.dom4j.Node node_tFileInputXML_3 = null;
 
 //init all mapping xpaths
+java.util.Map<Integer,org.dom4j.XPath> xpaths_tFileInputXML_3=new java.util.HashMap<Integer,org.dom4j.XPath>();
+	class XPathUtil_tFileInputXML_3{
+	
+			   public void initXPaths_0(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_3 nsTool,
+			       java.util.HashMap<String,String> xmlNameSpaceMap){
+			
+	org.dom4j.XPath xpath_0 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("../../../../../../gmd:fileIdentifier/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat/gmd:MD_Format/gmd:name/gco:CharacterString"));
+	xpath_0.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(0,xpath_0);
+			
+	org.dom4j.XPath xpath_1 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix(".","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat/gmd:MD_Format/gmd:name/gco:CharacterString"));
+	xpath_1.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(1,xpath_1);
+			
+	     }
+	   
+	      public void initXPaths(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_3 nsTool,
+			    java.util.HashMap<String,String> xmlNameSpaceMap){
+			    
+			        initXPaths_0(xpaths,nsTool, xmlNameSpaceMap);
+			    
+		   }
+	}
+	XPathUtil_tFileInputXML_3 xPathUtil_tFileInputXML_3 = new XPathUtil_tFileInputXML_3();
+	xPathUtil_tFileInputXML_3.initXPaths(xpaths_tFileInputXML_3, nsTool_tFileInputXML_3, xmlNameSpaceMap_tFileInputXML_3);
 for (org.dom4j.tree.AbstractNode temp_tFileInputXML_3: nodeList_tFileInputXML_3) {
-	nb_line_tFileInputXML_3++;
+		nb_line_tFileInputXML_3++;
+		
 	row7 = null;			
 	boolean whetherReject_tFileInputXML_3 = false;
 	row7 = new row7Struct();
 	try{
-	org.dom4j.XPath xTmp0_tFileInputXML_3 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_3.addDefaultNSPrefix("../../../../../../gmd:fileIdentifier/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat/gmd:MD_Format/gmd:name/gco:CharacterString"));
-	xTmp0_tFileInputXML_3.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_3);
-    Object obj0_tFileInputXML_3 = xTmp0_tFileInputXML_3.evaluate(temp_tFileInputXML_3);
+    Object obj0_tFileInputXML_3 = xpaths_tFileInputXML_3.get(0).evaluate(temp_tFileInputXML_3);
     if(obj0_tFileInputXML_3 == null) {
     	node_tFileInputXML_3 = null;
     	str_tFileInputXML_3 = "";
@@ -10014,9 +10475,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_3: nodeList_tFileInputXML_3)
 									}else{
 		row7.uuid = str_tFileInputXML_3;
 	}
-	org.dom4j.XPath xTmp1_tFileInputXML_3 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_3.addDefaultNSPrefix(".","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat/gmd:MD_Format/gmd:name/gco:CharacterString"));
-	xTmp1_tFileInputXML_3.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_3);
-    Object obj1_tFileInputXML_3 = xTmp1_tFileInputXML_3.evaluate(temp_tFileInputXML_3);
+    Object obj1_tFileInputXML_3 = xpaths_tFileInputXML_3.get(1).evaluate(temp_tFileInputXML_3);
     if(obj1_tFileInputXML_3 == null) {
     	node_tFileInputXML_3 = null;
     	str_tFileInputXML_3 = "";
@@ -10077,6 +10536,26 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_3: nodeList_tFileInputXML_3)
 
 /**
  * [tFileInputXML_3 main ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_3 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_3";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_3 process_data_begin ] stop
  */
 // Start of branch "row7"
 if(row7 != null) { 
@@ -10157,12 +10636,76 @@ operation_finder_tAggregateRow_3.uuid = row7.uuid;
 /**
  * [tAggregateRow_3_AGGOUT main ] stop
  */
+	
+	/**
+	 * [tAggregateRow_3_AGGOUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_3";
+	
+	currentComponent="tAggregateRow_3_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_3_AGGOUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_3_AGGOUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_3";
+	
+	currentComponent="tAggregateRow_3_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_3_AGGOUT process_data_end ] stop
+ */
 
 } // End of branch "row7"
 
 
 
 
+	
+	/**
+	 * [tFileInputXML_3 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_3";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_3 process_data_end ] stop
+ */
 	
 	/**
 	 * [tFileInputXML_3 end ] start
@@ -10255,17 +10798,10 @@ end_Hash.put("tAggregateRow_3_AGGOUT", System.currentTimeMillis());
 		
 		int tos_count_tAdvancedHash_row8 = 0;
 		
-    	class BytesLimit65535_tAdvancedHash_row8{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAdvancedHash_row8().limitLog4jByte();
 
 			   		// connection name:row8
 			   		// source node:tAggregateRow_3_AGGIN - inputs:(OnRowsEnd) outputs:(row8,row8) | target node:tAdvancedHash_row8 - inputs:(row8) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,row44,status,row45,row40,row27,row15) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,status,row45,row40,row27,row15,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row8 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -10309,13 +10845,6 @@ end_Hash.put("tAggregateRow_3_AGGOUT", System.currentTimeMillis());
 	
 		int tos_count_tAggregateRow_3_AGGIN = 0;
 		
-    	class BytesLimit65535_tAggregateRow_3_AGGIN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_3_AGGIN().limitLog4jByte();
 
 java.util.Collection<AggOperationStruct_tAggregateRow_3> values_tAggregateRow_3 = hash_tAggregateRow_3.values();
 
@@ -10359,6 +10888,28 @@ for(AggOperationStruct_tAggregateRow_3 aggregated_row_tAggregateRow_3 : values_t
 
 /**
  * [tAggregateRow_3_AGGIN main ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_3_AGGIN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_3";
+	
+	currentComponent="tAggregateRow_3_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_3_AGGIN process_data_begin ] stop
  */
 
 	
@@ -10412,9 +10963,71 @@ for(AggOperationStruct_tAggregateRow_3 aggregated_row_tAggregateRow_3 : values_t
 /**
  * [tAdvancedHash_row8 main ] stop
  */
+	
+	/**
+	 * [tAdvancedHash_row8 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row8";
+
+	
+
+ 
 
 
 
+/**
+ * [tAdvancedHash_row8 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAdvancedHash_row8 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row8";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row8 process_data_end ] stop
+ */
+
+
+
+	
+	/**
+	 * [tAggregateRow_3_AGGIN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_3";
+	
+	currentComponent="tAggregateRow_3_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_3_AGGIN process_data_end ] stop
+ */
 	
 	/**
 	 * [tAggregateRow_3_AGGIN end ] start
@@ -11323,10 +11936,13 @@ public void tFileInputXML_2Process(final java.util.Map<String, Object> globalMap
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -11368,13 +11984,6 @@ row6Struct row6 = new row6Struct();
 		
 		int tos_count_tAggregateRow_2_AGGOUT = 0;
 		
-    	class BytesLimit65535_tAggregateRow_2_AGGOUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_2_AGGOUT().limitLog4jByte();
 
 // ------------ Seems it is not used
 
@@ -11596,13 +12205,6 @@ java.util.Map hashAggreg_tAggregateRow_2 = new java.util.HashMap();
 		
 		int tos_count_tMap_3 = 0;
 		
-    	class BytesLimit65535_tMap_3{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tMap_3().limitLog4jByte();
 
 
 
@@ -11666,13 +12268,6 @@ denominatorStruct denominator_tmp = new denominatorStruct();
 	
 		int tos_count_tFileInputXML_2 = 0;
 		
-    	class BytesLimit65535_tFileInputXML_2{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileInputXML_2().limitLog4jByte();
 
 	
 
@@ -11807,15 +12402,41 @@ String str_tFileInputXML_2 = "";
 org.dom4j.Node node_tFileInputXML_2 = null;
 
 //init all mapping xpaths
+java.util.Map<Integer,org.dom4j.XPath> xpaths_tFileInputXML_2=new java.util.HashMap<Integer,org.dom4j.XPath>();
+	class XPathUtil_tFileInputXML_2{
+	
+			   public void initXPaths_0(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_2 nsTool,
+			       java.util.HashMap<String,String> xmlNameSpaceMap){
+			
+	org.dom4j.XPath xpath_0 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("../../../../../../../../gmd:fileIdentifier/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution/gmd:MD_Resolution/gmd:equivalentScale/gmd:MD_RepresentativeFraction/gmd:denominator/gco:Integer"));
+	xpath_0.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(0,xpath_0);
+			
+	org.dom4j.XPath xpath_1 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix(".","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution/gmd:MD_Resolution/gmd:equivalentScale/gmd:MD_RepresentativeFraction/gmd:denominator/gco:Integer"));
+	xpath_1.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(1,xpath_1);
+			
+	     }
+	   
+	      public void initXPaths(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_2 nsTool,
+			    java.util.HashMap<String,String> xmlNameSpaceMap){
+			    
+			        initXPaths_0(xpaths,nsTool, xmlNameSpaceMap);
+			    
+		   }
+	}
+	XPathUtil_tFileInputXML_2 xPathUtil_tFileInputXML_2 = new XPathUtil_tFileInputXML_2();
+	xPathUtil_tFileInputXML_2.initXPaths(xpaths_tFileInputXML_2, nsTool_tFileInputXML_2, xmlNameSpaceMap_tFileInputXML_2);
 for (org.dom4j.tree.AbstractNode temp_tFileInputXML_2: nodeList_tFileInputXML_2) {
-	nb_line_tFileInputXML_2++;
+		nb_line_tFileInputXML_2++;
+		
 	row5 = null;			
 	boolean whetherReject_tFileInputXML_2 = false;
 	row5 = new row5Struct();
 	try{
-	org.dom4j.XPath xTmp0_tFileInputXML_2 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_2.addDefaultNSPrefix("../../../../../../../../gmd:fileIdentifier/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution/gmd:MD_Resolution/gmd:equivalentScale/gmd:MD_RepresentativeFraction/gmd:denominator/gco:Integer"));
-	xTmp0_tFileInputXML_2.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_2);
-    Object obj0_tFileInputXML_2 = xTmp0_tFileInputXML_2.evaluate(temp_tFileInputXML_2);
+    Object obj0_tFileInputXML_2 = xpaths_tFileInputXML_2.get(0).evaluate(temp_tFileInputXML_2);
     if(obj0_tFileInputXML_2 == null) {
     	node_tFileInputXML_2 = null;
     	str_tFileInputXML_2 = "";
@@ -11840,9 +12461,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_2: nodeList_tFileInputXML_2)
 									}else{
 		row5.uuid = str_tFileInputXML_2;
 	}
-	org.dom4j.XPath xTmp1_tFileInputXML_2 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_2.addDefaultNSPrefix(".","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:spatialResolution/gmd:MD_Resolution/gmd:equivalentScale/gmd:MD_RepresentativeFraction/gmd:denominator/gco:Integer"));
-	xTmp1_tFileInputXML_2.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_2);
-    Object obj1_tFileInputXML_2 = xTmp1_tFileInputXML_2.evaluate(temp_tFileInputXML_2);
+    Object obj1_tFileInputXML_2 = xpaths_tFileInputXML_2.get(1).evaluate(temp_tFileInputXML_2);
     if(obj1_tFileInputXML_2 == null) {
     	node_tFileInputXML_2 = null;
     	str_tFileInputXML_2 = "";
@@ -11903,6 +12522,26 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_2: nodeList_tFileInputXML_2)
 
 /**
  * [tFileInputXML_2 main ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_2 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_2 process_data_begin ] stop
  */
 // Start of branch "row5"
 if(row5 != null) { 
@@ -11983,6 +12622,26 @@ rejectedInnerJoin_tMap_3 = false;
 /**
  * [tMap_3 main ] stop
  */
+	
+	/**
+	 * [tMap_3 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tMap_3";
+
+	
+
+ 
+
+
+
+/**
+ * [tMap_3 process_data_begin ] stop
+ */
 // Start of branch "denominator"
 if(denominator != null) { 
 
@@ -12062,18 +12721,102 @@ operation_finder_tAggregateRow_2.uuid = denominator.uuid;
 /**
  * [tAggregateRow_2_AGGOUT main ] stop
  */
+	
+	/**
+	 * [tAggregateRow_2_AGGOUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_2";
+	
+	currentComponent="tAggregateRow_2_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_2_AGGOUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_2_AGGOUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_2";
+	
+	currentComponent="tAggregateRow_2_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_2_AGGOUT process_data_end ] stop
+ */
 
 } // End of branch "denominator"
 
 
 
 
+	
+	/**
+	 * [tMap_3 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tMap_3";
+
+	
+
+ 
+
+
+
+/**
+ * [tMap_3 process_data_end ] stop
+ */
 
 } // End of branch "row5"
 
 
 
 
+	
+	/**
+	 * [tFileInputXML_2 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_2 process_data_end ] stop
+ */
 	
 	/**
 	 * [tFileInputXML_2 end ] start
@@ -12206,17 +12949,10 @@ end_Hash.put("tAggregateRow_2_AGGOUT", System.currentTimeMillis());
 		
 		int tos_count_tAdvancedHash_row6 = 0;
 		
-    	class BytesLimit65535_tAdvancedHash_row6{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAdvancedHash_row6().limitLog4jByte();
 
 			   		// connection name:row6
 			   		// source node:tAggregateRow_2_AGGIN - inputs:(OnRowsEnd) outputs:(row6,row6) | target node:tAdvancedHash_row6 - inputs:(row6) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,row44,status,row45,row40,row27,row15) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,status,row45,row40,row27,row15,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row6 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -12260,13 +12996,6 @@ end_Hash.put("tAggregateRow_2_AGGOUT", System.currentTimeMillis());
 	
 		int tos_count_tAggregateRow_2_AGGIN = 0;
 		
-    	class BytesLimit65535_tAggregateRow_2_AGGIN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_2_AGGIN().limitLog4jByte();
 
 java.util.Collection<AggOperationStruct_tAggregateRow_2> values_tAggregateRow_2 = hash_tAggregateRow_2.values();
 
@@ -12310,6 +13039,28 @@ for(AggOperationStruct_tAggregateRow_2 aggregated_row_tAggregateRow_2 : values_t
 
 /**
  * [tAggregateRow_2_AGGIN main ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_2_AGGIN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_2";
+	
+	currentComponent="tAggregateRow_2_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_2_AGGIN process_data_begin ] stop
  */
 
 	
@@ -12363,9 +13114,71 @@ for(AggOperationStruct_tAggregateRow_2 aggregated_row_tAggregateRow_2 : values_t
 /**
  * [tAdvancedHash_row6 main ] stop
  */
+	
+	/**
+	 * [tAdvancedHash_row6 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row6";
+
+	
+
+ 
 
 
 
+/**
+ * [tAdvancedHash_row6 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAdvancedHash_row6 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row6";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row6 process_data_end ] stop
+ */
+
+
+
+	
+	/**
+	 * [tAggregateRow_2_AGGIN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_2";
+	
+	currentComponent="tAggregateRow_2_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_2_AGGIN process_data_end ] stop
+ */
 	
 	/**
 	 * [tAggregateRow_2_AGGIN end ] start
@@ -13352,10 +14165,13 @@ public void tFileInputXML_4Process(final java.util.Map<String, Object> globalMap
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -13397,13 +14213,6 @@ row13Struct row13 = new row13Struct();
 		
 		int tos_count_tAggregateRow_5_AGGOUT = 0;
 		
-    	class BytesLimit65535_tAggregateRow_5_AGGOUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_5_AGGOUT().limitLog4jByte();
 
 // ------------ Seems it is not used
 
@@ -13627,13 +14436,6 @@ java.util.Map hashAggreg_tAggregateRow_5 = new java.util.HashMap();
 		
 		int tos_count_tFilterRow_1 = 0;
 		
-    	class BytesLimit65535_tFilterRow_1{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFilterRow_1().limitLog4jByte();
     int nb_line_tFilterRow_1 = 0;
     int nb_line_ok_tFilterRow_1 = 0;
     int nb_line_reject_tFilterRow_1 = 0;
@@ -13704,13 +14506,6 @@ java.util.Map hashAggreg_tAggregateRow_5 = new java.util.HashMap();
 	
 		int tos_count_tFileInputXML_4 = 0;
 		
-    	class BytesLimit65535_tFileInputXML_4{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileInputXML_4().limitLog4jByte();
 
 	
 
@@ -13845,15 +14640,46 @@ String str_tFileInputXML_4 = "";
 org.dom4j.Node node_tFileInputXML_4 = null;
 
 //init all mapping xpaths
+java.util.Map<Integer,org.dom4j.XPath> xpaths_tFileInputXML_4=new java.util.HashMap<Integer,org.dom4j.XPath>();
+	class XPathUtil_tFileInputXML_4{
+	
+			   public void initXPaths_0(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_4 nsTool,
+			       java.util.HashMap<String,String> xmlNameSpaceMap){
+			
+	org.dom4j.XPath xpath_0 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("../../../../../../../../gmd:fileIdentifier/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL"));
+	xpath_0.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(0,xpath_0);
+			
+	org.dom4j.XPath xpath_1 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix(".","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL"));
+	xpath_1.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(1,xpath_1);
+			
+	org.dom4j.XPath xpath_2 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix("../../gmd:protocol/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL"));
+	xpath_2.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(2,xpath_2);
+			
+	     }
+	   
+	      public void initXPaths(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_4 nsTool,
+			    java.util.HashMap<String,String> xmlNameSpaceMap){
+			    
+			        initXPaths_0(xpaths,nsTool, xmlNameSpaceMap);
+			    
+		   }
+	}
+	XPathUtil_tFileInputXML_4 xPathUtil_tFileInputXML_4 = new XPathUtil_tFileInputXML_4();
+	xPathUtil_tFileInputXML_4.initXPaths(xpaths_tFileInputXML_4, nsTool_tFileInputXML_4, xmlNameSpaceMap_tFileInputXML_4);
 for (org.dom4j.tree.AbstractNode temp_tFileInputXML_4: nodeList_tFileInputXML_4) {
-	nb_line_tFileInputXML_4++;
+		nb_line_tFileInputXML_4++;
+		
 	row9 = null;			
 	boolean whetherReject_tFileInputXML_4 = false;
 	row9 = new row9Struct();
 	try{
-	org.dom4j.XPath xTmp0_tFileInputXML_4 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_4.addDefaultNSPrefix("../../../../../../../../gmd:fileIdentifier/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL"));
-	xTmp0_tFileInputXML_4.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_4);
-    Object obj0_tFileInputXML_4 = xTmp0_tFileInputXML_4.evaluate(temp_tFileInputXML_4);
+    Object obj0_tFileInputXML_4 = xpaths_tFileInputXML_4.get(0).evaluate(temp_tFileInputXML_4);
     if(obj0_tFileInputXML_4 == null) {
     	node_tFileInputXML_4 = null;
     	str_tFileInputXML_4 = "";
@@ -13878,9 +14704,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_4: nodeList_tFileInputXML_4)
 									}else{
 		row9.uuid = str_tFileInputXML_4;
 	}
-	org.dom4j.XPath xTmp1_tFileInputXML_4 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_4.addDefaultNSPrefix(".","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL"));
-	xTmp1_tFileInputXML_4.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_4);
-    Object obj1_tFileInputXML_4 = xTmp1_tFileInputXML_4.evaluate(temp_tFileInputXML_4);
+    Object obj1_tFileInputXML_4 = xpaths_tFileInputXML_4.get(1).evaluate(temp_tFileInputXML_4);
     if(obj1_tFileInputXML_4 == null) {
     	node_tFileInputXML_4 = null;
     	str_tFileInputXML_4 = "";
@@ -13905,9 +14729,7 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_4: nodeList_tFileInputXML_4)
 									}else{
 		row9.links = str_tFileInputXML_4;
 	}
-	org.dom4j.XPath xTmp2_tFileInputXML_4 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_4.addDefaultNSPrefix("../../gmd:protocol/gco:CharacterString","/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL"));
-	xTmp2_tFileInputXML_4.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_4);
-    Object obj2_tFileInputXML_4 = xTmp2_tFileInputXML_4.evaluate(temp_tFileInputXML_4);
+    Object obj2_tFileInputXML_4 = xpaths_tFileInputXML_4.get(2).evaluate(temp_tFileInputXML_4);
     if(obj2_tFileInputXML_4 == null) {
     	node_tFileInputXML_4 = null;
     	str_tFileInputXML_4 = "";
@@ -13969,6 +14791,26 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_4: nodeList_tFileInputXML_4)
 /**
  * [tFileInputXML_4 main ] stop
  */
+	
+	/**
+	 * [tFileInputXML_4 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_4";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_4 process_data_begin ] stop
+ */
 // Start of branch "row9"
 if(row9 != null) { 
 
@@ -14029,6 +14871,26 @@ nb_line_tFilterRow_1++;
 
 /**
  * [tFilterRow_1 main ] stop
+ */
+	
+	/**
+	 * [tFilterRow_1 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_1 process_data_begin ] stop
  */
 // Start of branch "row10"
 if(row10 != null) { 
@@ -14130,18 +14992,102 @@ operation_finder_tAggregateRow_5.uuid = row10.uuid;
 /**
  * [tAggregateRow_5_AGGOUT main ] stop
  */
+	
+	/**
+	 * [tAggregateRow_5_AGGOUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_5";
+	
+	currentComponent="tAggregateRow_5_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_5_AGGOUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_5_AGGOUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_5";
+	
+	currentComponent="tAggregateRow_5_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_5_AGGOUT process_data_end ] stop
+ */
 
 } // End of branch "row10"
 
 
 
 
+	
+	/**
+	 * [tFilterRow_1 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_1 process_data_end ] stop
+ */
 
 } // End of branch "row9"
 
 
 
 
+	
+	/**
+	 * [tFileInputXML_4 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_4";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_4 process_data_end ] stop
+ */
 	
 	/**
 	 * [tFileInputXML_4 end ] start
@@ -14269,17 +15215,10 @@ end_Hash.put("tAggregateRow_5_AGGOUT", System.currentTimeMillis());
 		
 		int tos_count_tAdvancedHash_row13 = 0;
 		
-    	class BytesLimit65535_tAdvancedHash_row13{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAdvancedHash_row13().limitLog4jByte();
 
 			   		// connection name:row13
 			   		// source node:tAggregateRow_5_AGGIN - inputs:(OnRowsEnd) outputs:(row13,row13) | target node:tAdvancedHash_row13 - inputs:(row13) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,row44,status,row45,row40,row27,row15) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,status,row45,row40,row27,row15,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row13 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -14323,13 +15262,6 @@ end_Hash.put("tAggregateRow_5_AGGOUT", System.currentTimeMillis());
 	
 		int tos_count_tAggregateRow_5_AGGIN = 0;
 		
-    	class BytesLimit65535_tAggregateRow_5_AGGIN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_5_AGGIN().limitLog4jByte();
 
 java.util.Collection<AggOperationStruct_tAggregateRow_5> values_tAggregateRow_5 = hash_tAggregateRow_5.values();
 
@@ -14375,6 +15307,28 @@ for(AggOperationStruct_tAggregateRow_5 aggregated_row_tAggregateRow_5 : values_t
 
 /**
  * [tAggregateRow_5_AGGIN main ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_5_AGGIN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_5";
+	
+	currentComponent="tAggregateRow_5_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_5_AGGIN process_data_begin ] stop
  */
 
 	
@@ -14430,9 +15384,71 @@ for(AggOperationStruct_tAggregateRow_5 aggregated_row_tAggregateRow_5 : values_t
 /**
  * [tAdvancedHash_row13 main ] stop
  */
+	
+	/**
+	 * [tAdvancedHash_row13 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row13";
+
+	
+
+ 
 
 
 
+/**
+ * [tAdvancedHash_row13 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAdvancedHash_row13 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row13";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row13 process_data_end ] stop
+ */
+
+
+
+	
+	/**
+	 * [tAggregateRow_5_AGGIN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_5";
+	
+	currentComponent="tAggregateRow_5_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_5_AGGIN process_data_end ] stop
+ */
 	
 	/**
 	 * [tAggregateRow_5_AGGIN end ] start
@@ -15678,10 +16694,13 @@ public void tFileInputXML_6Process(final java.util.Map<String, Object> globalMap
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -15724,13 +16743,6 @@ row19Struct row19 = new row19Struct();
 		
 		int tos_count_tXMLMap_1_TXMLMAP_OUT = 0;
 		
-    	class BytesLimit65535_tXMLMap_1_TXMLMAP_OUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_1_TXMLMAP_OUT().limitLog4jByte();
 
 	
 	
@@ -15855,13 +16867,6 @@ class TreeNode_API_tXMLMap_1_TXMLMAP_OUT {
 	
 		int tos_count_tFileInputXML_6 = 0;
 		
-    	class BytesLimit65535_tFileInputXML_6{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileInputXML_6().limitLog4jByte();
 
 	
 
@@ -15996,15 +17001,36 @@ String str_tFileInputXML_6 = "";
 org.dom4j.Node node_tFileInputXML_6 = null;
 
 //init all mapping xpaths
+java.util.Map<Integer,org.dom4j.XPath> xpaths_tFileInputXML_6=new java.util.HashMap<Integer,org.dom4j.XPath>();
+	class XPathUtil_tFileInputXML_6{
+	
+			   public void initXPaths_0(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_6 nsTool,
+			       java.util.HashMap<String,String> xmlNameSpaceMap){
+			
+	org.dom4j.XPath xpath_0 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
+	xpath_0.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(0,xpath_0);
+			
+	     }
+	   
+	      public void initXPaths(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_6 nsTool,
+			    java.util.HashMap<String,String> xmlNameSpaceMap){
+			    
+			        initXPaths_0(xpaths,nsTool, xmlNameSpaceMap);
+			    
+		   }
+	}
+	XPathUtil_tFileInputXML_6 xPathUtil_tFileInputXML_6 = new XPathUtil_tFileInputXML_6();
+	xPathUtil_tFileInputXML_6.initXPaths(xpaths_tFileInputXML_6, nsTool_tFileInputXML_6, xmlNameSpaceMap_tFileInputXML_6);
 for (org.dom4j.tree.AbstractNode temp_tFileInputXML_6: nodeList_tFileInputXML_6) {
-	nb_line_tFileInputXML_6++;
+		nb_line_tFileInputXML_6++;
+		
 	row16 = null;			
 	boolean whetherReject_tFileInputXML_6 = false;
 	row16 = new row16Struct();
 	try{
-	org.dom4j.XPath xTmp0_tFileInputXML_6 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_6.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
-	xTmp0_tFileInputXML_6.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_6);
-    Object obj0_tFileInputXML_6 = xTmp0_tFileInputXML_6.evaluate(temp_tFileInputXML_6);
+    Object obj0_tFileInputXML_6 = xpaths_tFileInputXML_6.get(0).evaluate(temp_tFileInputXML_6);
     if(obj0_tFileInputXML_6 == null) {
     	node_tFileInputXML_6 = null;
 		str_tFileInputXML_6 = null;
@@ -16057,6 +17083,26 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_6: nodeList_tFileInputXML_6)
 
 /**
  * [tFileInputXML_6 main ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_6 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_6";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_6 process_data_begin ] stop
  */
 // Start of branch "row16"
 if(row16 != null) { 
@@ -16183,12 +17229,76 @@ rejectedInnerJoin_tXMLMap_1_TXMLMAP_OUT = false;
 /**
  * [tXMLMap_1_TXMLMAP_OUT main ] stop
  */
+	
+	/**
+	 * [tXMLMap_1_TXMLMAP_OUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_1";
+	
+	currentComponent="tXMLMap_1_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_1_TXMLMAP_OUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tXMLMap_1_TXMLMAP_OUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_1";
+	
+	currentComponent="tXMLMap_1_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_1_TXMLMAP_OUT process_data_end ] stop
+ */
 
 } // End of branch "row16"
 
 
 
 
+	
+	/**
+	 * [tFileInputXML_6 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_6";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_6 process_data_end ] stop
+ */
 	
 	/**
 	 * [tFileInputXML_6 end ] start
@@ -16288,13 +17398,6 @@ end_Hash.put("tXMLMap_1_TXMLMAP_OUT", System.currentTimeMillis());
 		
 		int tos_count_tAggregateRow_6_AGGOUT = 0;
 		
-    	class BytesLimit65535_tAggregateRow_6_AGGOUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_6_AGGOUT().limitLog4jByte();
 
 // ------------ Seems it is not used
 
@@ -16518,13 +17621,6 @@ java.util.Map hashAggreg_tAggregateRow_6 = new java.util.HashMap();
 		
 		int tos_count_tFilterRow_5 = 0;
 		
-    	class BytesLimit65535_tFilterRow_5{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFilterRow_5().limitLog4jByte();
     int nb_line_tFilterRow_5 = 0;
     int nb_line_ok_tFilterRow_5 = 0;
     int nb_line_reject_tFilterRow_5 = 0;
@@ -16604,13 +17700,6 @@ java.util.Map hashAggreg_tAggregateRow_6 = new java.util.HashMap();
 		
 		int tos_count_tFilterRow_4 = 0;
 		
-    	class BytesLimit65535_tFilterRow_4{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFilterRow_4().limitLog4jByte();
     int nb_line_tFilterRow_4 = 0;
     int nb_line_ok_tFilterRow_4 = 0;
     int nb_line_reject_tFilterRow_4 = 0;
@@ -16683,13 +17772,6 @@ java.util.Map hashAggreg_tAggregateRow_6 = new java.util.HashMap();
 	
 		int tos_count_tXMLMap_1_TXMLMAP_IN = 0;
 		
-    	class BytesLimit65535_tXMLMap_1_TXMLMAP_IN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_1_TXMLMAP_IN().limitLog4jByte();
 java.util.List<Object> outs_tXMLMap_1 = (java.util.List<Object>)globalMap.get("allOutsForAggregate_tXMLMap_1");
 for(Object  row_out_tXMLMap_1_TXMLMAP_IN : outs_tXMLMap_1) {//TD512
  
@@ -16725,6 +17807,28 @@ for(Object  row_out_tXMLMap_1_TXMLMAP_IN : outs_tXMLMap_1) {//TD512
 
 /**
  * [tXMLMap_1_TXMLMAP_IN main ] stop
+ */
+	
+	/**
+	 * [tXMLMap_1_TXMLMAP_IN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_1";
+	
+	currentComponent="tXMLMap_1_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_1_TXMLMAP_IN process_data_begin ] stop
  */
 // Start of branch "mapped3"
 if(mapped3 != null) { 
@@ -16782,6 +17886,26 @@ nb_line_tFilterRow_4++;
 
 /**
  * [tFilterRow_4 main ] stop
+ */
+	
+	/**
+	 * [tFilterRow_4 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_4";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_4 process_data_begin ] stop
  */
 // Start of branch "row17"
 if(row17 != null) { 
@@ -16842,6 +17966,26 @@ nb_line_tFilterRow_5++;
 
 /**
  * [tFilterRow_5 main ] stop
+ */
+	
+	/**
+	 * [tFilterRow_5 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_5";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_5 process_data_begin ] stop
  */
 // Start of branch "row18"
 if(row18 != null) { 
@@ -16943,24 +18087,130 @@ operation_finder_tAggregateRow_6.uuid = row18.uuid;
 /**
  * [tAggregateRow_6_AGGOUT main ] stop
  */
+	
+	/**
+	 * [tAggregateRow_6_AGGOUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_6";
+	
+	currentComponent="tAggregateRow_6_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_6_AGGOUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_6_AGGOUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_6";
+	
+	currentComponent="tAggregateRow_6_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_6_AGGOUT process_data_end ] stop
+ */
 
 } // End of branch "row18"
 
 
 
 
+	
+	/**
+	 * [tFilterRow_5 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_5";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_5 process_data_end ] stop
+ */
 
 } // End of branch "row17"
 
 
 
 
+	
+	/**
+	 * [tFilterRow_4 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_4";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_4 process_data_end ] stop
+ */
 
 } // End of branch "mapped3"
 
 
 
 
+	
+	/**
+	 * [tXMLMap_1_TXMLMAP_IN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_1";
+	
+	currentComponent="tXMLMap_1_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_1_TXMLMAP_IN process_data_end ] stop
+ */
 	
 	/**
 	 * [tXMLMap_1_TXMLMAP_IN end ] start
@@ -17120,17 +18370,10 @@ end_Hash.put("tAggregateRow_6_AGGOUT", System.currentTimeMillis());
 		
 		int tos_count_tAdvancedHash_row19 = 0;
 		
-    	class BytesLimit65535_tAdvancedHash_row19{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAdvancedHash_row19().limitLog4jByte();
 
 			   		// connection name:row19
 			   		// source node:tAggregateRow_6_AGGIN - inputs:(OnRowsEnd) outputs:(row19,row19) | target node:tAdvancedHash_row19 - inputs:(row19) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,row44,status,row45,row40,row27,row15) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,status,row45,row40,row27,row15,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row19 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -17174,13 +18417,6 @@ end_Hash.put("tAggregateRow_6_AGGOUT", System.currentTimeMillis());
 	
 		int tos_count_tAggregateRow_6_AGGIN = 0;
 		
-    	class BytesLimit65535_tAggregateRow_6_AGGIN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_6_AGGIN().limitLog4jByte();
 
 java.util.Collection<AggOperationStruct_tAggregateRow_6> values_tAggregateRow_6 = hash_tAggregateRow_6.values();
 
@@ -17226,6 +18462,28 @@ for(AggOperationStruct_tAggregateRow_6 aggregated_row_tAggregateRow_6 : values_t
 
 /**
  * [tAggregateRow_6_AGGIN main ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_6_AGGIN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_6";
+	
+	currentComponent="tAggregateRow_6_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_6_AGGIN process_data_begin ] stop
  */
 
 	
@@ -17281,9 +18539,71 @@ for(AggOperationStruct_tAggregateRow_6 aggregated_row_tAggregateRow_6 : values_t
 /**
  * [tAdvancedHash_row19 main ] stop
  */
+	
+	/**
+	 * [tAdvancedHash_row19 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row19";
+
+	
+
+ 
 
 
 
+/**
+ * [tAdvancedHash_row19 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAdvancedHash_row19 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row19";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row19 process_data_end ] stop
+ */
+
+
+
+	
+	/**
+	 * [tAggregateRow_6_AGGIN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_6";
+	
+	currentComponent="tAggregateRow_6_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_6_AGGIN process_data_end ] stop
+ */
 	
 	/**
 	 * [tAggregateRow_6_AGGIN end ] start
@@ -18458,10 +19778,13 @@ public void tFileInputXML_7Process(final java.util.Map<String, Object> globalMap
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -18503,13 +19826,6 @@ row22Struct row22 = new row22Struct();
 		
 		int tos_count_tXMLMap_4_TXMLMAP_OUT = 0;
 		
-    	class BytesLimit65535_tXMLMap_4_TXMLMAP_OUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_4_TXMLMAP_OUT().limitLog4jByte();
 
 	
 	
@@ -18634,13 +19950,6 @@ class TreeNode_API_tXMLMap_4_TXMLMAP_OUT {
 	
 		int tos_count_tFileInputXML_7 = 0;
 		
-    	class BytesLimit65535_tFileInputXML_7{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileInputXML_7().limitLog4jByte();
 
 	
 
@@ -18775,15 +20084,36 @@ String str_tFileInputXML_7 = "";
 org.dom4j.Node node_tFileInputXML_7 = null;
 
 //init all mapping xpaths
+java.util.Map<Integer,org.dom4j.XPath> xpaths_tFileInputXML_7=new java.util.HashMap<Integer,org.dom4j.XPath>();
+	class XPathUtil_tFileInputXML_7{
+	
+			   public void initXPaths_0(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_7 nsTool,
+			       java.util.HashMap<String,String> xmlNameSpaceMap){
+			
+	org.dom4j.XPath xpath_0 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
+	xpath_0.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(0,xpath_0);
+			
+	     }
+	   
+	      public void initXPaths(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_7 nsTool,
+			    java.util.HashMap<String,String> xmlNameSpaceMap){
+			    
+			        initXPaths_0(xpaths,nsTool, xmlNameSpaceMap);
+			    
+		   }
+	}
+	XPathUtil_tFileInputXML_7 xPathUtil_tFileInputXML_7 = new XPathUtil_tFileInputXML_7();
+	xPathUtil_tFileInputXML_7.initXPaths(xpaths_tFileInputXML_7, nsTool_tFileInputXML_7, xmlNameSpaceMap_tFileInputXML_7);
 for (org.dom4j.tree.AbstractNode temp_tFileInputXML_7: nodeList_tFileInputXML_7) {
-	nb_line_tFileInputXML_7++;
+		nb_line_tFileInputXML_7++;
+		
 	row20 = null;			
 	boolean whetherReject_tFileInputXML_7 = false;
 	row20 = new row20Struct();
 	try{
-	org.dom4j.XPath xTmp0_tFileInputXML_7 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_7.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
-	xTmp0_tFileInputXML_7.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_7);
-    Object obj0_tFileInputXML_7 = xTmp0_tFileInputXML_7.evaluate(temp_tFileInputXML_7);
+    Object obj0_tFileInputXML_7 = xpaths_tFileInputXML_7.get(0).evaluate(temp_tFileInputXML_7);
     if(obj0_tFileInputXML_7 == null) {
     	node_tFileInputXML_7 = null;
 		str_tFileInputXML_7 = null;
@@ -18836,6 +20166,26 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_7: nodeList_tFileInputXML_7)
 
 /**
  * [tFileInputXML_7 main ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_7 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_7";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_7 process_data_begin ] stop
  */
 // Start of branch "row20"
 if(row20 != null) { 
@@ -18967,12 +20317,76 @@ rejectedInnerJoin_tXMLMap_4_TXMLMAP_OUT = false;
 /**
  * [tXMLMap_4_TXMLMAP_OUT main ] stop
  */
+	
+	/**
+	 * [tXMLMap_4_TXMLMAP_OUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_4";
+	
+	currentComponent="tXMLMap_4_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_4_TXMLMAP_OUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tXMLMap_4_TXMLMAP_OUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_4";
+	
+	currentComponent="tXMLMap_4_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_4_TXMLMAP_OUT process_data_end ] stop
+ */
 
 } // End of branch "row20"
 
 
 
 
+	
+	/**
+	 * [tFileInputXML_7 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_7";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_7 process_data_end ] stop
+ */
 	
 	/**
 	 * [tFileInputXML_7 end ] start
@@ -19071,13 +20485,6 @@ end_Hash.put("tXMLMap_4_TXMLMAP_OUT", System.currentTimeMillis());
 		
 		int tos_count_tAggregateRow_8_AGGOUT = 0;
 		
-    	class BytesLimit65535_tAggregateRow_8_AGGOUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_8_AGGOUT().limitLog4jByte();
 
 // ------------ Seems it is not used
 
@@ -19301,13 +20708,6 @@ java.util.Map hashAggreg_tAggregateRow_8 = new java.util.HashMap();
 		
 		int tos_count_tFilterRow_7 = 0;
 		
-    	class BytesLimit65535_tFilterRow_7{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFilterRow_7().limitLog4jByte();
     int nb_line_tFilterRow_7 = 0;
     int nb_line_ok_tFilterRow_7 = 0;
     int nb_line_reject_tFilterRow_7 = 0;
@@ -19380,13 +20780,6 @@ java.util.Map hashAggreg_tAggregateRow_8 = new java.util.HashMap();
 	
 		int tos_count_tXMLMap_4_TXMLMAP_IN = 0;
 		
-    	class BytesLimit65535_tXMLMap_4_TXMLMAP_IN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_4_TXMLMAP_IN().limitLog4jByte();
 java.util.List<Object> outs_tXMLMap_4 = (java.util.List<Object>)globalMap.get("allOutsForAggregate_tXMLMap_4");
 for(Object  row_out_tXMLMap_4_TXMLMAP_IN : outs_tXMLMap_4) {//TD512
  
@@ -19422,6 +20815,28 @@ for(Object  row_out_tXMLMap_4_TXMLMAP_IN : outs_tXMLMap_4) {//TD512
 
 /**
  * [tXMLMap_4_TXMLMAP_IN main ] stop
+ */
+	
+	/**
+	 * [tXMLMap_4_TXMLMAP_IN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_4";
+	
+	currentComponent="tXMLMap_4_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_4_TXMLMAP_IN process_data_begin ] stop
  */
 // Start of branch "copyOfcopyOfmapped2"
 if(copyOfcopyOfmapped2 != null) { 
@@ -19479,6 +20894,26 @@ nb_line_tFilterRow_7++;
 
 /**
  * [tFilterRow_7 main ] stop
+ */
+	
+	/**
+	 * [tFilterRow_7 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_7";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_7 process_data_begin ] stop
  */
 // Start of branch "row25"
 if(row25 != null) { 
@@ -19580,18 +21015,104 @@ operation_finder_tAggregateRow_8.uuid = row25.uuid;
 /**
  * [tAggregateRow_8_AGGOUT main ] stop
  */
+	
+	/**
+	 * [tAggregateRow_8_AGGOUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_8";
+	
+	currentComponent="tAggregateRow_8_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_8_AGGOUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_8_AGGOUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_8";
+	
+	currentComponent="tAggregateRow_8_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_8_AGGOUT process_data_end ] stop
+ */
 
 } // End of branch "row25"
 
 
 
 
+	
+	/**
+	 * [tFilterRow_7 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_7";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_7 process_data_end ] stop
+ */
 
 } // End of branch "copyOfcopyOfmapped2"
 
 
 
 
+	
+	/**
+	 * [tXMLMap_4_TXMLMAP_IN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_4";
+	
+	currentComponent="tXMLMap_4_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_4_TXMLMAP_IN process_data_end ] stop
+ */
 	
 	/**
 	 * [tXMLMap_4_TXMLMAP_IN end ] start
@@ -19716,17 +21237,10 @@ end_Hash.put("tAggregateRow_8_AGGOUT", System.currentTimeMillis());
 		
 		int tos_count_tAdvancedHash_row22 = 0;
 		
-    	class BytesLimit65535_tAdvancedHash_row22{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAdvancedHash_row22().limitLog4jByte();
 
 			   		// connection name:row22
 			   		// source node:tAggregateRow_8_AGGIN - inputs:(OnRowsEnd) outputs:(row22,row22) | target node:tAdvancedHash_row22 - inputs:(row22) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,row44,status,row45,row40,row27,row15) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,status,row45,row40,row27,row15,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row22 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -19770,13 +21284,6 @@ end_Hash.put("tAggregateRow_8_AGGOUT", System.currentTimeMillis());
 	
 		int tos_count_tAggregateRow_8_AGGIN = 0;
 		
-    	class BytesLimit65535_tAggregateRow_8_AGGIN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_8_AGGIN().limitLog4jByte();
 
 java.util.Collection<AggOperationStruct_tAggregateRow_8> values_tAggregateRow_8 = hash_tAggregateRow_8.values();
 
@@ -19822,6 +21329,28 @@ for(AggOperationStruct_tAggregateRow_8 aggregated_row_tAggregateRow_8 : values_t
 
 /**
  * [tAggregateRow_8_AGGIN main ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_8_AGGIN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_8";
+	
+	currentComponent="tAggregateRow_8_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_8_AGGIN process_data_begin ] stop
  */
 
 	
@@ -19877,9 +21406,71 @@ for(AggOperationStruct_tAggregateRow_8 aggregated_row_tAggregateRow_8 : values_t
 /**
  * [tAdvancedHash_row22 main ] stop
  */
+	
+	/**
+	 * [tAdvancedHash_row22 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row22";
+
+	
+
+ 
 
 
 
+/**
+ * [tAdvancedHash_row22 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAdvancedHash_row22 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row22";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row22 process_data_end ] stop
+ */
+
+
+
+	
+	/**
+	 * [tAggregateRow_8_AGGIN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_8";
+	
+	currentComponent="tAggregateRow_8_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_8_AGGIN process_data_end ] stop
+ */
 	
 	/**
 	 * [tAggregateRow_8_AGGIN end ] start
@@ -20547,10 +22138,13 @@ public void tFileInputXML_9Process(final java.util.Map<String, Object> globalMap
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -20590,13 +22184,6 @@ row23Struct row23 = new row23Struct();
 		
 		int tos_count_tXMLMap_5_TXMLMAP_OUT = 0;
 		
-    	class BytesLimit65535_tXMLMap_5_TXMLMAP_OUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_5_TXMLMAP_OUT().limitLog4jByte();
 
 	
 	
@@ -20721,13 +22308,6 @@ class TreeNode_API_tXMLMap_5_TXMLMAP_OUT {
 	
 		int tos_count_tFileInputXML_9 = 0;
 		
-    	class BytesLimit65535_tFileInputXML_9{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileInputXML_9().limitLog4jByte();
 
 	
 
@@ -20862,15 +22442,36 @@ String str_tFileInputXML_9 = "";
 org.dom4j.Node node_tFileInputXML_9 = null;
 
 //init all mapping xpaths
+java.util.Map<Integer,org.dom4j.XPath> xpaths_tFileInputXML_9=new java.util.HashMap<Integer,org.dom4j.XPath>();
+	class XPathUtil_tFileInputXML_9{
+	
+			   public void initXPaths_0(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_9 nsTool,
+			       java.util.HashMap<String,String> xmlNameSpaceMap){
+			
+	org.dom4j.XPath xpath_0 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
+	xpath_0.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(0,xpath_0);
+			
+	     }
+	   
+	      public void initXPaths(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_9 nsTool,
+			    java.util.HashMap<String,String> xmlNameSpaceMap){
+			    
+			        initXPaths_0(xpaths,nsTool, xmlNameSpaceMap);
+			    
+		   }
+	}
+	XPathUtil_tFileInputXML_9 xPathUtil_tFileInputXML_9 = new XPathUtil_tFileInputXML_9();
+	xPathUtil_tFileInputXML_9.initXPaths(xpaths_tFileInputXML_9, nsTool_tFileInputXML_9, xmlNameSpaceMap_tFileInputXML_9);
 for (org.dom4j.tree.AbstractNode temp_tFileInputXML_9: nodeList_tFileInputXML_9) {
-	nb_line_tFileInputXML_9++;
+		nb_line_tFileInputXML_9++;
+		
 	row24 = null;			
 	boolean whetherReject_tFileInputXML_9 = false;
 	row24 = new row24Struct();
 	try{
-	org.dom4j.XPath xTmp0_tFileInputXML_9 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_9.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
-	xTmp0_tFileInputXML_9.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_9);
-    Object obj0_tFileInputXML_9 = xTmp0_tFileInputXML_9.evaluate(temp_tFileInputXML_9);
+    Object obj0_tFileInputXML_9 = xpaths_tFileInputXML_9.get(0).evaluate(temp_tFileInputXML_9);
     if(obj0_tFileInputXML_9 == null) {
     	node_tFileInputXML_9 = null;
 		str_tFileInputXML_9 = null;
@@ -20923,6 +22524,26 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_9: nodeList_tFileInputXML_9)
 
 /**
  * [tFileInputXML_9 main ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_9 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_9";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_9 process_data_begin ] stop
  */
 // Start of branch "row24"
 if(row24 != null) { 
@@ -21050,12 +22671,76 @@ rejectedInnerJoin_tXMLMap_5_TXMLMAP_OUT = false;
 /**
  * [tXMLMap_5_TXMLMAP_OUT main ] stop
  */
+	
+	/**
+	 * [tXMLMap_5_TXMLMAP_OUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_5";
+	
+	currentComponent="tXMLMap_5_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_5_TXMLMAP_OUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tXMLMap_5_TXMLMAP_OUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_5";
+	
+	currentComponent="tXMLMap_5_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_5_TXMLMAP_OUT process_data_end ] stop
+ */
 
 } // End of branch "row24"
 
 
 
 
+	
+	/**
+	 * [tFileInputXML_9 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_9";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_9 process_data_end ] stop
+ */
 	
 	/**
 	 * [tFileInputXML_9 end ] start
@@ -21151,17 +22836,10 @@ end_Hash.put("tXMLMap_5_TXMLMAP_OUT", System.currentTimeMillis());
 		
 		int tos_count_tAdvancedHash_row23 = 0;
 		
-    	class BytesLimit65535_tAdvancedHash_row23{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAdvancedHash_row23().limitLog4jByte();
 
 			   		// connection name:row23
 			   		// source node:tXMLMap_5_TXMLMAP_IN - inputs:(OnRowsEnd) outputs:(row23,row23) | target node:tAdvancedHash_row23 - inputs:(row23) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,row44,status,row45,row40,row27,row15) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,status,row45,row40,row27,row15,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row23 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -21205,13 +22883,6 @@ end_Hash.put("tXMLMap_5_TXMLMAP_OUT", System.currentTimeMillis());
 	
 		int tos_count_tXMLMap_5_TXMLMAP_IN = 0;
 		
-    	class BytesLimit65535_tXMLMap_5_TXMLMAP_IN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_5_TXMLMAP_IN().limitLog4jByte();
 java.util.List<Object> outs_tXMLMap_5 = (java.util.List<Object>)globalMap.get("allOutsForAggregate_tXMLMap_5");
 for(Object  row_out_tXMLMap_5_TXMLMAP_IN : outs_tXMLMap_5) {//TD512
  
@@ -21247,6 +22918,28 @@ for(Object  row_out_tXMLMap_5_TXMLMAP_IN : outs_tXMLMap_5) {//TD512
 
 /**
  * [tXMLMap_5_TXMLMAP_IN main ] stop
+ */
+	
+	/**
+	 * [tXMLMap_5_TXMLMAP_IN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_5";
+	
+	currentComponent="tXMLMap_5_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_5_TXMLMAP_IN process_data_begin ] stop
  */
 // Start of branch "row23"
 if(row23 != null) { 
@@ -21304,12 +22997,74 @@ if(row23 != null) {
 /**
  * [tAdvancedHash_row23 main ] stop
  */
+	
+	/**
+	 * [tAdvancedHash_row23 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row23";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row23 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAdvancedHash_row23 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row23";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row23 process_data_end ] stop
+ */
 
 } // End of branch "row23"
 
 
 
 
+	
+	/**
+	 * [tXMLMap_5_TXMLMAP_IN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_5";
+	
+	currentComponent="tXMLMap_5_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_5_TXMLMAP_IN process_data_end ] stop
+ */
 	
 	/**
 	 * [tXMLMap_5_TXMLMAP_IN end ] start
@@ -22524,10 +24279,13 @@ public void tFileInputXML_12Process(final java.util.Map<String, Object> globalMa
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -22570,13 +24328,6 @@ row34Struct row34 = new row34Struct();
 		
 		int tos_count_tXMLMap_7_TXMLMAP_OUT = 0;
 		
-    	class BytesLimit65535_tXMLMap_7_TXMLMAP_OUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_7_TXMLMAP_OUT().limitLog4jByte();
 
 	
 	
@@ -22696,13 +24447,6 @@ class TreeNode_API_tXMLMap_7_TXMLMAP_OUT {
 	
 		int tos_count_tFileInputXML_12 = 0;
 		
-    	class BytesLimit65535_tFileInputXML_12{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileInputXML_12().limitLog4jByte();
 
 	
 
@@ -22837,15 +24581,36 @@ String str_tFileInputXML_12 = "";
 org.dom4j.Node node_tFileInputXML_12 = null;
 
 //init all mapping xpaths
+java.util.Map<Integer,org.dom4j.XPath> xpaths_tFileInputXML_12=new java.util.HashMap<Integer,org.dom4j.XPath>();
+	class XPathUtil_tFileInputXML_12{
+	
+			   public void initXPaths_0(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_12 nsTool,
+			       java.util.HashMap<String,String> xmlNameSpaceMap){
+			
+	org.dom4j.XPath xpath_0 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
+	xpath_0.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(0,xpath_0);
+			
+	     }
+	   
+	      public void initXPaths(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_12 nsTool,
+			    java.util.HashMap<String,String> xmlNameSpaceMap){
+			    
+			        initXPaths_0(xpaths,nsTool, xmlNameSpaceMap);
+			    
+		   }
+	}
+	XPathUtil_tFileInputXML_12 xPathUtil_tFileInputXML_12 = new XPathUtil_tFileInputXML_12();
+	xPathUtil_tFileInputXML_12.initXPaths(xpaths_tFileInputXML_12, nsTool_tFileInputXML_12, xmlNameSpaceMap_tFileInputXML_12);
 for (org.dom4j.tree.AbstractNode temp_tFileInputXML_12: nodeList_tFileInputXML_12) {
-	nb_line_tFileInputXML_12++;
+		nb_line_tFileInputXML_12++;
+		
 	row32 = null;			
 	boolean whetherReject_tFileInputXML_12 = false;
 	row32 = new row32Struct();
 	try{
-	org.dom4j.XPath xTmp0_tFileInputXML_12 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_12.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
-	xTmp0_tFileInputXML_12.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_12);
-    Object obj0_tFileInputXML_12 = xTmp0_tFileInputXML_12.evaluate(temp_tFileInputXML_12);
+    Object obj0_tFileInputXML_12 = xpaths_tFileInputXML_12.get(0).evaluate(temp_tFileInputXML_12);
     if(obj0_tFileInputXML_12 == null) {
     	node_tFileInputXML_12 = null;
 		str_tFileInputXML_12 = null;
@@ -22898,6 +24663,26 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_12: nodeList_tFileInputXML_1
 
 /**
  * [tFileInputXML_12 main ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_12 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_12";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_12 process_data_begin ] stop
  */
 // Start of branch "row32"
 if(row32 != null) { 
@@ -23029,12 +24814,76 @@ rejectedInnerJoin_tXMLMap_7_TXMLMAP_OUT = false;
 /**
  * [tXMLMap_7_TXMLMAP_OUT main ] stop
  */
+	
+	/**
+	 * [tXMLMap_7_TXMLMAP_OUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_7";
+	
+	currentComponent="tXMLMap_7_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_7_TXMLMAP_OUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tXMLMap_7_TXMLMAP_OUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_7";
+	
+	currentComponent="tXMLMap_7_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_7_TXMLMAP_OUT process_data_end ] stop
+ */
 
 } // End of branch "row32"
 
 
 
 
+	
+	/**
+	 * [tFileInputXML_12 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_12";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_12 process_data_end ] stop
+ */
 	
 	/**
 	 * [tFileInputXML_12 end ] start
@@ -23134,13 +24983,6 @@ end_Hash.put("tXMLMap_7_TXMLMAP_OUT", System.currentTimeMillis());
 		
 		int tos_count_tAggregateRow_7_AGGOUT = 0;
 		
-    	class BytesLimit65535_tAggregateRow_7_AGGOUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_7_AGGOUT().limitLog4jByte();
 
 // ------------ Seems it is not used
 
@@ -23364,13 +25206,6 @@ java.util.Map hashAggreg_tAggregateRow_7 = new java.util.HashMap();
 		
 		int tos_count_tUniqRow_1 = 0;
 		
-    	class BytesLimit65535_tUniqRow_1{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tUniqRow_1().limitLog4jByte();
 
 	
 		class KeyStruct_tUniqRow_1 {
@@ -23484,13 +25319,6 @@ java.util.Set<KeyStruct_tUniqRow_1> keystUniqRow_1 = new java.util.HashSet<KeySt
 		
 		int tos_count_tFilterRow_11 = 0;
 		
-    	class BytesLimit65535_tFilterRow_11{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFilterRow_11().limitLog4jByte();
     int nb_line_tFilterRow_11 = 0;
     int nb_line_ok_tFilterRow_11 = 0;
     int nb_line_reject_tFilterRow_11 = 0;
@@ -23563,13 +25391,6 @@ java.util.Set<KeyStruct_tUniqRow_1> keystUniqRow_1 = new java.util.HashSet<KeySt
 	
 		int tos_count_tXMLMap_7_TXMLMAP_IN = 0;
 		
-    	class BytesLimit65535_tXMLMap_7_TXMLMAP_IN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_7_TXMLMAP_IN().limitLog4jByte();
 java.util.List<Object> outs_tXMLMap_7 = (java.util.List<Object>)globalMap.get("allOutsForAggregate_tXMLMap_7");
 for(Object  row_out_tXMLMap_7_TXMLMAP_IN : outs_tXMLMap_7) {//TD512
  
@@ -23605,6 +25426,28 @@ for(Object  row_out_tXMLMap_7_TXMLMAP_IN : outs_tXMLMap_7) {//TD512
 
 /**
  * [tXMLMap_7_TXMLMAP_IN main ] stop
+ */
+	
+	/**
+	 * [tXMLMap_7_TXMLMAP_IN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_7";
+	
+	currentComponent="tXMLMap_7_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_7_TXMLMAP_IN process_data_begin ] stop
  */
 // Start of branch "copyOfmap"
 if(copyOfmap != null) { 
@@ -23665,6 +25508,26 @@ nb_line_tFilterRow_11++;
 
 /**
  * [tFilterRow_11 main ] stop
+ */
+	
+	/**
+	 * [tFilterRow_11 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_11";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_11 process_data_begin ] stop
  */
 // Start of branch "row33"
 if(row33 != null) { 
@@ -23748,6 +25611,26 @@ if(row33.protocol == null){
 
 /**
  * [tUniqRow_1 main ] stop
+ */
+	
+	/**
+	 * [tUniqRow_1 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tUniqRow_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tUniqRow_1 process_data_begin ] stop
  */
 // Start of branch "row35"
 if(row35 != null) { 
@@ -23849,24 +25732,130 @@ operation_finder_tAggregateRow_7.uuid = row35.uuid;
 /**
  * [tAggregateRow_7_AGGOUT main ] stop
  */
+	
+	/**
+	 * [tAggregateRow_7_AGGOUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_7";
+	
+	currentComponent="tAggregateRow_7_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_7_AGGOUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_7_AGGOUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_7";
+	
+	currentComponent="tAggregateRow_7_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_7_AGGOUT process_data_end ] stop
+ */
 
 } // End of branch "row35"
 
 
 
 
+	
+	/**
+	 * [tUniqRow_1 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tUniqRow_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tUniqRow_1 process_data_end ] stop
+ */
 
 } // End of branch "row33"
 
 
 
 
+	
+	/**
+	 * [tFilterRow_11 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_11";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_11 process_data_end ] stop
+ */
 
 } // End of branch "copyOfmap"
 
 
 
 
+	
+	/**
+	 * [tXMLMap_7_TXMLMAP_IN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_7";
+	
+	currentComponent="tXMLMap_7_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_7_TXMLMAP_IN process_data_end ] stop
+ */
 	
 	/**
 	 * [tXMLMap_7_TXMLMAP_IN end ] start
@@ -24025,17 +26014,10 @@ end_Hash.put("tAggregateRow_7_AGGOUT", System.currentTimeMillis());
 		
 		int tos_count_tAdvancedHash_row34 = 0;
 		
-    	class BytesLimit65535_tAdvancedHash_row34{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAdvancedHash_row34().limitLog4jByte();
 
 			   		// connection name:row34
 			   		// source node:tAggregateRow_7_AGGIN - inputs:(OnRowsEnd) outputs:(row34,row34) | target node:tAdvancedHash_row34 - inputs:(row34) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,row44,status,row45,row40,row27,row15) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,status,row45,row40,row27,row15,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row34 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -24079,13 +26061,6 @@ end_Hash.put("tAggregateRow_7_AGGOUT", System.currentTimeMillis());
 	
 		int tos_count_tAggregateRow_7_AGGIN = 0;
 		
-    	class BytesLimit65535_tAggregateRow_7_AGGIN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_7_AGGIN().limitLog4jByte();
 
 java.util.Collection<AggOperationStruct_tAggregateRow_7> values_tAggregateRow_7 = hash_tAggregateRow_7.values();
 
@@ -24131,6 +26106,28 @@ for(AggOperationStruct_tAggregateRow_7 aggregated_row_tAggregateRow_7 : values_t
 
 /**
  * [tAggregateRow_7_AGGIN main ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_7_AGGIN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_7";
+	
+	currentComponent="tAggregateRow_7_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_7_AGGIN process_data_begin ] stop
  */
 
 	
@@ -24186,9 +26183,71 @@ for(AggOperationStruct_tAggregateRow_7 aggregated_row_tAggregateRow_7 : values_t
 /**
  * [tAdvancedHash_row34 main ] stop
  */
+	
+	/**
+	 * [tAdvancedHash_row34 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row34";
+
+	
+
+ 
 
 
 
+/**
+ * [tAdvancedHash_row34 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAdvancedHash_row34 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row34";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row34 process_data_end ] stop
+ */
+
+
+
+	
+	/**
+	 * [tAggregateRow_7_AGGIN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_7";
+	
+	currentComponent="tAggregateRow_7_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_7_AGGIN process_data_end ] stop
+ */
 	
 	/**
 	 * [tAggregateRow_7_AGGIN end ] start
@@ -24503,2998 +26562,6 @@ end_Hash.put("tAdvancedHash_row34", System.currentTimeMillis());
 		
 
 		globalMap.put("tFileInputXML_12_SUBPROCESS_STATE", 1);
-	}
-	
-
-
-public static class row44Struct implements routines.system.IPersistableComparableLookupRow<row44Struct> {
-    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
-    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
-	protected static final int DEFAULT_HASHCODE = 1;
-    protected static final int PRIME = 31;
-    protected int hashCode = DEFAULT_HASHCODE;
-    public boolean hashCodeDirty = true;
-
-    public String loopKey;
-
-
-
-	
-			    public String uuid;
-
-				public String getUuid () {
-					return this.uuid;
-				}
-				
-			    public String url;
-
-				public String getUrl () {
-					return this.url;
-				}
-				
-			    public String protocol;
-
-				public String getProtocol () {
-					return this.protocol;
-				}
-				
-
-
-	@Override
-	public int hashCode() {
-		if (this.hashCodeDirty) {
-			final int prime = PRIME;
-			int result = DEFAULT_HASHCODE;
-	
-						result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
-					
-    		this.hashCode = result;
-    		this.hashCodeDirty = false;
-		}
-		return this.hashCode;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
-		final row44Struct other = (row44Struct) obj;
-		
-						if (this.uuid == null) {
-							if (other.uuid != null)
-								return false;
-						
-						} else if (!this.uuid.equals(other.uuid))
-						
-							return false;
-					
-
-		return true;
-    }
-
-	public void copyDataTo(row44Struct other) {
-
-		other.uuid = this.uuid;
-	            other.url = this.url;
-	            other.protocol = this.protocol;
-	            
-	}
-
-	public void copyKeysDataTo(row44Struct other) {
-
-		other.uuid = this.uuid;
-	            	
-	}
-
-
-
-
-	private String readString(ObjectInputStream dis) throws IOException{
-		String strReturn = null;
-		int length = 0;
-        length = dis.readInt();
-		if (length == -1) {
-			strReturn = null;
-		} else {
-			if(length > commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length) {
-				if(length < 1024 && commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length == 0) {
-   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[1024];
-				} else {
-   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[2 * length];
-   				}
-			}
-			dis.readFully(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length);
-			strReturn = new String(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length, utf8Charset);
-		}
-		return strReturn;
-	}
-
-    private void writeString(String str, ObjectOutputStream dos) throws IOException{
-		if(str == null) {
-            dos.writeInt(-1);
-		} else {
-            byte[] byteArray = str.getBytes(utf8Charset);
-	    	dos.writeInt(byteArray.length);
-			dos.write(byteArray);
-    	}
-    }
-
-	private String readString(DataInputStream dis, ObjectInputStream ois) throws IOException{
-		String strReturn = null;
-		int length = 0;
-        length = dis.readInt();
-		if (length == -1) {
-			strReturn = null;
-		} else {
-			byte[] byteArray = new byte[length];
-			dis.read(byteArray);
-			strReturn = new String(byteArray, utf8Charset);
-		}
-		return strReturn;
-	}
-
-	private void writeString(String str, DataOutputStream dos, ObjectOutputStream oos) throws IOException{
-		if(str == null) {
-            dos.writeInt(-1);
-		} else {
-            byte[] byteArray = str.getBytes(utf8Charset);
-	    	dos.writeInt(byteArray.length);
-			dos.write(byteArray);
-    	}
-	}
-
-    public void readKeysData(ObjectInputStream dis) {
-
-		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
-
-        	try {
-
-        		int length = 0;
-		
-					this.uuid = readString(dis);
-					
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-
-		
-
-        }
-
-		
-
-      }
-
-
-    }
-
-    public void writeKeysData(ObjectOutputStream dos) {
-        try {
-
-		
-					// String
-				
-						writeString(this.uuid,dos);
-					
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-        }
-
-
-    }
-
-
-
-    /**
-     * Fill Values data by reading ObjectInputStream.
-     */
-    public void readValuesData(DataInputStream dis, ObjectInputStream ois) {
-        try {
-
-			int length = 0;
-		
-						this.url = readString(dis,ois);
-					
-						this.protocol = readString(dis,ois);
-					
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-
-		
-
-        }
-
-		
-
-    }
-
-    /**
-     * Return a byte array which represents Values data.
-     */
-    public void writeValuesData(DataOutputStream dos, ObjectOutputStream oos) {
-        try {
-
-		
-						writeString(this.url, dos, oos);
-					
-						writeString(this.protocol, dos, oos);
-					
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-        	}
-
-    }
-
-
-    public String toString() {
-
-		StringBuilder sb = new StringBuilder();
-		sb.append(super.toString());
-		sb.append("[");
-		sb.append("uuid="+uuid);
-		sb.append(",url="+url);
-		sb.append(",protocol="+protocol);
-	    sb.append("]");
-
-	    return sb.toString();
-    }
-
-    /**
-     * Compare keys
-     */
-    public int compareTo(row44Struct other) {
-
-		int returnValue = -1;
-		
-						returnValue = checkNullsAndCompare(this.uuid, other.uuid);
-						if(returnValue != 0) {
-							return returnValue;
-						}
-
-					
-	    return returnValue;
-    }
-
-
-    private int checkNullsAndCompare(Object object1, Object object2) {
-        int returnValue = 0;
-		if (object1 instanceof Comparable && object2 instanceof Comparable) {
-            returnValue = ((Comparable) object1).compareTo(object2);
-        } else if (object1 != null && object2 != null) {
-            returnValue = compareStrings(object1.toString(), object2.toString());
-        } else if (object1 == null && object2 != null) {
-            returnValue = 1;
-        } else if (object1 != null && object2 == null) {
-            returnValue = -1;
-        } else {
-            returnValue = 0;
-        }
-
-        return returnValue;
-    }
-
-    private int compareStrings(String string1, String string2) {
-        return string1.compareTo(string2);
-    }
-
-
-}
-
-public static class OnRowsEndStructtAggregateRow_10 implements routines.system.IPersistableRow<OnRowsEndStructtAggregateRow_10> {
-    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
-    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
-
-	
-			    public String uuid;
-
-				public String getUuid () {
-					return this.uuid;
-				}
-				
-			    public String url;
-
-				public String getUrl () {
-					return this.url;
-				}
-				
-			    public String protocol;
-
-				public String getProtocol () {
-					return this.protocol;
-				}
-				
-
-
-
-	private String readString(ObjectInputStream dis) throws IOException{
-		String strReturn = null;
-		int length = 0;
-        length = dis.readInt();
-		if (length == -1) {
-			strReturn = null;
-		} else {
-			if(length > commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length) {
-				if(length < 1024 && commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length == 0) {
-   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[1024];
-				} else {
-   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[2 * length];
-   				}
-			}
-			dis.readFully(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length);
-			strReturn = new String(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length, utf8Charset);
-		}
-		return strReturn;
-	}
-
-    private void writeString(String str, ObjectOutputStream dos) throws IOException{
-		if(str == null) {
-            dos.writeInt(-1);
-		} else {
-            byte[] byteArray = str.getBytes(utf8Charset);
-	    	dos.writeInt(byteArray.length);
-			dos.write(byteArray);
-    	}
-    }
-
-    public void readData(ObjectInputStream dis) {
-
-		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
-
-        	try {
-
-        		int length = 0;
-		
-					this.uuid = readString(dis);
-					
-					this.url = readString(dis);
-					
-					this.protocol = readString(dis);
-					
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-
-		
-
-        }
-
-		
-
-      }
-
-
-    }
-
-    public void writeData(ObjectOutputStream dos) {
-        try {
-
-		
-					// String
-				
-						writeString(this.uuid,dos);
-					
-					// String
-				
-						writeString(this.url,dos);
-					
-					// String
-				
-						writeString(this.protocol,dos);
-					
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-        }
-
-
-    }
-
-
-    public String toString() {
-
-		StringBuilder sb = new StringBuilder();
-		sb.append(super.toString());
-		sb.append("[");
-		sb.append("uuid="+uuid);
-		sb.append(",url="+url);
-		sb.append(",protocol="+protocol);
-	    sb.append("]");
-
-	    return sb.toString();
-    }
-
-    /**
-     * Compare keys
-     */
-    public int compareTo(OnRowsEndStructtAggregateRow_10 other) {
-
-		int returnValue = -1;
-		
-	    return returnValue;
-    }
-
-
-    private int checkNullsAndCompare(Object object1, Object object2) {
-        int returnValue = 0;
-		if (object1 instanceof Comparable && object2 instanceof Comparable) {
-            returnValue = ((Comparable) object1).compareTo(object2);
-        } else if (object1 != null && object2 != null) {
-            returnValue = compareStrings(object1.toString(), object2.toString());
-        } else if (object1 == null && object2 != null) {
-            returnValue = 1;
-        } else if (object1 != null && object2 == null) {
-            returnValue = -1;
-        } else {
-            returnValue = 0;
-        }
-
-        return returnValue;
-    }
-
-    private int compareStrings(String string1, String string2) {
-        return string1.compareTo(string2);
-    }
-
-
-}
-
-public static class row43Struct implements routines.system.IPersistableRow<row43Struct> {
-    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
-    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
-
-	
-			    public String uuid;
-
-				public String getUuid () {
-					return this.uuid;
-				}
-				
-			    public String url;
-
-				public String getUrl () {
-					return this.url;
-				}
-				
-			    public String protocol;
-
-				public String getProtocol () {
-					return this.protocol;
-				}
-				
-
-
-
-	private String readString(ObjectInputStream dis) throws IOException{
-		String strReturn = null;
-		int length = 0;
-        length = dis.readInt();
-		if (length == -1) {
-			strReturn = null;
-		} else {
-			if(length > commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length) {
-				if(length < 1024 && commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length == 0) {
-   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[1024];
-				} else {
-   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[2 * length];
-   				}
-			}
-			dis.readFully(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length);
-			strReturn = new String(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length, utf8Charset);
-		}
-		return strReturn;
-	}
-
-    private void writeString(String str, ObjectOutputStream dos) throws IOException{
-		if(str == null) {
-            dos.writeInt(-1);
-		} else {
-            byte[] byteArray = str.getBytes(utf8Charset);
-	    	dos.writeInt(byteArray.length);
-			dos.write(byteArray);
-    	}
-    }
-
-    public void readData(ObjectInputStream dis) {
-
-		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
-
-        	try {
-
-        		int length = 0;
-		
-					this.uuid = readString(dis);
-					
-					this.url = readString(dis);
-					
-					this.protocol = readString(dis);
-					
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-
-		
-
-        }
-
-		
-
-      }
-
-
-    }
-
-    public void writeData(ObjectOutputStream dos) {
-        try {
-
-		
-					// String
-				
-						writeString(this.uuid,dos);
-					
-					// String
-				
-						writeString(this.url,dos);
-					
-					// String
-				
-						writeString(this.protocol,dos);
-					
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-        }
-
-
-    }
-
-
-    public String toString() {
-
-		StringBuilder sb = new StringBuilder();
-		sb.append(super.toString());
-		sb.append("[");
-		sb.append("uuid="+uuid);
-		sb.append(",url="+url);
-		sb.append(",protocol="+protocol);
-	    sb.append("]");
-
-	    return sb.toString();
-    }
-
-    /**
-     * Compare keys
-     */
-    public int compareTo(row43Struct other) {
-
-		int returnValue = -1;
-		
-	    return returnValue;
-    }
-
-
-    private int checkNullsAndCompare(Object object1, Object object2) {
-        int returnValue = 0;
-		if (object1 instanceof Comparable && object2 instanceof Comparable) {
-            returnValue = ((Comparable) object1).compareTo(object2);
-        } else if (object1 != null && object2 != null) {
-            returnValue = compareStrings(object1.toString(), object2.toString());
-        } else if (object1 == null && object2 != null) {
-            returnValue = 1;
-        } else if (object1 != null && object2 == null) {
-            returnValue = -1;
-        } else {
-            returnValue = 0;
-        }
-
-        return returnValue;
-    }
-
-    private int compareStrings(String string1, String string2) {
-        return string1.compareTo(string2);
-    }
-
-
-}
-
-public static class row42Struct implements routines.system.IPersistableRow<row42Struct> {
-    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
-    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
-
-	
-			    public String uuid;
-
-				public String getUuid () {
-					return this.uuid;
-				}
-				
-			    public String url;
-
-				public String getUrl () {
-					return this.url;
-				}
-				
-			    public String protocol;
-
-				public String getProtocol () {
-					return this.protocol;
-				}
-				
-
-
-
-	private String readString(ObjectInputStream dis) throws IOException{
-		String strReturn = null;
-		int length = 0;
-        length = dis.readInt();
-		if (length == -1) {
-			strReturn = null;
-		} else {
-			if(length > commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length) {
-				if(length < 1024 && commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length == 0) {
-   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[1024];
-				} else {
-   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[2 * length];
-   				}
-			}
-			dis.readFully(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length);
-			strReturn = new String(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length, utf8Charset);
-		}
-		return strReturn;
-	}
-
-    private void writeString(String str, ObjectOutputStream dos) throws IOException{
-		if(str == null) {
-            dos.writeInt(-1);
-		} else {
-            byte[] byteArray = str.getBytes(utf8Charset);
-	    	dos.writeInt(byteArray.length);
-			dos.write(byteArray);
-    	}
-    }
-
-    public void readData(ObjectInputStream dis) {
-
-		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
-
-        	try {
-
-        		int length = 0;
-		
-					this.uuid = readString(dis);
-					
-					this.url = readString(dis);
-					
-					this.protocol = readString(dis);
-					
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-
-		
-
-        }
-
-		
-
-      }
-
-
-    }
-
-    public void writeData(ObjectOutputStream dos) {
-        try {
-
-		
-					// String
-				
-						writeString(this.uuid,dos);
-					
-					// String
-				
-						writeString(this.url,dos);
-					
-					// String
-				
-						writeString(this.protocol,dos);
-					
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-        }
-
-
-    }
-
-
-    public String toString() {
-
-		StringBuilder sb = new StringBuilder();
-		sb.append(super.toString());
-		sb.append("[");
-		sb.append("uuid="+uuid);
-		sb.append(",url="+url);
-		sb.append(",protocol="+protocol);
-	    sb.append("]");
-
-	    return sb.toString();
-    }
-
-    /**
-     * Compare keys
-     */
-    public int compareTo(row42Struct other) {
-
-		int returnValue = -1;
-		
-	    return returnValue;
-    }
-
-
-    private int checkNullsAndCompare(Object object1, Object object2) {
-        int returnValue = 0;
-		if (object1 instanceof Comparable && object2 instanceof Comparable) {
-            returnValue = ((Comparable) object1).compareTo(object2);
-        } else if (object1 != null && object2 != null) {
-            returnValue = compareStrings(object1.toString(), object2.toString());
-        } else if (object1 == null && object2 != null) {
-            returnValue = 1;
-        } else if (object1 != null && object2 == null) {
-            returnValue = -1;
-        } else {
-            returnValue = 0;
-        }
-
-        return returnValue;
-    }
-
-    private int compareStrings(String string1, String string2) {
-        return string1.compareTo(string2);
-    }
-
-
-}
-
-public static class copyOfcopyOfmapStruct implements routines.system.IPersistableRow<copyOfcopyOfmapStruct> {
-    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
-    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
-
-	
-			    public String uuid;
-
-				public String getUuid () {
-					return this.uuid;
-				}
-				
-			    public String url;
-
-				public String getUrl () {
-					return this.url;
-				}
-				
-			    public String protocol;
-
-				public String getProtocol () {
-					return this.protocol;
-				}
-				
-
-
-
-	private String readString(ObjectInputStream dis) throws IOException{
-		String strReturn = null;
-		int length = 0;
-        length = dis.readInt();
-		if (length == -1) {
-			strReturn = null;
-		} else {
-			if(length > commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length) {
-				if(length < 1024 && commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length == 0) {
-   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[1024];
-				} else {
-   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[2 * length];
-   				}
-			}
-			dis.readFully(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length);
-			strReturn = new String(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length, utf8Charset);
-		}
-		return strReturn;
-	}
-
-    private void writeString(String str, ObjectOutputStream dos) throws IOException{
-		if(str == null) {
-            dos.writeInt(-1);
-		} else {
-            byte[] byteArray = str.getBytes(utf8Charset);
-	    	dos.writeInt(byteArray.length);
-			dos.write(byteArray);
-    	}
-    }
-
-    public void readData(ObjectInputStream dis) {
-
-		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
-
-        	try {
-
-        		int length = 0;
-		
-					this.uuid = readString(dis);
-					
-					this.url = readString(dis);
-					
-					this.protocol = readString(dis);
-					
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-
-		
-
-        }
-
-		
-
-      }
-
-
-    }
-
-    public void writeData(ObjectOutputStream dos) {
-        try {
-
-		
-					// String
-				
-						writeString(this.uuid,dos);
-					
-					// String
-				
-						writeString(this.url,dos);
-					
-					// String
-				
-						writeString(this.protocol,dos);
-					
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-        }
-
-
-    }
-
-
-    public String toString() {
-
-		StringBuilder sb = new StringBuilder();
-		sb.append(super.toString());
-		sb.append("[");
-		sb.append("uuid="+uuid);
-		sb.append(",url="+url);
-		sb.append(",protocol="+protocol);
-	    sb.append("]");
-
-	    return sb.toString();
-    }
-
-    /**
-     * Compare keys
-     */
-    public int compareTo(copyOfcopyOfmapStruct other) {
-
-		int returnValue = -1;
-		
-	    return returnValue;
-    }
-
-
-    private int checkNullsAndCompare(Object object1, Object object2) {
-        int returnValue = 0;
-		if (object1 instanceof Comparable && object2 instanceof Comparable) {
-            returnValue = ((Comparable) object1).compareTo(object2);
-        } else if (object1 != null && object2 != null) {
-            returnValue = compareStrings(object1.toString(), object2.toString());
-        } else if (object1 == null && object2 != null) {
-            returnValue = 1;
-        } else if (object1 != null && object2 == null) {
-            returnValue = -1;
-        } else {
-            returnValue = 0;
-        }
-
-        return returnValue;
-    }
-
-    private int compareStrings(String string1, String string2) {
-        return string1.compareTo(string2);
-    }
-
-
-}
-
-public static class row41Struct implements routines.system.IPersistableRow<row41Struct> {
-    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
-    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
-
-	
-			    public routines.system.Document xmldoc;
-
-				public routines.system.Document getXmldoc () {
-					return this.xmldoc;
-				}
-				
-
-
-
-    public void readData(ObjectInputStream dis) {
-
-		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
-
-        	try {
-
-        		int length = 0;
-		
-						this.xmldoc = (routines.system.Document) dis.readObject();
-					
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-
-		
-			} catch(ClassNotFoundException eCNFE) {
-				 throw new RuntimeException(eCNFE);
-		
-
-        }
-
-		
-
-      }
-
-
-    }
-
-    public void writeData(ObjectOutputStream dos) {
-        try {
-
-		
-					// Document
-				
-       			    	dos.writeObject(this.xmldoc);
-					
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-        }
-
-
-    }
-
-
-    public String toString() {
-
-		StringBuilder sb = new StringBuilder();
-		sb.append(super.toString());
-		sb.append("[");
-		sb.append("xmldoc="+String.valueOf(xmldoc));
-	    sb.append("]");
-
-	    return sb.toString();
-    }
-
-    /**
-     * Compare keys
-     */
-    public int compareTo(row41Struct other) {
-
-		int returnValue = -1;
-		
-	    return returnValue;
-    }
-
-
-    private int checkNullsAndCompare(Object object1, Object object2) {
-        int returnValue = 0;
-		if (object1 instanceof Comparable && object2 instanceof Comparable) {
-            returnValue = ((Comparable) object1).compareTo(object2);
-        } else if (object1 != null && object2 != null) {
-            returnValue = compareStrings(object1.toString(), object2.toString());
-        } else if (object1 == null && object2 != null) {
-            returnValue = 1;
-        } else if (object1 != null && object2 == null) {
-            returnValue = -1;
-        } else {
-            returnValue = 0;
-        }
-
-        return returnValue;
-    }
-
-    private int compareStrings(String string1, String string2) {
-        return string1.compareTo(string2);
-    }
-
-
-}
-public void tFileInputXML_14Process(final java.util.Map<String, Object> globalMap) throws TalendException {
-	globalMap.put("tFileInputXML_14_SUBPROCESS_STATE", 0);
-
- final boolean execStat = this.execStat;
-		String currentVirtualComponent = null;
-	
-		String iterateId = "";
-	
-	
-	String currentComponent = "";
-	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
-
-	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
-				globalResumeTicket = true;
-
-
-
-		row41Struct row41 = new row41Struct();
-copyOfcopyOfmapStruct copyOfcopyOfmap = new copyOfcopyOfmapStruct();
-row42Struct row42 = new row42Struct();
-row43Struct row43 = new row43Struct();
-row44Struct row44 = new row44Struct();
-
-
-
-
-	
-	/**
-	 * [tXMLMap_9_TXMLMAP_OUT begin ] start
-	 */
-
-	
-
-	
-		
-		ok_Hash.put("tXMLMap_9_TXMLMAP_OUT", false);
-		start_Hash.put("tXMLMap_9_TXMLMAP_OUT", System.currentTimeMillis());
-		
-	
-		currentVirtualComponent = "tXMLMap_9";
-	
-	currentComponent="tXMLMap_9_TXMLMAP_OUT";
-
-	
-			if (execStat) {
-				if(resourceMap.get("inIterateVComp") == null){
-					
-						runStat.updateStatOnConnection("row41" + iterateId, 0, 0);
-					
-				}
-			} 
-
-		
-		int tos_count_tXMLMap_9_TXMLMAP_OUT = 0;
-		
-    	class BytesLimit65535_tXMLMap_9_TXMLMAP_OUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_9_TXMLMAP_OUT().limitLog4jByte();
-
-	
-	
-//===============================input xml init part===============================
-class XML_API_tXMLMap_9_TXMLMAP_OUT{
-	public boolean isDefNull(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
-        if (node != null && node instanceof org.dom4j.Element) {
-        	org.dom4j.Attribute attri = ((org.dom4j.Element)node).attribute("nil");
-        	if(attri != null && ("true").equals(attri.getText())){
-            	return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isMissing(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
-        return node == null ? true : false;
-    }
-
-    public boolean isEmpty(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
-        if (node != null) {
-            return node.getText().length() == 0;
-        }
-        return false;
-    }
-}
-	class Var__tXMLMap_9_TXMLMAP_OUT__Struct {
-	}
-	Var__tXMLMap_9_TXMLMAP_OUT__Struct Var__tXMLMap_9_TXMLMAP_OUT = new Var__tXMLMap_9_TXMLMAP_OUT__Struct();
-// ###############################
-// # Outputs initialization
-copyOfcopyOfmapStruct copyOfcopyOfmap_tmp = new copyOfcopyOfmapStruct();
-copyOfcopyOfmapStruct copyOfcopyOfmap_save = null;
-//the aggregate variable
-copyOfcopyOfmapStruct copyOfcopyOfmap_aggregate = null;
-//init the resultset for aggregate
-java.util.List<Object> allOutsForAggregate_tXMLMap_9 = new java.util.ArrayList<Object>();
-globalMap.put("allOutsForAggregate_tXMLMap_9",allOutsForAggregate_tXMLMap_9);
-// ###############################
-class TreeNode_API_tXMLMap_9_TXMLMAP_OUT {
-	java.util.Map<String, String> xpath_value_map = new java.util.HashMap<String, String>();
-	
-	void clear(){
-		xpath_value_map.clear();
-	}
-	
-	void put(String xpath, String value){
-		xpath_value_map.put(xpath, value);
-	}
-	String get_null(String xpath) {
-		return null;
-	}
-	String get_String(String xpath){
-		return xpath_value_map.get(xpath);
-	}
-	java.util.Date get_Date(String xpath, String pattern){
-		String content = xpath_value_map.get(xpath);
-		if(content==null || content.length()==0) return null;
-		return ParserUtils.parseTo_Date(content, pattern);
-	}
-	Integer get_Integer(String xpath){
-		String content = xpath_value_map.get(xpath);
-		if(content==null || content.length()==0) return null;
-		return ParserUtils.parseTo_Integer(content);
-	}
-	Character get_Character(String xpath){
-		String content = xpath_value_map.get(xpath);
-		if(content==null || content.length()==0) return null;
-		return ParserUtils.parseTo_Character(content);
-	}
-	Float get_Float(String xpath){
-		String content = xpath_value_map.get(xpath);
-		if(content==null || content.length()==0) return null;
-		return ParserUtils.parseTo_Float(content);
-	}
-	Double get_Double(String xpath){
-		String content = xpath_value_map.get(xpath);
-		if(content==null || content.length()==0) return null;
-		return ParserUtils.parseTo_Double(content);
-	}
-}
-			TreeNode_API_tXMLMap_9_TXMLMAP_OUT treeNodeAPI_tXMLMap_9_TXMLMAP_OUT = new TreeNode_API_tXMLMap_9_TXMLMAP_OUT();
-			NameSpaceTool nsTool_tXMLMap_9_TXMLMAP_OUT = new NameSpaceTool();
-		int nb_line_tXMLMap_9_TXMLMAP_OUT = 0; 
-	
-    XML_API_tXMLMap_9_TXMLMAP_OUT xml_api_tXMLMap_9_TXMLMAP_OUT = new XML_API_tXMLMap_9_TXMLMAP_OUT();
-
-	//the map store the previous value of aggregate columns
-	java.util.Map<String,Object> aggregateCacheMap_tXMLMap_9_TXMLMAP_OUT = new java.util.HashMap<String,Object>();
-
-	            
- 
-
-
-
-/**
- * [tXMLMap_9_TXMLMAP_OUT begin ] stop
- */
-
-
-
-	
-	/**
-	 * [tFileInputXML_14 begin ] start
-	 */
-
-	
-
-	
-		
-		ok_Hash.put("tFileInputXML_14", false);
-		start_Hash.put("tFileInputXML_14", System.currentTimeMillis());
-		
-	
-	currentComponent="tFileInputXML_14";
-
-	
-		int tos_count_tFileInputXML_14 = 0;
-		
-    	class BytesLimit65535_tFileInputXML_14{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileInputXML_14().limitLog4jByte();
-
-	
-
-int nb_line_tFileInputXML_14 = 0;
-
-	String os_tFileInputXML_14 = System.getProperty("os.name").toLowerCase();
-	boolean isWindows_tFileInputXML_14=false;
-	if(os_tFileInputXML_14.indexOf("windows") > -1 || os_tFileInputXML_14.indexOf("nt") > -1){
-		isWindows_tFileInputXML_14=true;
-	}
-class NameSpaceTool_tFileInputXML_14 {
-
-    public java.util.HashMap<String, String> xmlNameSpaceMap = new java.util.HashMap<String, String>();
-    
-	private java.util.List<String> defualtNSPath = new java.util.ArrayList<String>();
-
-    public void countNSMap(org.dom4j.Element el) {
-        for (org.dom4j.Namespace ns : (java.util.List<org.dom4j.Namespace>) el.declaredNamespaces()) {
-            if (ns.getPrefix().trim().length() == 0) {
-                xmlNameSpaceMap.put("pre"+defualtNSPath.size(), ns.getURI());
-                String path = "";
-                org.dom4j.Element elTmp = el;
-                while (elTmp != null) {
-                	if (elTmp.getNamespacePrefix() != null && elTmp.getNamespacePrefix().length() > 0) {
-                        path = "/" + elTmp.getNamespacePrefix() + ":" + elTmp.getName() + path;
-                    } else {
-                        path = "/" + elTmp.getName() + path;
-                    }
-                    elTmp = elTmp.getParent();
-                }
-                defualtNSPath.add(path);
-            } else {
-                xmlNameSpaceMap.put(ns.getPrefix(), ns.getURI());
-            }
-
-        }
-        for (org.dom4j.Element e : (java.util.List<org.dom4j.Element>) el.elements()) {
-            countNSMap(e);
-        }
-    }
-    
-    private final org.talend.xpath.XPathUtil util = new  org.talend.xpath.XPathUtil();
-    
-    {
-    	util.setDefaultNSPath(defualtNSPath);
-    }
-    
-	public String addDefaultNSPrefix(String path) {
-		return util.addDefaultNSPrefix(path);
-	}
-	
-	public String addDefaultNSPrefix(String relativeXpression, String basePath) {
-		return util.addDefaultNSPrefix(relativeXpression,basePath);
-	}
-    
-}
-
-class XML_API_tFileInputXML_14{
-	public boolean isDefNull(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
-        if (node != null && node instanceof org.dom4j.Element) {
-        	org.dom4j.Attribute attri = ((org.dom4j.Element)node).attribute("nil");
-        	if(attri != null && ("true").equals(attri.getText())){
-            	return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isMissing(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
-        return node == null ? true : false;
-    }
-
-    public boolean isEmpty(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
-        if (node != null) {
-            return node.getText().length() == 0;
-        }
-        return false;
-    }
-}
-
-
-org.dom4j.io.SAXReader reader_tFileInputXML_14 = new org.dom4j.io.SAXReader();
-Object filename_tFileInputXML_14 = null;
-try {
-	filename_tFileInputXML_14 = System.getProperty("java.io.tmpdir") + "/sdiDump/tmp/out.xml";
-} catch(java.lang.Exception e) {
-	
-	
-	System.err.println(e.getMessage());
-	
-}
-if(filename_tFileInputXML_14 != null && filename_tFileInputXML_14 instanceof String && filename_tFileInputXML_14.toString().startsWith("//")){
-	if (!isWindows_tFileInputXML_14){
-		filename_tFileInputXML_14 = filename_tFileInputXML_14.toString().replaceFirst("//","/");
-	}
-}
-
-boolean isValidFile_tFileInputXML_14 = true;
-org.dom4j.Document doc_tFileInputXML_14 = null;
-java.io.Closeable toClose_tFileInputXML_14 = null;
-try{
-	if(filename_tFileInputXML_14 instanceof java.io.InputStream){
-		java.io.InputStream inputStream_tFileInputXML_14 = (java.io.InputStream)filename_tFileInputXML_14;
-		toClose_tFileInputXML_14 = inputStream_tFileInputXML_14;
-		doc_tFileInputXML_14 = reader_tFileInputXML_14.read(inputStream_tFileInputXML_14);
-	}else{
-		java.io.Reader unicodeReader_tFileInputXML_14 = new UnicodeReader(new java.io.FileInputStream(String.valueOf(filename_tFileInputXML_14)),"ISO-8859-15");
-		toClose_tFileInputXML_14 = unicodeReader_tFileInputXML_14;
-		org.xml.sax.InputSource in_tFileInputXML_14= new org.xml.sax.InputSource(unicodeReader_tFileInputXML_14);
-		doc_tFileInputXML_14 = reader_tFileInputXML_14.read(in_tFileInputXML_14);
-	}
-}catch(java.lang.Exception e){
-	
-	System.err.println(e.getMessage());
-	isValidFile_tFileInputXML_14 = false;
-} finally {
-	if(toClose_tFileInputXML_14!=null) {
-		toClose_tFileInputXML_14.close();
-	}
-}
-if(isValidFile_tFileInputXML_14){
-NameSpaceTool_tFileInputXML_14 nsTool_tFileInputXML_14 = new NameSpaceTool_tFileInputXML_14();
-nsTool_tFileInputXML_14.countNSMap(doc_tFileInputXML_14.getRootElement());
-java.util.HashMap<String,String> xmlNameSpaceMap_tFileInputXML_14 = nsTool_tFileInputXML_14.xmlNameSpaceMap;  
-
-org.dom4j.XPath x_tFileInputXML_14 = doc_tFileInputXML_14.createXPath(nsTool_tFileInputXML_14.addDefaultNSPrefix("/csw:GetRecordsResponse"));  
-x_tFileInputXML_14.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_14); 
-
-java.util.List<org.dom4j.tree.AbstractNode> nodeList_tFileInputXML_14 = (java.util.List<org.dom4j.tree.AbstractNode>)x_tFileInputXML_14.selectNodes(doc_tFileInputXML_14);	
-XML_API_tFileInputXML_14 xml_api_tFileInputXML_14 = new XML_API_tFileInputXML_14();
-String str_tFileInputXML_14 = "";
-org.dom4j.Node node_tFileInputXML_14 = null;
-
-//init all mapping xpaths
-for (org.dom4j.tree.AbstractNode temp_tFileInputXML_14: nodeList_tFileInputXML_14) {
-	nb_line_tFileInputXML_14++;
-	row41 = null;			
-	boolean whetherReject_tFileInputXML_14 = false;
-	row41 = new row41Struct();
-	try{
-	org.dom4j.XPath xTmp0_tFileInputXML_14 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_14.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
-	xTmp0_tFileInputXML_14.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_14);
-    Object obj0_tFileInputXML_14 = xTmp0_tFileInputXML_14.evaluate(temp_tFileInputXML_14);
-    if(obj0_tFileInputXML_14 == null) {
-    	node_tFileInputXML_14 = null;
-		str_tFileInputXML_14 = null;
-    	
-    } else if(obj0_tFileInputXML_14 instanceof org.dom4j.Node) {
-    	node_tFileInputXML_14 = (org.dom4j.Node)obj0_tFileInputXML_14;
-		str_tFileInputXML_14 = node_tFileInputXML_14.asXML();
-    } else if(obj0_tFileInputXML_14 instanceof String || obj0_tFileInputXML_14 instanceof Number){
-    	node_tFileInputXML_14 = temp_tFileInputXML_14;
-    	str_tFileInputXML_14 = String.valueOf(obj0_tFileInputXML_14);
-    } else if(obj0_tFileInputXML_14 instanceof java.util.List){
-    	java.util.List<org.dom4j.Node> nodes_tFileInputXML_14 = (java.util.List<org.dom4j.Node>)obj0_tFileInputXML_14;
-    	node_tFileInputXML_14 = nodes_tFileInputXML_14.size()>0 ? nodes_tFileInputXML_14.get(0) : null;
-		str_tFileInputXML_14 = node_tFileInputXML_14==null?null:node_tFileInputXML_14.asXML();
-	}
-								row41.xmldoc = ParserUtils.parseTo_Document(str_tFileInputXML_14,false,"ISO-8859-15"); 
-			
-    } catch (java.lang.Exception e) {
-        whetherReject_tFileInputXML_14 = true;
-                System.err.println(e.getMessage());
-                row41 = null;
-    }
-			
-			
-
- 
-
-
-
-/**
- * [tFileInputXML_14 begin ] stop
- */
-	
-	/**
-	 * [tFileInputXML_14 main ] start
-	 */
-
-	
-
-	
-	
-	currentComponent="tFileInputXML_14";
-
-	
-
- 
-
-
-	tos_count_tFileInputXML_14++;
-
-/**
- * [tFileInputXML_14 main ] stop
- */
-// Start of branch "row41"
-if(row41 != null) { 
-
-
-
-	
-	/**
-	 * [tXMLMap_9_TXMLMAP_OUT main ] start
-	 */
-
-	
-
-	
-	
-		currentVirtualComponent = "tXMLMap_9";
-	
-	currentComponent="tXMLMap_9_TXMLMAP_OUT";
-
-	
-
-			//row41
-			//row41
-
-
-			
-				if(execStat){
-					runStat.updateStatOnConnection("row41"+iterateId,1, 1);
-				} 
-			
-
-		
-
-	boolean rejectedInnerJoin_tXMLMap_9_TXMLMAP_OUT = false;
-	boolean rejectedDocInnerJoin_tXMLMap_9_TXMLMAP_OUT = false;
-	boolean mainRowRejected_tXMLMap_9_TXMLMAP_OUT = false;
-	boolean isMatchDocRowtXMLMap_9_TXMLMAP_OUT = false;
-	  
-	
-			
-
-		
-		
-				//init document to flat tool
-				routines.system.DocumentToFlat docToFlat_tXMLMap_9_TXMLMAP_OUT = new routines.system.DocumentToFlat();
-				docToFlat_tXMLMap_9_TXMLMAP_OUT.setOriginalLoop("/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource");
-				docToFlat_tXMLMap_9_TXMLMAP_OUT.setIsOptional(false);
-				if(row41.xmldoc == null || row41.xmldoc.getDocument() == null) {
-					throw new RuntimeException("row41.xmldoc can't be empty");
-				}
-				org.dom4j.Document doc_tXMLMap_9_TXMLMAP_OUT = row41.xmldoc.getDocument();
-				docToFlat_tXMLMap_9_TXMLMAP_OUT.setDoc(doc_tXMLMap_9_TXMLMAP_OUT);
-				docToFlat_tXMLMap_9_TXMLMAP_OUT.setDefineNS(true);
-				docToFlat_tXMLMap_9_TXMLMAP_OUT.setNamespaceTool(nsTool_tXMLMap_9_TXMLMAP_OUT);
-				
-					java.util.HashMap<String,String> xmlNameSpaceMap_tXMLMap_9_TXMLMAP_OUT = new java.util.HashMap<String,String>();
-					xmlNameSpaceMap_tXMLMap_9_TXMLMAP_OUT.put("gco","http://www.isotc211.org/2005/gco");xmlNameSpaceMap_tXMLMap_9_TXMLMAP_OUT.put("gmx","http://www.isotc211.org/2005/gmx");xmlNameSpaceMap_tXMLMap_9_TXMLMAP_OUT.put("csw","http://www.opengis.net/cat/csw/2.0.2");xmlNameSpaceMap_tXMLMap_9_TXMLMAP_OUT.put("gml","http://www.opengis.net/gml");xmlNameSpaceMap_tXMLMap_9_TXMLMAP_OUT.put("gmd","http://www.isotc211.org/2005/gmd");
-				
-				docToFlat_tXMLMap_9_TXMLMAP_OUT.setXmlNameSpaceMap(xmlNameSpaceMap_tXMLMap_9_TXMLMAP_OUT);
-				
-				String[] absolutePathMappings_tXMLMap_9_TXMLMAP_OUT = new String[3];
-				String[] relativePathMappings_tXMLMap_9_TXMLMAP_OUT = new String[3];
-				
-				absolutePathMappings_tXMLMap_9_TXMLMAP_OUT[0] = "row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:fileIdentifier/gco:CharacterString";
-				relativePathMappings_tXMLMap_9_TXMLMAP_OUT[0] = "../../../../../../gmd:fileIdentifier/gco:CharacterString";
-				
-				absolutePathMappings_tXMLMap_9_TXMLMAP_OUT[1] = "row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString";
-				relativePathMappings_tXMLMap_9_TXMLMAP_OUT[1] = "gmd:protocol/gco:CharacterString";
-				
-				absolutePathMappings_tXMLMap_9_TXMLMAP_OUT[2] = "row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL";
-				relativePathMappings_tXMLMap_9_TXMLMAP_OUT[2] = "gmd:linkage/gmd:URL";
-				
-				docToFlat_tXMLMap_9_TXMLMAP_OUT.setAbsolutePathMappings(absolutePathMappings_tXMLMap_9_TXMLMAP_OUT);
-				docToFlat_tXMLMap_9_TXMLMAP_OUT.setCurrentRelativePathMappings(relativePathMappings_tXMLMap_9_TXMLMAP_OUT);
-				//generate document to flat data
-				docToFlat_tXMLMap_9_TXMLMAP_OUT.flat();
-				//get flat data
-				java.util.List<java.util.Map<String, String>> resultSet_tXMLMap_9_TXMLMAP_OUT = docToFlat_tXMLMap_9_TXMLMAP_OUT.getResultSet();
-				
-				for (java.util.Map<String,String> oneRow_tXMLMap_9_TXMLMAP_OUT: resultSet_tXMLMap_9_TXMLMAP_OUT) { // G_TXM_M_001
-					nb_line_tXMLMap_9_TXMLMAP_OUT++;
-			    	rejectedInnerJoin_tXMLMap_9_TXMLMAP_OUT = false;
-			    	rejectedDocInnerJoin_tXMLMap_9_TXMLMAP_OUT = false;
-					mainRowRejected_tXMLMap_9_TXMLMAP_OUT=false;
-				    isMatchDocRowtXMLMap_9_TXMLMAP_OUT = false;
-					
-			    	treeNodeAPI_tXMLMap_9_TXMLMAP_OUT.clear();
-			    	for(java.util.Map.Entry<String, String> entry_tXMLMap_9_TXMLMAP_OUT : oneRow_tXMLMap_9_TXMLMAP_OUT.entrySet()) {
-						treeNodeAPI_tXMLMap_9_TXMLMAP_OUT.put(entry_tXMLMap_9_TXMLMAP_OUT.getKey(),entry_tXMLMap_9_TXMLMAP_OUT.getValue());
-					}
-					
-
-
-			
-{ // start of Var scope
-
-	// ###############################
-	// # Vars tables
-
-Var__tXMLMap_9_TXMLMAP_OUT__Struct Var = Var__tXMLMap_9_TXMLMAP_OUT;
-		// ###############################
-		// # Output tables
-
-copyOfcopyOfmap = null;
-
-
-// # Output table : 'copyOfcopyOfmap'
-
-copyOfcopyOfmap_tmp = new copyOfcopyOfmapStruct();
-copyOfcopyOfmap_tmp.uuid = treeNodeAPI_tXMLMap_9_TXMLMAP_OUT.get_String("row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:fileIdentifier/gco:CharacterString");
-copyOfcopyOfmap_tmp.url = treeNodeAPI_tXMLMap_9_TXMLMAP_OUT.get_String("row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL");
-copyOfcopyOfmap_tmp.protocol = treeNodeAPI_tXMLMap_9_TXMLMAP_OUT.get_String("row41.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString");allOutsForAggregate_tXMLMap_9.add(copyOfcopyOfmap_tmp);
-
-// ###############################
-
-} // end of Var scope
-
-rejectedInnerJoin_tXMLMap_9_TXMLMAP_OUT = false;
-
-
-		}//G_TXM_M_001 close
-	
-
- 
-
-
-	tos_count_tXMLMap_9_TXMLMAP_OUT++;
-
-/**
- * [tXMLMap_9_TXMLMAP_OUT main ] stop
- */
-
-} // End of branch "row41"
-
-
-
-
-	
-	/**
-	 * [tFileInputXML_14 end ] start
-	 */
-
-	
-
-	
-	
-	currentComponent="tFileInputXML_14";
-
-	
-
-
-}
-	}
-	globalMap.put("tFileInputXML_14_NB_LINE",nb_line_tFileInputXML_14);
-
-	
- 
-
-ok_Hash.put("tFileInputXML_14", true);
-end_Hash.put("tFileInputXML_14", System.currentTimeMillis());
-
-
-
-
-/**
- * [tFileInputXML_14 end ] stop
- */
-
-	
-	/**
-	 * [tXMLMap_9_TXMLMAP_OUT end ] start
-	 */
-
-	
-
-	
-	
-		currentVirtualComponent = "tXMLMap_9";
-	
-	currentComponent="tXMLMap_9_TXMLMAP_OUT";
-
-	
-
-
-
-
-			if(execStat){
-				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
-			 		runStat.updateStatOnConnection("row41"+iterateId,2, 0); 
-			 	}
-			}
-		
- 
-
-ok_Hash.put("tXMLMap_9_TXMLMAP_OUT", true);
-end_Hash.put("tXMLMap_9_TXMLMAP_OUT", System.currentTimeMillis());
-
-
-
-
-/**
- * [tXMLMap_9_TXMLMAP_OUT end ] stop
- */
-
-
-
-
-	
-	/**
-	 * [tAggregateRow_10_AGGOUT begin ] start
-	 */
-
-	
-
-	
-		
-		ok_Hash.put("tAggregateRow_10_AGGOUT", false);
-		start_Hash.put("tAggregateRow_10_AGGOUT", System.currentTimeMillis());
-		
-	
-		currentVirtualComponent = "tAggregateRow_10";
-	
-	currentComponent="tAggregateRow_10_AGGOUT";
-
-	
-			if (execStat) {
-				if(resourceMap.get("inIterateVComp") == null){
-					
-						runStat.updateStatOnConnection("row43" + iterateId, 0, 0);
-					
-				}
-			} 
-
-		
-		int tos_count_tAggregateRow_10_AGGOUT = 0;
-		
-    	class BytesLimit65535_tAggregateRow_10_AGGOUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_10_AGGOUT().limitLog4jByte();
-
-// ------------ Seems it is not used
-
-java.util.Map hashAggreg_tAggregateRow_10 = new java.util.HashMap(); 
-
-// ------------
-
-	class UtilClass_tAggregateRow_10 { // G_OutBegin_AggR_144
-
-		public double sd(Double[] data) {
-	        final int n = data.length;
-        	if (n < 2) {
-	            return Double.NaN;
-        	}
-        	double d1 = 0d;
-        	double d2 =0d;
-	        
-	        for (int i = 0; i < data.length; i++) {
-            	d1 += (data[i]*data[i]);
-            	d2 += data[i];
-        	}
-        
-	        return Math.sqrt((n*d1 - d2*d2)/n/(n-1));
-	    }
-	    
-		public void checkedIADD(byte a, byte b, boolean checkTypeOverFlow, boolean checkUlp) {
-		    byte r = (byte) (a + b);
-		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
-		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'short/Short'", "'byte/Byte'"));
-		    }
-		}
-		
-		public void checkedIADD(short a, short b, boolean checkTypeOverFlow, boolean checkUlp) {
-		    short r = (short) (a + b);
-		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
-		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'int/Integer'", "'short/Short'"));
-		    }
-		}
-		
-		public void checkedIADD(int a, int b, boolean checkTypeOverFlow, boolean checkUlp) {
-		    int r = a + b;
-		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
-		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'long/Long'", "'int/Integer'"));
-		    }
-		}
-		
-		public void checkedIADD(long a, long b, boolean checkTypeOverFlow, boolean checkUlp) {
-		    long r = a + b;
-		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
-		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'long/Long'"));
-		    }
-		}
-		
-		public void checkedIADD(float a, float b, boolean checkTypeOverFlow, boolean checkUlp) {
-		
-			if(checkUlp) {
-			    float minAddedValue = Math.ulp(a);
-			    if (minAddedValue > Math.abs(b)) {
-			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(b), "'double' or 'BigDecimal'", "'float/Float'"));
-			    }
-			}
-			
-		    if (checkTypeOverFlow && ((double) a + (double) b > (double) Float.MAX_VALUE) || ((double) a + (double) b < (double) -Float.MAX_VALUE)) {
-		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'double' or 'BigDecimal'", "'float/Float'"));
-		    }
-		}
-		
-		public void checkedIADD(double a, double b, boolean checkTypeOverFlow, boolean checkUlp) {
-		
-			if(checkUlp) {
-			    double minAddedValue = Math.ulp(a);
-			    if (minAddedValue > Math.abs(b)) {
-			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
-			    }
-			}
-		
-		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
-		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
-		    }
-		}
-		
-		public void checkedIADD(double a, byte b, boolean checkTypeOverFlow, boolean checkUlp) {
-		
-		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
-		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
-		    }
-		}
-		
-		public void checkedIADD(double a, short b, boolean checkTypeOverFlow, boolean checkUlp) {
-		
-		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
-		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
-		    }
-		}
-		
-		public void checkedIADD(double a, int b, boolean checkTypeOverFlow, boolean checkUlp) {
-		
-		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
-		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
-		    }
-		}
-		
-		public void checkedIADD(double a, float b, boolean checkTypeOverFlow, boolean checkUlp) {
-		
-			if(checkUlp) {
-			    double minAddedValue = Math.ulp(a);
-			    if (minAddedValue > Math.abs(b)) {
-			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
-			    }
-			}
-		
-		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
-		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
-		    }
-		}
-		
-		private String buildOverflowMessage(String a, String b, String advicedTypes, String originalType) {
-		    return "Type overflow when adding " + b + " to " + a
-		    + ", to resolve this problem, increase the precision by using "+ advicedTypes +" type in place of "+ originalType +".";
-		}
-		
-		private String buildPrecisionMessage(String a, String b, String advicedTypes, String originalType) {
-		    return "The double precision is unsufficient to add the value " + b + " to " + a
-		    + ", to resolve this problem, increase the precision by using "+ advicedTypes +" type in place of "+ originalType +".";
-		}
-
-	} // G_OutBegin_AggR_144
-
-	UtilClass_tAggregateRow_10 utilClass_tAggregateRow_10 = new UtilClass_tAggregateRow_10();
-
-	
-
-	class AggOperationStruct_tAggregateRow_10 { // G_OutBegin_AggR_100
-
-		private static final int DEFAULT_HASHCODE = 1;
-	    private static final int PRIME = 31;
-	    private int hashCode = DEFAULT_HASHCODE;
-	    public boolean hashCodeDirty = true;
-
-    				String uuid;StringBuilder url_list = new StringBuilder();
-           			boolean url_list_firstEmpty = false;
-           			StringBuilder protocol_list = new StringBuilder();
-           			boolean protocol_list_firstEmpty = false;
-           			
-        
-	    @Override
-		public int hashCode() {
-			if (this.hashCodeDirty) {
-				final int prime = PRIME;
-				int result = DEFAULT_HASHCODE;
-		
-							result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
-							
-	    		this.hashCode = result;
-	    		this.hashCodeDirty = false;		
-			}
-			return this.hashCode;
-		}
-		
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) return true;
-			if (obj == null) return false;
-			if (getClass() != obj.getClass()) return false;
-			final AggOperationStruct_tAggregateRow_10 other = (AggOperationStruct_tAggregateRow_10) obj;
-			
-							if (this.uuid == null) {
-								if (other.uuid != null) 
-									return false;
-							} else if (!this.uuid.equals(other.uuid)) 
-								return false;
-						
-			
-			return true;
-		}
-  
-        
-	} // G_OutBegin_AggR_100
-
-	AggOperationStruct_tAggregateRow_10 operation_result_tAggregateRow_10 = null;
-	AggOperationStruct_tAggregateRow_10 operation_finder_tAggregateRow_10 = new AggOperationStruct_tAggregateRow_10();
-	java.util.Map<AggOperationStruct_tAggregateRow_10,AggOperationStruct_tAggregateRow_10> hash_tAggregateRow_10 = new java.util.HashMap<AggOperationStruct_tAggregateRow_10,AggOperationStruct_tAggregateRow_10>();
-	
-	String delimiter_tAggregateRow_10 = "|";
-	
-
- 
-
-
-
-/**
- * [tAggregateRow_10_AGGOUT begin ] stop
- */
-
-
-
-	
-	/**
-	 * [tUniqRow_2 begin ] start
-	 */
-
-	
-
-	
-		
-		ok_Hash.put("tUniqRow_2", false);
-		start_Hash.put("tUniqRow_2", System.currentTimeMillis());
-		
-	
-	currentComponent="tUniqRow_2";
-
-	
-			if (execStat) {
-				if(resourceMap.get("inIterateVComp") == null){
-					
-						runStat.updateStatOnConnection("row42" + iterateId, 0, 0);
-					
-				}
-			} 
-
-		
-		int tos_count_tUniqRow_2 = 0;
-		
-    	class BytesLimit65535_tUniqRow_2{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tUniqRow_2().limitLog4jByte();
-
-	
-		class KeyStruct_tUniqRow_2 {
-	
-			private static final int DEFAULT_HASHCODE = 1;
-		    private static final int PRIME = 31;
-		    private int hashCode = DEFAULT_HASHCODE;
-		    public boolean hashCodeDirty = true;
-	
-	        
-					String uuid;
-					String url;
-					String protocol;        
-	        
-		    @Override
-			public int hashCode() {
-				if (this.hashCodeDirty) {
-					final int prime = PRIME;
-					int result = DEFAULT_HASHCODE;
-			
-								result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
-								
-								result = prime * result + ((this.url == null) ? 0 : this.url.hashCode());
-								
-								result = prime * result + ((this.protocol == null) ? 0 : this.protocol.hashCode());
-								
-		    		this.hashCode = result;
-		    		this.hashCodeDirty = false;		
-				}
-				return this.hashCode;
-			}
-			
-			@Override
-			public boolean equals(Object obj) {
-				if (this == obj) return true;
-				if (obj == null) return false;
-				if (getClass() != obj.getClass()) return false;
-				final KeyStruct_tUniqRow_2 other = (KeyStruct_tUniqRow_2) obj;
-				
-									if (this.uuid == null) {
-										if (other.uuid != null) 
-											return false;
-								
-									} else if (!this.uuid.equals(other.uuid))
-								 
-										return false;
-								
-									if (this.url == null) {
-										if (other.url != null) 
-											return false;
-								
-									} else if (!this.url.equals(other.url))
-								 
-										return false;
-								
-									if (this.protocol == null) {
-										if (other.protocol != null) 
-											return false;
-								
-									} else if (!this.protocol.equals(other.protocol))
-								 
-										return false;
-								
-				
-				return true;
-			}
-	  
-	        
-		}
-
-	
-int nb_uniques_tUniqRow_2 = 0;
-int nb_duplicates_tUniqRow_2 = 0;
-KeyStruct_tUniqRow_2 finder_tUniqRow_2 = new KeyStruct_tUniqRow_2();
-java.util.Set<KeyStruct_tUniqRow_2> keystUniqRow_2 = new java.util.HashSet<KeyStruct_tUniqRow_2>(); 
-
- 
-
-
-
-/**
- * [tUniqRow_2 begin ] stop
- */
-
-
-
-	
-	/**
-	 * [tFilterRow_14 begin ] start
-	 */
-
-	
-
-	
-		
-		ok_Hash.put("tFilterRow_14", false);
-		start_Hash.put("tFilterRow_14", System.currentTimeMillis());
-		
-	
-	currentComponent="tFilterRow_14";
-
-	
-			if (execStat) {
-				if(resourceMap.get("inIterateVComp") == null){
-					
-						runStat.updateStatOnConnection("copyOfcopyOfmap" + iterateId, 0, 0);
-					
-				}
-			} 
-
-		
-		int tos_count_tFilterRow_14 = 0;
-		
-    	class BytesLimit65535_tFilterRow_14{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFilterRow_14().limitLog4jByte();
-    int nb_line_tFilterRow_14 = 0;
-    int nb_line_ok_tFilterRow_14 = 0;
-    int nb_line_reject_tFilterRow_14 = 0;
-
-    class Operator_tFilterRow_14 {
-      private String sErrorMsg = "";
-      private boolean bMatchFlag = true;
-      private String sUnionFlag = "&&";
-
-      public Operator_tFilterRow_14(String unionFlag){
-        sUnionFlag = unionFlag;
-        bMatchFlag =  "||".equals(unionFlag) ? false : true;
-      }
-
-      public String getErrorMsg() {
-        if (sErrorMsg != null && sErrorMsg.length() > 1)
-          return sErrorMsg.substring(1);
-        else 
-          return null;
-      }
-
-      public boolean getMatchFlag() {
-        return bMatchFlag;
-      }
-
-      public void matches(boolean partMatched, String reason) {
-        // no need to care about the next judgement
-        if ("||".equals(sUnionFlag) && bMatchFlag){
-          return;
-        }
-
-        if (!partMatched) {
-          sErrorMsg += "|" + reason;
-        }
-
-        if ("||".equals(sUnionFlag))
-          bMatchFlag = bMatchFlag || partMatched;
-        else
-          bMatchFlag = bMatchFlag && partMatched;
-      }
-    }
-
- 
-
-
-
-/**
- * [tFilterRow_14 begin ] stop
- */
-
-
-
-	
-	/**
-	 * [tXMLMap_9_TXMLMAP_IN begin ] start
-	 */
-
-	
-
-	
-		
-		ok_Hash.put("tXMLMap_9_TXMLMAP_IN", false);
-		start_Hash.put("tXMLMap_9_TXMLMAP_IN", System.currentTimeMillis());
-		
-	
-		currentVirtualComponent = "tXMLMap_9";
-	
-	currentComponent="tXMLMap_9_TXMLMAP_IN";
-
-	
-		int tos_count_tXMLMap_9_TXMLMAP_IN = 0;
-		
-    	class BytesLimit65535_tXMLMap_9_TXMLMAP_IN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_9_TXMLMAP_IN().limitLog4jByte();
-java.util.List<Object> outs_tXMLMap_9 = (java.util.List<Object>)globalMap.get("allOutsForAggregate_tXMLMap_9");
-for(Object  row_out_tXMLMap_9_TXMLMAP_IN : outs_tXMLMap_9) {//TD512
- 
-
-
-
-/**
- * [tXMLMap_9_TXMLMAP_IN begin ] stop
- */
-	
-	/**
-	 * [tXMLMap_9_TXMLMAP_IN main ] start
-	 */
-
-	
-
-	
-	
-		currentVirtualComponent = "tXMLMap_9";
-	
-	currentComponent="tXMLMap_9_TXMLMAP_IN";
-
-	
-
-	copyOfcopyOfmap = null;
-	if(row_out_tXMLMap_9_TXMLMAP_IN!=null && row_out_tXMLMap_9_TXMLMAP_IN instanceof copyOfcopyOfmapStruct) {
-		copyOfcopyOfmap = (copyOfcopyOfmapStruct)row_out_tXMLMap_9_TXMLMAP_IN;		
-	}
- 
-
-
-	tos_count_tXMLMap_9_TXMLMAP_IN++;
-
-/**
- * [tXMLMap_9_TXMLMAP_IN main ] stop
- */
-// Start of branch "copyOfcopyOfmap"
-if(copyOfcopyOfmap != null) { 
-
-
-
-	
-	/**
-	 * [tFilterRow_14 main ] start
-	 */
-
-	
-
-	
-	
-	currentComponent="tFilterRow_14";
-
-	
-
-			//copyOfcopyOfmap
-			//copyOfcopyOfmap
-
-
-			
-				if(execStat){
-					runStat.updateStatOnConnection("copyOfcopyOfmap"+iterateId,1, 1);
-				} 
-			
-
-		
-
-          row42 = null;
-    Operator_tFilterRow_14 ope_tFilterRow_14 = new Operator_tFilterRow_14("&&");
-      ope_tFilterRow_14.matches((copyOfcopyOfmap.protocol.contains("REST")
-			), "advanced condition failed");
-    
-    if (ope_tFilterRow_14.getMatchFlag()) {
-              if(row42 == null){ 
-                row42 = new row42Struct();
-              }
-               row42.uuid = copyOfcopyOfmap.uuid;
-               row42.url = copyOfcopyOfmap.url;
-               row42.protocol = copyOfcopyOfmap.protocol;    
-      nb_line_ok_tFilterRow_14++;
-    } else {
-      nb_line_reject_tFilterRow_14++;
-    }
-
-nb_line_tFilterRow_14++;
-
- 
-
-
-	tos_count_tFilterRow_14++;
-
-/**
- * [tFilterRow_14 main ] stop
- */
-// Start of branch "row42"
-if(row42 != null) { 
-
-
-
-	
-	/**
-	 * [tUniqRow_2 main ] start
-	 */
-
-	
-
-	
-	
-	currentComponent="tUniqRow_2";
-
-	
-
-			//row42
-			//row42
-
-
-			
-				if(execStat){
-					runStat.updateStatOnConnection("row42"+iterateId,1, 1);
-				} 
-			
-
-		
-row43 = null;			
-if(row42.uuid == null){
-	finder_tUniqRow_2.uuid = null;
-}else{
-	finder_tUniqRow_2.uuid = row42.uuid.toLowerCase();
-}
-if(row42.url == null){
-	finder_tUniqRow_2.url = null;
-}else{
-	finder_tUniqRow_2.url = row42.url.toLowerCase();
-}
-if(row42.protocol == null){
-	finder_tUniqRow_2.protocol = null;
-}else{
-	finder_tUniqRow_2.protocol = row42.protocol.toLowerCase();
-}	
-finder_tUniqRow_2.hashCodeDirty = true;
-if (!keystUniqRow_2.contains(finder_tUniqRow_2)) {
-		KeyStruct_tUniqRow_2 new_tUniqRow_2 = new KeyStruct_tUniqRow_2();
-
-		
-if(row42.uuid == null){
-	new_tUniqRow_2.uuid = null;
-}else{
-	new_tUniqRow_2.uuid = row42.uuid.toLowerCase();
-}
-if(row42.url == null){
-	new_tUniqRow_2.url = null;
-}else{
-	new_tUniqRow_2.url = row42.url.toLowerCase();
-}
-if(row42.protocol == null){
-	new_tUniqRow_2.protocol = null;
-}else{
-	new_tUniqRow_2.protocol = row42.protocol.toLowerCase();
-}
-		
-		keystUniqRow_2.add(new_tUniqRow_2);if(row43 == null){ 
-	
-	row43 = new row43Struct();
-}row43.uuid = row42.uuid;			row43.url = row42.url;			row43.protocol = row42.protocol;					
-		nb_uniques_tUniqRow_2++;
-	} else {
-	  nb_duplicates_tUniqRow_2++;
-	}
-
- 
-
-
-	tos_count_tUniqRow_2++;
-
-/**
- * [tUniqRow_2 main ] stop
- */
-// Start of branch "row43"
-if(row43 != null) { 
-
-
-
-	
-	/**
-	 * [tAggregateRow_10_AGGOUT main ] start
-	 */
-
-	
-
-	
-	
-		currentVirtualComponent = "tAggregateRow_10";
-	
-	currentComponent="tAggregateRow_10_AGGOUT";
-
-	
-
-			//row43
-			//row43
-
-
-			
-				if(execStat){
-					runStat.updateStatOnConnection("row43"+iterateId,1, 1);
-				} 
-			
-
-		
-	
-operation_finder_tAggregateRow_10.uuid = row43.uuid;
-			
-
-	operation_finder_tAggregateRow_10.hashCodeDirty = true;
-	
-	operation_result_tAggregateRow_10 = hash_tAggregateRow_10.get(operation_finder_tAggregateRow_10);
-
-	
-
-	if(operation_result_tAggregateRow_10 == null) { // G_OutMain_AggR_001
-
-		operation_result_tAggregateRow_10 = new AggOperationStruct_tAggregateRow_10();
-
-		operation_result_tAggregateRow_10.uuid = operation_finder_tAggregateRow_10.uuid;
-				
-		
-		
-
-		hash_tAggregateRow_10.put(operation_result_tAggregateRow_10, operation_result_tAggregateRow_10);
-	
-	} // G_OutMain_AggR_001
-
-
-	
-				if(row43.url != null) { // G_OutMain_AggR_546
-				
-				if(operation_result_tAggregateRow_10.url_list.length() > 0) {
-					operation_result_tAggregateRow_10.url_list.append("|");
-				} 
-				else if(operation_result_tAggregateRow_10.url_list_firstEmpty){
-					operation_result_tAggregateRow_10.url_list.append("|");
-				}
-					if(operation_result_tAggregateRow_10.url_list != null) {
-						if(operation_result_tAggregateRow_10.url_list_firstEmpty==false && ("").equals(String.valueOf(row43.url))){
-							operation_result_tAggregateRow_10.url_list_firstEmpty = true;
-						}
-						operation_result_tAggregateRow_10.url_list = operation_result_tAggregateRow_10.url_list.append(String.valueOf(row43.url));
-					}
-				
-				} // G_OutMain_AggR_546
-				
-				if(row43.protocol != null) { // G_OutMain_AggR_546
-				
-				if(operation_result_tAggregateRow_10.protocol_list.length() > 0) {
-					operation_result_tAggregateRow_10.protocol_list.append("|");
-				} 
-				else if(operation_result_tAggregateRow_10.protocol_list_firstEmpty){
-					operation_result_tAggregateRow_10.protocol_list.append("|");
-				}
-					if(operation_result_tAggregateRow_10.protocol_list != null) {
-						if(operation_result_tAggregateRow_10.protocol_list_firstEmpty==false && ("").equals(String.valueOf(row43.protocol))){
-							operation_result_tAggregateRow_10.protocol_list_firstEmpty = true;
-						}
-						operation_result_tAggregateRow_10.protocol_list = operation_result_tAggregateRow_10.protocol_list.append(String.valueOf(row43.protocol));
-					}
-				
-				} // G_OutMain_AggR_546
-				
-
-
- 
-
-
-	tos_count_tAggregateRow_10_AGGOUT++;
-
-/**
- * [tAggregateRow_10_AGGOUT main ] stop
- */
-
-} // End of branch "row43"
-
-
-
-
-
-} // End of branch "row42"
-
-
-
-
-
-} // End of branch "copyOfcopyOfmap"
-
-
-
-
-	
-	/**
-	 * [tXMLMap_9_TXMLMAP_IN end ] start
-	 */
-
-	
-
-	
-	
-		currentVirtualComponent = "tXMLMap_9";
-	
-	currentComponent="tXMLMap_9_TXMLMAP_IN";
-
-	
-
-}//TD512
- 
-
-ok_Hash.put("tXMLMap_9_TXMLMAP_IN", true);
-end_Hash.put("tXMLMap_9_TXMLMAP_IN", System.currentTimeMillis());
-
-
-
-
-/**
- * [tXMLMap_9_TXMLMAP_IN end ] stop
- */
-
-	
-	/**
-	 * [tFilterRow_14 end ] start
-	 */
-
-	
-
-	
-	
-	currentComponent="tFilterRow_14";
-
-	
-    globalMap.put("tFilterRow_14_NB_LINE", nb_line_tFilterRow_14);
-    globalMap.put("tFilterRow_14_NB_LINE_OK", nb_line_ok_tFilterRow_14);
-    globalMap.put("tFilterRow_14_NB_LINE_REJECT", nb_line_reject_tFilterRow_14);
-    
-
-			if(execStat){
-				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
-			 		runStat.updateStatOnConnection("copyOfcopyOfmap"+iterateId,2, 0); 
-			 	}
-			}
-		
- 
-
-ok_Hash.put("tFilterRow_14", true);
-end_Hash.put("tFilterRow_14", System.currentTimeMillis());
-
-
-
-
-/**
- * [tFilterRow_14 end ] stop
- */
-
-	
-	/**
-	 * [tUniqRow_2 end ] start
-	 */
-
-	
-
-	
-	
-	currentComponent="tUniqRow_2";
-
-	
-
-globalMap.put("tUniqRow_2_NB_UNIQUES",nb_uniques_tUniqRow_2);
-globalMap.put("tUniqRow_2_NB_DUPLICATES",nb_duplicates_tUniqRow_2);
-
-			if(execStat){
-				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
-			 		runStat.updateStatOnConnection("row42"+iterateId,2, 0); 
-			 	}
-			}
-		
- 
-
-ok_Hash.put("tUniqRow_2", true);
-end_Hash.put("tUniqRow_2", System.currentTimeMillis());
-
-
-
-
-/**
- * [tUniqRow_2 end ] stop
- */
-
-	
-	/**
-	 * [tAggregateRow_10_AGGOUT end ] start
-	 */
-
-	
-
-	
-	
-		currentVirtualComponent = "tAggregateRow_10";
-	
-	currentComponent="tAggregateRow_10_AGGOUT";
-
-	
-
-			if(execStat){
-				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
-			 		runStat.updateStatOnConnection("row43"+iterateId,2, 0); 
-			 	}
-			}
-		
- 
-
-ok_Hash.put("tAggregateRow_10_AGGOUT", true);
-end_Hash.put("tAggregateRow_10_AGGOUT", System.currentTimeMillis());
-
-
-
-
-/**
- * [tAggregateRow_10_AGGOUT end ] stop
- */
-
-
-	
-	/**
-	 * [tAdvancedHash_row44 begin ] start
-	 */
-
-	
-
-	
-		
-		ok_Hash.put("tAdvancedHash_row44", false);
-		start_Hash.put("tAdvancedHash_row44", System.currentTimeMillis());
-		
-	
-	currentComponent="tAdvancedHash_row44";
-
-	
-			if (execStat) {
-				if(resourceMap.get("inIterateVComp") == null){
-					
-						runStat.updateStatOnConnection("row44" + iterateId, 0, 0);
-					
-				}
-			} 
-
-		
-		int tos_count_tAdvancedHash_row44 = 0;
-		
-    	class BytesLimit65535_tAdvancedHash_row44{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAdvancedHash_row44().limitLog4jByte();
-
-			   		// connection name:row44
-			   		// source node:tAggregateRow_10_AGGIN - inputs:(OnRowsEnd) outputs:(row44,row44) | target node:tAdvancedHash_row44 - inputs:(row44) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,row44,status,row45,row40,row27,row15) outputs:(map)
-			   
-			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row44 = 
-			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
-			   			
-			   
-	   			org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<row44Struct> tHash_Lookup_row44 =org.talend.designer.components.lookup.memory.AdvancedMemoryLookup.
-	   						<row44Struct>getLookup(matchingModeEnum_row44);
-	   						   
-		   	   	   globalMap.put("tHash_Lookup_row44", tHash_Lookup_row44);
-		   	   	   
-				
-           
-
- 
-
-
-
-/**
- * [tAdvancedHash_row44 begin ] stop
- */
-
-
-
-	
-	/**
-	 * [tAggregateRow_10_AGGIN begin ] start
-	 */
-
-	
-
-	
-		
-		ok_Hash.put("tAggregateRow_10_AGGIN", false);
-		start_Hash.put("tAggregateRow_10_AGGIN", System.currentTimeMillis());
-		
-	
-		currentVirtualComponent = "tAggregateRow_10";
-	
-	currentComponent="tAggregateRow_10_AGGIN";
-
-	
-		int tos_count_tAggregateRow_10_AGGIN = 0;
-		
-    	class BytesLimit65535_tAggregateRow_10_AGGIN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_10_AGGIN().limitLog4jByte();
-
-java.util.Collection<AggOperationStruct_tAggregateRow_10> values_tAggregateRow_10 = hash_tAggregateRow_10.values();
-
-globalMap.put("tAggregateRow_10_NB_LINE", values_tAggregateRow_10.size());
-
-for(AggOperationStruct_tAggregateRow_10 aggregated_row_tAggregateRow_10 : values_tAggregateRow_10) { // G_AggR_600
-
-
-
- 
-
-
-
-/**
- * [tAggregateRow_10_AGGIN begin ] stop
- */
-	
-	/**
-	 * [tAggregateRow_10_AGGIN main ] start
-	 */
-
-	
-
-	
-	
-		currentVirtualComponent = "tAggregateRow_10";
-	
-	currentComponent="tAggregateRow_10_AGGIN";
-
-	
-
-            				    row44.uuid = aggregated_row_tAggregateRow_10.uuid;
-            				    
-    								row44.url = aggregated_row_tAggregateRow_10.url_list.toString();
-	    						
-    								row44.protocol = aggregated_row_tAggregateRow_10.protocol_list.toString();
-	    						
-
- 
-
-
-	tos_count_tAggregateRow_10_AGGIN++;
-
-/**
- * [tAggregateRow_10_AGGIN main ] stop
- */
-
-	
-	/**
-	 * [tAdvancedHash_row44 main ] start
-	 */
-
-	
-
-	
-	
-	currentComponent="tAdvancedHash_row44";
-
-	
-
-			//row44
-			//row44
-
-
-			
-				if(execStat){
-					runStat.updateStatOnConnection("row44"+iterateId,1, 1);
-				} 
-			
-
-		
-
-
-			   
-			   
-
-					row44Struct row44_HashRow = new row44Struct();
-		   	   	   
-				
-				row44_HashRow.uuid = row44.uuid;
-				
-				row44_HashRow.url = row44.url;
-				
-				row44_HashRow.protocol = row44.protocol;
-				
-			tHash_Lookup_row44.put(row44_HashRow);
-			
-            
-
-
-
-
- 
-
-
-	tos_count_tAdvancedHash_row44++;
-
-/**
- * [tAdvancedHash_row44 main ] stop
- */
-
-
-
-	
-	/**
-	 * [tAggregateRow_10_AGGIN end ] start
-	 */
-
-	
-
-	
-	
-		currentVirtualComponent = "tAggregateRow_10";
-	
-	currentComponent="tAggregateRow_10_AGGIN";
-
-	
-
-} // G_AggR_600
-
- 
-
-ok_Hash.put("tAggregateRow_10_AGGIN", true);
-end_Hash.put("tAggregateRow_10_AGGIN", System.currentTimeMillis());
-
-
-
-
-/**
- * [tAggregateRow_10_AGGIN end ] stop
- */
-
-	
-	/**
-	 * [tAdvancedHash_row44 end ] start
-	 */
-
-	
-
-	
-	
-	currentComponent="tAdvancedHash_row44";
-
-	
-
-tHash_Lookup_row44.endPut();
-
-			if(execStat){
-				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
-			 		runStat.updateStatOnConnection("row44"+iterateId,2, 0); 
-			 	}
-			}
-		
- 
-
-ok_Hash.put("tAdvancedHash_row44", true);
-end_Hash.put("tAdvancedHash_row44", System.currentTimeMillis());
-
-
-
-
-/**
- * [tAdvancedHash_row44 end ] stop
- */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-				}//end the resume
-
-				
-
-
-
-	
-			}catch(java.lang.Exception e){	
-				
-				TalendException te = new TalendException(e, currentComponent, globalMap);
-				
-					te.setVirtualComponentName(currentVirtualComponent);
-				
-				throw te;
-			}catch(java.lang.Error error){	
-				
-					runStat.stopThreadStat();
-				
-				throw error;
-			}finally{
-				
-							//free memory for "tAggregateRow_10_AGGIN"
-							globalMap.remove("tAggregateRow_10");
-						
-				try{
-					
-	
-	/**
-	 * [tFileInputXML_14 finally ] start
-	 */
-
-	
-
-	
-	
-	currentComponent="tFileInputXML_14";
-
-	
-
- 
-
-
-
-/**
- * [tFileInputXML_14 finally ] stop
- */
-
-	
-	/**
-	 * [tXMLMap_9_TXMLMAP_OUT finally ] start
-	 */
-
-	
-
-	
-	
-		currentVirtualComponent = "tXMLMap_9";
-	
-	currentComponent="tXMLMap_9_TXMLMAP_OUT";
-
-	
-
- 
-
-
-
-/**
- * [tXMLMap_9_TXMLMAP_OUT finally ] stop
- */
-
-	
-	/**
-	 * [tXMLMap_9_TXMLMAP_IN finally ] start
-	 */
-
-	
-
-	
-	
-		currentVirtualComponent = "tXMLMap_9";
-	
-	currentComponent="tXMLMap_9_TXMLMAP_IN";
-
-	
-
- 
-
-
-
-/**
- * [tXMLMap_9_TXMLMAP_IN finally ] stop
- */
-
-	
-	/**
-	 * [tFilterRow_14 finally ] start
-	 */
-
-	
-
-	
-	
-	currentComponent="tFilterRow_14";
-
-	
-
- 
-
-
-
-/**
- * [tFilterRow_14 finally ] stop
- */
-
-	
-	/**
-	 * [tUniqRow_2 finally ] start
-	 */
-
-	
-
-	
-	
-	currentComponent="tUniqRow_2";
-
-	
-
- 
-
-
-
-/**
- * [tUniqRow_2 finally ] stop
- */
-
-	
-	/**
-	 * [tAggregateRow_10_AGGOUT finally ] start
-	 */
-
-	
-
-	
-	
-		currentVirtualComponent = "tAggregateRow_10";
-	
-	currentComponent="tAggregateRow_10_AGGOUT";
-
-	
-
- 
-
-
-
-/**
- * [tAggregateRow_10_AGGOUT finally ] stop
- */
-
-	
-	/**
-	 * [tAggregateRow_10_AGGIN finally ] start
-	 */
-
-	
-
-	
-	
-		currentVirtualComponent = "tAggregateRow_10";
-	
-	currentComponent="tAggregateRow_10_AGGIN";
-
-	
-
- 
-
-
-
-/**
- * [tAggregateRow_10_AGGIN finally ] stop
- */
-
-	
-	/**
-	 * [tAdvancedHash_row44 finally ] start
-	 */
-
-	
-
-	
-	
-	currentComponent="tAdvancedHash_row44";
-
-	
-
- 
-
-
-
-/**
- * [tAdvancedHash_row44 finally ] stop
- */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-				}catch(java.lang.Exception e){	
-					//ignore
-				}catch(java.lang.Error error){
-					//ignore
-				}
-				resourceMap = null;
-			}
-		
-
-		globalMap.put("tFileInputXML_14_SUBPROCESS_STATE", 1);
 	}
 	
 
@@ -27875,10 +26942,13 @@ public void tFileInputXML_15Process(final java.util.Map<String, Object> globalMa
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -27918,13 +26988,6 @@ statusStruct status = new statusStruct();
 		
 		int tos_count_tXMLMap_10_TXMLMAP_OUT = 0;
 		
-    	class BytesLimit65535_tXMLMap_10_TXMLMAP_OUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_10_TXMLMAP_OUT().limitLog4jByte();
 
 	
 	
@@ -28049,13 +27112,6 @@ class TreeNode_API_tXMLMap_10_TXMLMAP_OUT {
 	
 		int tos_count_tFileInputXML_15 = 0;
 		
-    	class BytesLimit65535_tFileInputXML_15{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileInputXML_15().limitLog4jByte();
 
 	
 
@@ -28190,15 +27246,36 @@ String str_tFileInputXML_15 = "";
 org.dom4j.Node node_tFileInputXML_15 = null;
 
 //init all mapping xpaths
+java.util.Map<Integer,org.dom4j.XPath> xpaths_tFileInputXML_15=new java.util.HashMap<Integer,org.dom4j.XPath>();
+	class XPathUtil_tFileInputXML_15{
+	
+			   public void initXPaths_0(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_15 nsTool,
+			       java.util.HashMap<String,String> xmlNameSpaceMap){
+			
+	org.dom4j.XPath xpath_0 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
+	xpath_0.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(0,xpath_0);
+			
+	     }
+	   
+	      public void initXPaths(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_15 nsTool,
+			    java.util.HashMap<String,String> xmlNameSpaceMap){
+			    
+			        initXPaths_0(xpaths,nsTool, xmlNameSpaceMap);
+			    
+		   }
+	}
+	XPathUtil_tFileInputXML_15 xPathUtil_tFileInputXML_15 = new XPathUtil_tFileInputXML_15();
+	xPathUtil_tFileInputXML_15.initXPaths(xpaths_tFileInputXML_15, nsTool_tFileInputXML_15, xmlNameSpaceMap_tFileInputXML_15);
 for (org.dom4j.tree.AbstractNode temp_tFileInputXML_15: nodeList_tFileInputXML_15) {
-	nb_line_tFileInputXML_15++;
+		nb_line_tFileInputXML_15++;
+		
 	row46 = null;			
 	boolean whetherReject_tFileInputXML_15 = false;
 	row46 = new row46Struct();
 	try{
-	org.dom4j.XPath xTmp0_tFileInputXML_15 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_15.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
-	xTmp0_tFileInputXML_15.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_15);
-    Object obj0_tFileInputXML_15 = xTmp0_tFileInputXML_15.evaluate(temp_tFileInputXML_15);
+    Object obj0_tFileInputXML_15 = xpaths_tFileInputXML_15.get(0).evaluate(temp_tFileInputXML_15);
     if(obj0_tFileInputXML_15 == null) {
     	node_tFileInputXML_15 = null;
 		str_tFileInputXML_15 = null;
@@ -28251,6 +27328,26 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_15: nodeList_tFileInputXML_1
 
 /**
  * [tFileInputXML_15 main ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_15 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_15";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_15 process_data_begin ] stop
  */
 // Start of branch "row46"
 if(row46 != null) { 
@@ -28378,12 +27475,76 @@ rejectedInnerJoin_tXMLMap_10_TXMLMAP_OUT = false;
 /**
  * [tXMLMap_10_TXMLMAP_OUT main ] stop
  */
+	
+	/**
+	 * [tXMLMap_10_TXMLMAP_OUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_10";
+	
+	currentComponent="tXMLMap_10_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_10_TXMLMAP_OUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tXMLMap_10_TXMLMAP_OUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_10";
+	
+	currentComponent="tXMLMap_10_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_10_TXMLMAP_OUT process_data_end ] stop
+ */
 
 } // End of branch "row46"
 
 
 
 
+	
+	/**
+	 * [tFileInputXML_15 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_15";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_15 process_data_end ] stop
+ */
 	
 	/**
 	 * [tFileInputXML_15 end ] start
@@ -28479,17 +27640,10 @@ end_Hash.put("tXMLMap_10_TXMLMAP_OUT", System.currentTimeMillis());
 		
 		int tos_count_tAdvancedHash_status = 0;
 		
-    	class BytesLimit65535_tAdvancedHash_status{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAdvancedHash_status().limitLog4jByte();
 
 			   		// connection name:status
 			   		// source node:tXMLMap_10_TXMLMAP_IN - inputs:(OnRowsEnd) outputs:(status,status) | target node:tAdvancedHash_status - inputs:(status) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,row44,status,row45,row40,row27,row15) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,status,row45,row40,row27,row15,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_status = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -28533,13 +27687,6 @@ end_Hash.put("tXMLMap_10_TXMLMAP_OUT", System.currentTimeMillis());
 	
 		int tos_count_tXMLMap_10_TXMLMAP_IN = 0;
 		
-    	class BytesLimit65535_tXMLMap_10_TXMLMAP_IN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_10_TXMLMAP_IN().limitLog4jByte();
 java.util.List<Object> outs_tXMLMap_10 = (java.util.List<Object>)globalMap.get("allOutsForAggregate_tXMLMap_10");
 for(Object  row_out_tXMLMap_10_TXMLMAP_IN : outs_tXMLMap_10) {//TD512
  
@@ -28575,6 +27722,28 @@ for(Object  row_out_tXMLMap_10_TXMLMAP_IN : outs_tXMLMap_10) {//TD512
 
 /**
  * [tXMLMap_10_TXMLMAP_IN main ] stop
+ */
+	
+	/**
+	 * [tXMLMap_10_TXMLMAP_IN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_10";
+	
+	currentComponent="tXMLMap_10_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_10_TXMLMAP_IN process_data_begin ] stop
  */
 // Start of branch "status"
 if(status != null) { 
@@ -28632,12 +27801,74 @@ if(status != null) {
 /**
  * [tAdvancedHash_status main ] stop
  */
+	
+	/**
+	 * [tAdvancedHash_status process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_status";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_status process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAdvancedHash_status process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_status";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_status process_data_end ] stop
+ */
 
 } // End of branch "status"
 
 
 
 
+	
+	/**
+	 * [tXMLMap_10_TXMLMAP_IN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_10";
+	
+	currentComponent="tXMLMap_10_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_10_TXMLMAP_IN process_data_end ] stop
+ */
 	
 	/**
 	 * [tXMLMap_10_TXMLMAP_IN end ] start
@@ -29696,10 +28927,13 @@ public void tFileInputXML_11Process(final java.util.Map<String, Object> globalMa
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -29742,13 +28976,6 @@ row45Struct row45 = new row45Struct();
 		
 		int tos_count_tXMLMap_6_TXMLMAP_OUT = 0;
 		
-    	class BytesLimit65535_tXMLMap_6_TXMLMAP_OUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_6_TXMLMAP_OUT().limitLog4jByte();
 
 	
 	
@@ -29873,13 +29100,6 @@ class TreeNode_API_tXMLMap_6_TXMLMAP_OUT {
 	
 		int tos_count_tFileInputXML_11 = 0;
 		
-    	class BytesLimit65535_tFileInputXML_11{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileInputXML_11().limitLog4jByte();
 
 	
 
@@ -30014,15 +29234,36 @@ String str_tFileInputXML_11 = "";
 org.dom4j.Node node_tFileInputXML_11 = null;
 
 //init all mapping xpaths
+java.util.Map<Integer,org.dom4j.XPath> xpaths_tFileInputXML_11=new java.util.HashMap<Integer,org.dom4j.XPath>();
+	class XPathUtil_tFileInputXML_11{
+	
+			   public void initXPaths_0(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_11 nsTool,
+			       java.util.HashMap<String,String> xmlNameSpaceMap){
+			
+	org.dom4j.XPath xpath_0 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
+	xpath_0.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(0,xpath_0);
+			
+	     }
+	   
+	      public void initXPaths(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_11 nsTool,
+			    java.util.HashMap<String,String> xmlNameSpaceMap){
+			    
+			        initXPaths_0(xpaths,nsTool, xmlNameSpaceMap);
+			    
+		   }
+	}
+	XPathUtil_tFileInputXML_11 xPathUtil_tFileInputXML_11 = new XPathUtil_tFileInputXML_11();
+	xPathUtil_tFileInputXML_11.initXPaths(xpaths_tFileInputXML_11, nsTool_tFileInputXML_11, xmlNameSpaceMap_tFileInputXML_11);
 for (org.dom4j.tree.AbstractNode temp_tFileInputXML_11: nodeList_tFileInputXML_11) {
-	nb_line_tFileInputXML_11++;
+		nb_line_tFileInputXML_11++;
+		
 	row28 = null;			
 	boolean whetherReject_tFileInputXML_11 = false;
 	row28 = new row28Struct();
 	try{
-	org.dom4j.XPath xTmp0_tFileInputXML_11 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_11.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
-	xTmp0_tFileInputXML_11.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_11);
-    Object obj0_tFileInputXML_11 = xTmp0_tFileInputXML_11.evaluate(temp_tFileInputXML_11);
+    Object obj0_tFileInputXML_11 = xpaths_tFileInputXML_11.get(0).evaluate(temp_tFileInputXML_11);
     if(obj0_tFileInputXML_11 == null) {
     	node_tFileInputXML_11 = null;
 		str_tFileInputXML_11 = null;
@@ -30075,6 +29316,26 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_11: nodeList_tFileInputXML_1
 
 /**
  * [tFileInputXML_11 main ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_11 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_11";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_11 process_data_begin ] stop
  */
 // Start of branch "row28"
 if(row28 != null) { 
@@ -30201,12 +29462,76 @@ rejectedInnerJoin_tXMLMap_6_TXMLMAP_OUT = false;
 /**
  * [tXMLMap_6_TXMLMAP_OUT main ] stop
  */
+	
+	/**
+	 * [tXMLMap_6_TXMLMAP_OUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_6";
+	
+	currentComponent="tXMLMap_6_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_6_TXMLMAP_OUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tXMLMap_6_TXMLMAP_OUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_6";
+	
+	currentComponent="tXMLMap_6_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_6_TXMLMAP_OUT process_data_end ] stop
+ */
 
 } // End of branch "row28"
 
 
 
 
+	
+	/**
+	 * [tFileInputXML_11 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_11";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_11 process_data_end ] stop
+ */
 	
 	/**
 	 * [tFileInputXML_11 end ] start
@@ -30305,17 +29630,10 @@ end_Hash.put("tXMLMap_6_TXMLMAP_OUT", System.currentTimeMillis());
 		
 		int tos_count_tAdvancedHash_row45 = 0;
 		
-    	class BytesLimit65535_tAdvancedHash_row45{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAdvancedHash_row45().limitLog4jByte();
 
 			   		// connection name:row45
 			   		// source node:tReplace_3 - inputs:(map1) outputs:(row45,row45) | target node:tAdvancedHash_row45 - inputs:(row45) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,row44,status,row45,row40,row27,row15) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,status,row45,row40,row27,row15,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row45 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -30366,13 +29684,6 @@ end_Hash.put("tXMLMap_6_TXMLMAP_OUT", System.currentTimeMillis());
 		
 		int tos_count_tReplace_3 = 0;
 		
-    	class BytesLimit65535_tReplace_3{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tReplace_3().limitLog4jByte();
 
 
 int nb_line_tReplace_3 = 0;
@@ -30413,13 +29724,6 @@ int nb_line_tReplace_3 = 0;
 		
 		int tos_count_tMap_5 = 0;
 		
-    	class BytesLimit65535_tMap_5{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tMap_5().limitLog4jByte();
 
 
 
@@ -30492,13 +29796,6 @@ map1Struct map1_tmp = new map1Struct();
 		
 		int tos_count_tFilterRow_10 = 0;
 		
-    	class BytesLimit65535_tFilterRow_10{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFilterRow_10().limitLog4jByte();
     int nb_line_tFilterRow_10 = 0;
     int nb_line_ok_tFilterRow_10 = 0;
     int nb_line_reject_tFilterRow_10 = 0;
@@ -30571,13 +29868,6 @@ map1Struct map1_tmp = new map1Struct();
 	
 		int tos_count_tXMLMap_6_TXMLMAP_IN = 0;
 		
-    	class BytesLimit65535_tXMLMap_6_TXMLMAP_IN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_6_TXMLMAP_IN().limitLog4jByte();
 java.util.List<Object> outs_tXMLMap_6 = (java.util.List<Object>)globalMap.get("allOutsForAggregate_tXMLMap_6");
 for(Object  row_out_tXMLMap_6_TXMLMAP_IN : outs_tXMLMap_6) {//TD512
  
@@ -30613,6 +29903,28 @@ for(Object  row_out_tXMLMap_6_TXMLMAP_IN : outs_tXMLMap_6) {//TD512
 
 /**
  * [tXMLMap_6_TXMLMAP_IN main ] stop
+ */
+	
+	/**
+	 * [tXMLMap_6_TXMLMAP_IN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_6";
+	
+	currentComponent="tXMLMap_6_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_6_TXMLMAP_IN process_data_begin ] stop
  */
 // Start of branch "copyOfcopyOfmapped3_0"
 if(copyOfcopyOfmapped3_0 != null) { 
@@ -30673,6 +29985,26 @@ nb_line_tFilterRow_10++;
 
 /**
  * [tFilterRow_10 main ] stop
+ */
+	
+	/**
+	 * [tFilterRow_10 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_10";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_10 process_data_begin ] stop
  */
 // Start of branch "row29"
 if(row29 != null) { 
@@ -30754,6 +30086,26 @@ rejectedInnerJoin_tMap_5 = false;
 /**
  * [tMap_5 main ] stop
  */
+	
+	/**
+	 * [tMap_5 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tMap_5";
+
+	
+
+ 
+
+
+
+/**
+ * [tMap_5 process_data_begin ] stop
+ */
 // Start of branch "map1"
 if(map1 != null) { 
 
@@ -30801,6 +30153,26 @@ if(map1 != null) {
 
 /**
  * [tReplace_3 main ] stop
+ */
+	
+	/**
+	 * [tReplace_3 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tReplace_3";
+
+	
+
+ 
+
+
+
+/**
+ * [tReplace_3 process_data_begin ] stop
  */
 
 	
@@ -30856,27 +30228,149 @@ if(map1 != null) {
 /**
  * [tAdvancedHash_row45 main ] stop
  */
+	
+	/**
+	 * [tAdvancedHash_row45 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row45";
+
+	
+
+ 
 
 
 
+/**
+ * [tAdvancedHash_row45 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAdvancedHash_row45 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row45";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row45 process_data_end ] stop
+ */
+
+
+
+	
+	/**
+	 * [tReplace_3 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tReplace_3";
+
+	
+
+ 
+
+
+
+/**
+ * [tReplace_3 process_data_end ] stop
+ */
 
 } // End of branch "map1"
 
 
 
 
+	
+	/**
+	 * [tMap_5 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tMap_5";
+
+	
+
+ 
+
+
+
+/**
+ * [tMap_5 process_data_end ] stop
+ */
 
 } // End of branch "row29"
 
 
 
 
+	
+	/**
+	 * [tFilterRow_10 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_10";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_10 process_data_end ] stop
+ */
 
 } // End of branch "copyOfcopyOfmapped3_0"
 
 
 
 
+	
+	/**
+	 * [tXMLMap_6_TXMLMAP_IN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_6";
+	
+	currentComponent="tXMLMap_6_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_6_TXMLMAP_IN process_data_end ] stop
+ */
 	
 	/**
 	 * [tXMLMap_6_TXMLMAP_IN end ] start
@@ -32436,10 +31930,13 @@ public void tFileInputXML_13Process(final java.util.Map<String, Object> globalMa
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -32483,13 +31980,6 @@ row40Struct row40 = new row40Struct();
 		
 		int tos_count_tXMLMap_8_TXMLMAP_OUT = 0;
 		
-    	class BytesLimit65535_tXMLMap_8_TXMLMAP_OUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_8_TXMLMAP_OUT().limitLog4jByte();
 
 	
 	
@@ -32614,13 +32104,6 @@ class TreeNode_API_tXMLMap_8_TXMLMAP_OUT {
 	
 		int tos_count_tFileInputXML_13 = 0;
 		
-    	class BytesLimit65535_tFileInputXML_13{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileInputXML_13().limitLog4jByte();
 
 	
 
@@ -32755,15 +32238,36 @@ String str_tFileInputXML_13 = "";
 org.dom4j.Node node_tFileInputXML_13 = null;
 
 //init all mapping xpaths
+java.util.Map<Integer,org.dom4j.XPath> xpaths_tFileInputXML_13=new java.util.HashMap<Integer,org.dom4j.XPath>();
+	class XPathUtil_tFileInputXML_13{
+	
+			   public void initXPaths_0(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_13 nsTool,
+			       java.util.HashMap<String,String> xmlNameSpaceMap){
+			
+	org.dom4j.XPath xpath_0 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
+	xpath_0.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(0,xpath_0);
+			
+	     }
+	   
+	      public void initXPaths(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_13 nsTool,
+			    java.util.HashMap<String,String> xmlNameSpaceMap){
+			    
+			        initXPaths_0(xpaths,nsTool, xmlNameSpaceMap);
+			    
+		   }
+	}
+	XPathUtil_tFileInputXML_13 xPathUtil_tFileInputXML_13 = new XPathUtil_tFileInputXML_13();
+	xPathUtil_tFileInputXML_13.initXPaths(xpaths_tFileInputXML_13, nsTool_tFileInputXML_13, xmlNameSpaceMap_tFileInputXML_13);
 for (org.dom4j.tree.AbstractNode temp_tFileInputXML_13: nodeList_tFileInputXML_13) {
-	nb_line_tFileInputXML_13++;
+		nb_line_tFileInputXML_13++;
+		
 	row36 = null;			
 	boolean whetherReject_tFileInputXML_13 = false;
 	row36 = new row36Struct();
 	try{
-	org.dom4j.XPath xTmp0_tFileInputXML_13 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_13.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
-	xTmp0_tFileInputXML_13.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_13);
-    Object obj0_tFileInputXML_13 = xTmp0_tFileInputXML_13.evaluate(temp_tFileInputXML_13);
+    Object obj0_tFileInputXML_13 = xpaths_tFileInputXML_13.get(0).evaluate(temp_tFileInputXML_13);
     if(obj0_tFileInputXML_13 == null) {
     	node_tFileInputXML_13 = null;
 		str_tFileInputXML_13 = null;
@@ -32816,6 +32320,26 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_13: nodeList_tFileInputXML_1
 
 /**
  * [tFileInputXML_13 main ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_13 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_13";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_13 process_data_begin ] stop
  */
 // Start of branch "row36"
 if(row36 != null) { 
@@ -32942,12 +32466,76 @@ rejectedInnerJoin_tXMLMap_8_TXMLMAP_OUT = false;
 /**
  * [tXMLMap_8_TXMLMAP_OUT main ] stop
  */
+	
+	/**
+	 * [tXMLMap_8_TXMLMAP_OUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_8";
+	
+	currentComponent="tXMLMap_8_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_8_TXMLMAP_OUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tXMLMap_8_TXMLMAP_OUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_8";
+	
+	currentComponent="tXMLMap_8_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_8_TXMLMAP_OUT process_data_end ] stop
+ */
 
 } // End of branch "row36"
 
 
 
 
+	
+	/**
+	 * [tFileInputXML_13 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_13";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_13 process_data_end ] stop
+ */
 	
 	/**
 	 * [tFileInputXML_13 end ] start
@@ -33048,13 +32636,6 @@ end_Hash.put("tXMLMap_8_TXMLMAP_OUT", System.currentTimeMillis());
 		
 		int tos_count_tAggregateRow_9_AGGOUT = 0;
 		
-    	class BytesLimit65535_tAggregateRow_9_AGGOUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_9_AGGOUT().limitLog4jByte();
 
 // ------------ Seems it is not used
 
@@ -33278,13 +32859,6 @@ java.util.Map hashAggreg_tAggregateRow_9 = new java.util.HashMap();
 		
 		int tos_count_tReplace_2 = 0;
 		
-    	class BytesLimit65535_tReplace_2{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tReplace_2().limitLog4jByte();
 
 
 int nb_line_tReplace_2 = 0;
@@ -33325,13 +32899,6 @@ int nb_line_tReplace_2 = 0;
 		
 		int tos_count_tMap_4 = 0;
 		
-    	class BytesLimit65535_tMap_4{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tMap_4().limitLog4jByte();
 
 
 
@@ -33404,13 +32971,6 @@ mappStruct mapp_tmp = new mappStruct();
 		
 		int tos_count_tFilterRow_12 = 0;
 		
-    	class BytesLimit65535_tFilterRow_12{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFilterRow_12().limitLog4jByte();
     int nb_line_tFilterRow_12 = 0;
     int nb_line_ok_tFilterRow_12 = 0;
     int nb_line_reject_tFilterRow_12 = 0;
@@ -33483,13 +33043,6 @@ mappStruct mapp_tmp = new mappStruct();
 	
 		int tos_count_tXMLMap_8_TXMLMAP_IN = 0;
 		
-    	class BytesLimit65535_tXMLMap_8_TXMLMAP_IN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_8_TXMLMAP_IN().limitLog4jByte();
 java.util.List<Object> outs_tXMLMap_8 = (java.util.List<Object>)globalMap.get("allOutsForAggregate_tXMLMap_8");
 for(Object  row_out_tXMLMap_8_TXMLMAP_IN : outs_tXMLMap_8) {//TD512
  
@@ -33525,6 +33078,28 @@ for(Object  row_out_tXMLMap_8_TXMLMAP_IN : outs_tXMLMap_8) {//TD512
 
 /**
  * [tXMLMap_8_TXMLMAP_IN main ] stop
+ */
+	
+	/**
+	 * [tXMLMap_8_TXMLMAP_IN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_8";
+	
+	currentComponent="tXMLMap_8_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_8_TXMLMAP_IN process_data_begin ] stop
  */
 // Start of branch "copyOfcopyOfcopyOfmapped3_0"
 if(copyOfcopyOfcopyOfmapped3_0 != null) { 
@@ -33581,6 +33156,26 @@ nb_line_tFilterRow_12++;
 
 /**
  * [tFilterRow_12 main ] stop
+ */
+	
+	/**
+	 * [tFilterRow_12 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_12";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_12 process_data_begin ] stop
  */
 // Start of branch "row30"
 if(row30 != null) { 
@@ -33662,6 +33257,26 @@ rejectedInnerJoin_tMap_4 = false;
 /**
  * [tMap_4 main ] stop
  */
+	
+	/**
+	 * [tMap_4 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tMap_4";
+
+	
+
+ 
+
+
+
+/**
+ * [tMap_4 process_data_begin ] stop
+ */
 // Start of branch "mapp"
 if(mapp != null) { 
 
@@ -33711,6 +33326,26 @@ if(mapp != null) {
 
 /**
  * [tReplace_2 main ] stop
+ */
+	
+	/**
+	 * [tReplace_2 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tReplace_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tReplace_2 process_data_begin ] stop
  */
 
 	
@@ -33808,27 +33443,153 @@ operation_finder_tAggregateRow_9.uuid = row39.uuid;
 /**
  * [tAggregateRow_9_AGGOUT main ] stop
  */
+	
+	/**
+	 * [tAggregateRow_9_AGGOUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_9";
+	
+	currentComponent="tAggregateRow_9_AGGOUT";
+
+	
+
+ 
 
 
 
+/**
+ * [tAggregateRow_9_AGGOUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_9_AGGOUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_9";
+	
+	currentComponent="tAggregateRow_9_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_9_AGGOUT process_data_end ] stop
+ */
+
+
+
+	
+	/**
+	 * [tReplace_2 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tReplace_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tReplace_2 process_data_end ] stop
+ */
 
 } // End of branch "mapp"
 
 
 
 
+	
+	/**
+	 * [tMap_4 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tMap_4";
+
+	
+
+ 
+
+
+
+/**
+ * [tMap_4 process_data_end ] stop
+ */
 
 } // End of branch "row30"
 
 
 
 
+	
+	/**
+	 * [tFilterRow_12 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_12";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_12 process_data_end ] stop
+ */
 
 } // End of branch "copyOfcopyOfcopyOfmapped3_0"
 
 
 
 
+	
+	/**
+	 * [tXMLMap_8_TXMLMAP_IN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_8";
+	
+	currentComponent="tXMLMap_8_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_8_TXMLMAP_IN process_data_end ] stop
+ */
 	
 	/**
 	 * [tXMLMap_8_TXMLMAP_IN end ] start
@@ -34026,17 +33787,10 @@ end_Hash.put("tAggregateRow_9_AGGOUT", System.currentTimeMillis());
 		
 		int tos_count_tAdvancedHash_row40 = 0;
 		
-    	class BytesLimit65535_tAdvancedHash_row40{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAdvancedHash_row40().limitLog4jByte();
 
 			   		// connection name:row40
 			   		// source node:tAggregateRow_9_AGGIN - inputs:(OnRowsEnd) outputs:(row40,row40) | target node:tAdvancedHash_row40 - inputs:(row40) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,row44,status,row45,row40,row27,row15) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,status,row45,row40,row27,row15,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row40 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -34080,13 +33834,6 @@ end_Hash.put("tAggregateRow_9_AGGOUT", System.currentTimeMillis());
 	
 		int tos_count_tAggregateRow_9_AGGIN = 0;
 		
-    	class BytesLimit65535_tAggregateRow_9_AGGIN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_9_AGGIN().limitLog4jByte();
 
 java.util.Collection<AggOperationStruct_tAggregateRow_9> values_tAggregateRow_9 = hash_tAggregateRow_9.values();
 
@@ -34132,6 +33879,28 @@ for(AggOperationStruct_tAggregateRow_9 aggregated_row_tAggregateRow_9 : values_t
 
 /**
  * [tAggregateRow_9_AGGIN main ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_9_AGGIN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_9";
+	
+	currentComponent="tAggregateRow_9_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_9_AGGIN process_data_begin ] stop
  */
 
 	
@@ -34187,9 +33956,71 @@ for(AggOperationStruct_tAggregateRow_9 aggregated_row_tAggregateRow_9 : values_t
 /**
  * [tAdvancedHash_row40 main ] stop
  */
+	
+	/**
+	 * [tAdvancedHash_row40 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row40";
+
+	
+
+ 
 
 
 
+/**
+ * [tAdvancedHash_row40 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAdvancedHash_row40 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row40";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row40 process_data_end ] stop
+ */
+
+
+
+	
+	/**
+	 * [tAggregateRow_9_AGGIN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_9";
+	
+	currentComponent="tAggregateRow_9_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_9_AGGIN process_data_end ] stop
+ */
 	
 	/**
 	 * [tAggregateRow_9_AGGIN end ] start
@@ -35079,10 +34910,13 @@ public void tFileInputXML_10Process(final java.util.Map<String, Object> globalMa
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -35123,13 +34957,6 @@ row27Struct row27 = new row27Struct();
 		
 		int tos_count_tXMLMap_3_TXMLMAP_OUT = 0;
 		
-    	class BytesLimit65535_tXMLMap_3_TXMLMAP_OUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_3_TXMLMAP_OUT().limitLog4jByte();
 
 	
 	
@@ -35254,13 +35081,6 @@ class TreeNode_API_tXMLMap_3_TXMLMAP_OUT {
 	
 		int tos_count_tFileInputXML_10 = 0;
 		
-    	class BytesLimit65535_tFileInputXML_10{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileInputXML_10().limitLog4jByte();
 
 	
 
@@ -35395,15 +35215,36 @@ String str_tFileInputXML_10 = "";
 org.dom4j.Node node_tFileInputXML_10 = null;
 
 //init all mapping xpaths
+java.util.Map<Integer,org.dom4j.XPath> xpaths_tFileInputXML_10=new java.util.HashMap<Integer,org.dom4j.XPath>();
+	class XPathUtil_tFileInputXML_10{
+	
+			   public void initXPaths_0(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_10 nsTool,
+			       java.util.HashMap<String,String> xmlNameSpaceMap){
+			
+	org.dom4j.XPath xpath_0 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
+	xpath_0.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(0,xpath_0);
+			
+	     }
+	   
+	      public void initXPaths(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_10 nsTool,
+			    java.util.HashMap<String,String> xmlNameSpaceMap){
+			    
+			        initXPaths_0(xpaths,nsTool, xmlNameSpaceMap);
+			    
+		   }
+	}
+	XPathUtil_tFileInputXML_10 xPathUtil_tFileInputXML_10 = new XPathUtil_tFileInputXML_10();
+	xPathUtil_tFileInputXML_10.initXPaths(xpaths_tFileInputXML_10, nsTool_tFileInputXML_10, xmlNameSpaceMap_tFileInputXML_10);
 for (org.dom4j.tree.AbstractNode temp_tFileInputXML_10: nodeList_tFileInputXML_10) {
-	nb_line_tFileInputXML_10++;
+		nb_line_tFileInputXML_10++;
+		
 	row21 = null;			
 	boolean whetherReject_tFileInputXML_10 = false;
 	row21 = new row21Struct();
 	try{
-	org.dom4j.XPath xTmp0_tFileInputXML_10 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_10.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
-	xTmp0_tFileInputXML_10.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_10);
-    Object obj0_tFileInputXML_10 = xTmp0_tFileInputXML_10.evaluate(temp_tFileInputXML_10);
+    Object obj0_tFileInputXML_10 = xpaths_tFileInputXML_10.get(0).evaluate(temp_tFileInputXML_10);
     if(obj0_tFileInputXML_10 == null) {
     	node_tFileInputXML_10 = null;
 		str_tFileInputXML_10 = null;
@@ -35456,6 +35297,26 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_10: nodeList_tFileInputXML_1
 
 /**
  * [tFileInputXML_10 main ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_10 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_10";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_10 process_data_begin ] stop
  */
 // Start of branch "row21"
 if(row21 != null) { 
@@ -35582,12 +35443,76 @@ rejectedInnerJoin_tXMLMap_3_TXMLMAP_OUT = false;
 /**
  * [tXMLMap_3_TXMLMAP_OUT main ] stop
  */
+	
+	/**
+	 * [tXMLMap_3_TXMLMAP_OUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_3";
+	
+	currentComponent="tXMLMap_3_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_3_TXMLMAP_OUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tXMLMap_3_TXMLMAP_OUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_3";
+	
+	currentComponent="tXMLMap_3_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_3_TXMLMAP_OUT process_data_end ] stop
+ */
 
 } // End of branch "row21"
 
 
 
 
+	
+	/**
+	 * [tFileInputXML_10 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_10";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_10 process_data_end ] stop
+ */
 	
 	/**
 	 * [tFileInputXML_10 end ] start
@@ -35684,17 +35609,10 @@ end_Hash.put("tXMLMap_3_TXMLMAP_OUT", System.currentTimeMillis());
 		
 		int tos_count_tAdvancedHash_row27 = 0;
 		
-    	class BytesLimit65535_tAdvancedHash_row27{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAdvancedHash_row27().limitLog4jByte();
 
 			   		// connection name:row27
 			   		// source node:tFilterRow_8 - inputs:(copyOfmapped3_0) outputs:(row27,row27) | target node:tAdvancedHash_row27 - inputs:(row27) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,row44,status,row45,row40,row27,row15) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,status,row45,row40,row27,row15,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row27 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -35745,13 +35663,6 @@ end_Hash.put("tXMLMap_3_TXMLMAP_OUT", System.currentTimeMillis());
 		
 		int tos_count_tFilterRow_8 = 0;
 		
-    	class BytesLimit65535_tFilterRow_8{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFilterRow_8().limitLog4jByte();
     int nb_line_tFilterRow_8 = 0;
     int nb_line_ok_tFilterRow_8 = 0;
     int nb_line_reject_tFilterRow_8 = 0;
@@ -35824,13 +35735,6 @@ end_Hash.put("tXMLMap_3_TXMLMAP_OUT", System.currentTimeMillis());
 	
 		int tos_count_tXMLMap_3_TXMLMAP_IN = 0;
 		
-    	class BytesLimit65535_tXMLMap_3_TXMLMAP_IN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_3_TXMLMAP_IN().limitLog4jByte();
 java.util.List<Object> outs_tXMLMap_3 = (java.util.List<Object>)globalMap.get("allOutsForAggregate_tXMLMap_3");
 for(Object  row_out_tXMLMap_3_TXMLMAP_IN : outs_tXMLMap_3) {//TD512
  
@@ -35866,6 +35770,28 @@ for(Object  row_out_tXMLMap_3_TXMLMAP_IN : outs_tXMLMap_3) {//TD512
 
 /**
  * [tXMLMap_3_TXMLMAP_IN main ] stop
+ */
+	
+	/**
+	 * [tXMLMap_3_TXMLMAP_IN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_3";
+	
+	currentComponent="tXMLMap_3_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_3_TXMLMAP_IN process_data_begin ] stop
  */
 // Start of branch "copyOfmapped3_0"
 if(copyOfmapped3_0 != null) { 
@@ -35934,6 +35860,26 @@ nb_line_tFilterRow_8++;
 /**
  * [tFilterRow_8 main ] stop
  */
+	
+	/**
+	 * [tFilterRow_8 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_8";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_8 process_data_begin ] stop
+ */
 // Start of branch "row27"
 if(row27 != null) { 
 
@@ -35992,18 +35938,100 @@ if(row27 != null) {
 /**
  * [tAdvancedHash_row27 main ] stop
  */
+	
+	/**
+	 * [tAdvancedHash_row27 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row27";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row27 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAdvancedHash_row27 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row27";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row27 process_data_end ] stop
+ */
 
 } // End of branch "row27"
 
 
 
 
+	
+	/**
+	 * [tFilterRow_8 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_8";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_8 process_data_end ] stop
+ */
 
 } // End of branch "copyOfmapped3_0"
 
 
 
 
+	
+	/**
+	 * [tXMLMap_3_TXMLMAP_IN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_3";
+	
+	currentComponent="tXMLMap_3_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_3_TXMLMAP_IN process_data_end ] stop
+ */
 	
 	/**
 	 * [tXMLMap_3_TXMLMAP_IN end ] start
@@ -37280,10 +37308,13 @@ public void tFileInputXML_1Process(final java.util.Map<String, Object> globalMap
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -37326,13 +37357,6 @@ row15Struct row15 = new row15Struct();
 		
 		int tos_count_tXMLMap_11_TXMLMAP_OUT = 0;
 		
-    	class BytesLimit65535_tXMLMap_11_TXMLMAP_OUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_11_TXMLMAP_OUT().limitLog4jByte();
 
 	
 	
@@ -37457,13 +37481,6 @@ class TreeNode_API_tXMLMap_11_TXMLMAP_OUT {
 	
 		int tos_count_tFileInputXML_1 = 0;
 		
-    	class BytesLimit65535_tFileInputXML_1{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileInputXML_1().limitLog4jByte();
 
 	
 
@@ -37598,15 +37615,36 @@ String str_tFileInputXML_1 = "";
 org.dom4j.Node node_tFileInputXML_1 = null;
 
 //init all mapping xpaths
+java.util.Map<Integer,org.dom4j.XPath> xpaths_tFileInputXML_1=new java.util.HashMap<Integer,org.dom4j.XPath>();
+	class XPathUtil_tFileInputXML_1{
+	
+			   public void initXPaths_0(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_1 nsTool,
+			       java.util.HashMap<String,String> xmlNameSpaceMap){
+			
+	org.dom4j.XPath xpath_0 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
+	xpath_0.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(0,xpath_0);
+			
+	     }
+	   
+	      public void initXPaths(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_1 nsTool,
+			    java.util.HashMap<String,String> xmlNameSpaceMap){
+			    
+			        initXPaths_0(xpaths,nsTool, xmlNameSpaceMap);
+			    
+		   }
+	}
+	XPathUtil_tFileInputXML_1 xPathUtil_tFileInputXML_1 = new XPathUtil_tFileInputXML_1();
+	xPathUtil_tFileInputXML_1.initXPaths(xpaths_tFileInputXML_1, nsTool_tFileInputXML_1, xmlNameSpaceMap_tFileInputXML_1);
 for (org.dom4j.tree.AbstractNode temp_tFileInputXML_1: nodeList_tFileInputXML_1) {
-	nb_line_tFileInputXML_1++;
+		nb_line_tFileInputXML_1++;
+		
 	row26 = null;			
 	boolean whetherReject_tFileInputXML_1 = false;
 	row26 = new row26Struct();
 	try{
-	org.dom4j.XPath xTmp0_tFileInputXML_1 = org.dom4j.DocumentHelper.createXPath(nsTool_tFileInputXML_1.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
-	xTmp0_tFileInputXML_1.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_1);
-    Object obj0_tFileInputXML_1 = xTmp0_tFileInputXML_1.evaluate(temp_tFileInputXML_1);
+    Object obj0_tFileInputXML_1 = xpaths_tFileInputXML_1.get(0).evaluate(temp_tFileInputXML_1);
     if(obj0_tFileInputXML_1 == null) {
     	node_tFileInputXML_1 = null;
 		str_tFileInputXML_1 = null;
@@ -37659,6 +37697,26 @@ for (org.dom4j.tree.AbstractNode temp_tFileInputXML_1: nodeList_tFileInputXML_1)
 
 /**
  * [tFileInputXML_1 main ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_1 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_1 process_data_begin ] stop
  */
 // Start of branch "row26"
 if(row26 != null) { 
@@ -37785,12 +37843,76 @@ rejectedInnerJoin_tXMLMap_11_TXMLMAP_OUT = false;
 /**
  * [tXMLMap_11_TXMLMAP_OUT main ] stop
  */
+	
+	/**
+	 * [tXMLMap_11_TXMLMAP_OUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_11";
+	
+	currentComponent="tXMLMap_11_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_11_TXMLMAP_OUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tXMLMap_11_TXMLMAP_OUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_11";
+	
+	currentComponent="tXMLMap_11_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_11_TXMLMAP_OUT process_data_end ] stop
+ */
 
 } // End of branch "row26"
 
 
 
 
+	
+	/**
+	 * [tFileInputXML_1 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_1 process_data_end ] stop
+ */
 	
 	/**
 	 * [tFileInputXML_1 end ] start
@@ -37890,13 +38012,6 @@ end_Hash.put("tXMLMap_11_TXMLMAP_OUT", System.currentTimeMillis());
 		
 		int tos_count_tAggregateRow_4_AGGOUT = 0;
 		
-    	class BytesLimit65535_tAggregateRow_4_AGGOUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_4_AGGOUT().limitLog4jByte();
 
 // ------------ Seems it is not used
 
@@ -38120,13 +38235,6 @@ java.util.Map hashAggreg_tAggregateRow_4 = new java.util.HashMap();
 		
 		int tos_count_tFilterRow_3 = 0;
 		
-    	class BytesLimit65535_tFilterRow_3{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFilterRow_3().limitLog4jByte();
     int nb_line_tFilterRow_3 = 0;
     int nb_line_ok_tFilterRow_3 = 0;
     int nb_line_reject_tFilterRow_3 = 0;
@@ -38206,13 +38314,6 @@ java.util.Map hashAggreg_tAggregateRow_4 = new java.util.HashMap();
 		
 		int tos_count_tFilterRow_2 = 0;
 		
-    	class BytesLimit65535_tFilterRow_2{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFilterRow_2().limitLog4jByte();
     int nb_line_tFilterRow_2 = 0;
     int nb_line_ok_tFilterRow_2 = 0;
     int nb_line_reject_tFilterRow_2 = 0;
@@ -38285,13 +38386,6 @@ java.util.Map hashAggreg_tAggregateRow_4 = new java.util.HashMap();
 	
 		int tos_count_tXMLMap_11_TXMLMAP_IN = 0;
 		
-    	class BytesLimit65535_tXMLMap_11_TXMLMAP_IN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tXMLMap_11_TXMLMAP_IN().limitLog4jByte();
 java.util.List<Object> outs_tXMLMap_11 = (java.util.List<Object>)globalMap.get("allOutsForAggregate_tXMLMap_11");
 for(Object  row_out_tXMLMap_11_TXMLMAP_IN : outs_tXMLMap_11) {//TD512
  
@@ -38327,6 +38421,28 @@ for(Object  row_out_tXMLMap_11_TXMLMAP_IN : outs_tXMLMap_11) {//TD512
 
 /**
  * [tXMLMap_11_TXMLMAP_IN main ] stop
+ */
+	
+	/**
+	 * [tXMLMap_11_TXMLMAP_IN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_11";
+	
+	currentComponent="tXMLMap_11_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_11_TXMLMAP_IN process_data_begin ] stop
  */
 // Start of branch "copyOfmapped3_1"
 if(copyOfmapped3_1 != null) { 
@@ -38384,6 +38500,26 @@ nb_line_tFilterRow_2++;
 
 /**
  * [tFilterRow_2 main ] stop
+ */
+	
+	/**
+	 * [tFilterRow_2 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_2 process_data_begin ] stop
  */
 // Start of branch "row12"
 if(row12 != null) { 
@@ -38444,6 +38580,26 @@ nb_line_tFilterRow_3++;
 
 /**
  * [tFilterRow_3 main ] stop
+ */
+	
+	/**
+	 * [tFilterRow_3 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_3";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_3 process_data_begin ] stop
  */
 // Start of branch "row14"
 if(row14 != null) { 
@@ -38545,24 +38701,130 @@ operation_finder_tAggregateRow_4.uuid = row14.uuid;
 /**
  * [tAggregateRow_4_AGGOUT main ] stop
  */
+	
+	/**
+	 * [tAggregateRow_4_AGGOUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_4";
+	
+	currentComponent="tAggregateRow_4_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_4_AGGOUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_4_AGGOUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_4";
+	
+	currentComponent="tAggregateRow_4_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_4_AGGOUT process_data_end ] stop
+ */
 
 } // End of branch "row14"
 
 
 
 
+	
+	/**
+	 * [tFilterRow_3 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_3";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_3 process_data_end ] stop
+ */
 
 } // End of branch "row12"
 
 
 
 
+	
+	/**
+	 * [tFilterRow_2 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_2 process_data_end ] stop
+ */
 
 } // End of branch "copyOfmapped3_1"
 
 
 
 
+	
+	/**
+	 * [tXMLMap_11_TXMLMAP_IN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_11";
+	
+	currentComponent="tXMLMap_11_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_11_TXMLMAP_IN process_data_end ] stop
+ */
 	
 	/**
 	 * [tXMLMap_11_TXMLMAP_IN end ] start
@@ -38722,17 +38984,10 @@ end_Hash.put("tAggregateRow_4_AGGOUT", System.currentTimeMillis());
 		
 		int tos_count_tAdvancedHash_row15 = 0;
 		
-    	class BytesLimit65535_tAdvancedHash_row15{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAdvancedHash_row15().limitLog4jByte();
 
 			   		// connection name:row15
 			   		// source node:tAggregateRow_4_AGGIN - inputs:(OnRowsEnd) outputs:(row15,row15) | target node:tAdvancedHash_row15 - inputs:(row15) outputs:()
-			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,row44,status,row45,row40,row27,row15) outputs:(map)
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,status,row45,row40,row27,row15,row44) outputs:(map)
 			   
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row15 = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
@@ -38776,13 +39031,6 @@ end_Hash.put("tAggregateRow_4_AGGOUT", System.currentTimeMillis());
 	
 		int tos_count_tAggregateRow_4_AGGIN = 0;
 		
-    	class BytesLimit65535_tAggregateRow_4_AGGIN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_4_AGGIN().limitLog4jByte();
 
 java.util.Collection<AggOperationStruct_tAggregateRow_4> values_tAggregateRow_4 = hash_tAggregateRow_4.values();
 
@@ -38828,6 +39076,28 @@ for(AggOperationStruct_tAggregateRow_4 aggregated_row_tAggregateRow_4 : values_t
 
 /**
  * [tAggregateRow_4_AGGIN main ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_4_AGGIN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_4";
+	
+	currentComponent="tAggregateRow_4_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_4_AGGIN process_data_begin ] stop
  */
 
 	
@@ -38883,9 +39153,71 @@ for(AggOperationStruct_tAggregateRow_4 aggregated_row_tAggregateRow_4 : values_t
 /**
  * [tAdvancedHash_row15 main ] stop
  */
+	
+	/**
+	 * [tAdvancedHash_row15 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row15";
+
+	
+
+ 
 
 
 
+/**
+ * [tAdvancedHash_row15 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAdvancedHash_row15 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row15";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row15 process_data_end ] stop
+ */
+
+
+
+	
+	/**
+	 * [tAggregateRow_4_AGGIN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_4";
+	
+	currentComponent="tAggregateRow_4_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_4_AGGIN process_data_end ] stop
+ */
 	
 	/**
 	 * [tAggregateRow_4_AGGIN end ] start
@@ -39200,6 +39532,3302 @@ end_Hash.put("tAdvancedHash_row15", System.currentTimeMillis());
 		
 
 		globalMap.put("tFileInputXML_1_SUBPROCESS_STATE", 1);
+	}
+	
+
+
+public static class row44Struct implements routines.system.IPersistableComparableLookupRow<row44Struct> {
+    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+	protected static final int DEFAULT_HASHCODE = 1;
+    protected static final int PRIME = 31;
+    protected int hashCode = DEFAULT_HASHCODE;
+    public boolean hashCodeDirty = true;
+
+    public String loopKey;
+
+
+
+	
+			    public String uuid;
+
+				public String getUuid () {
+					return this.uuid;
+				}
+				
+			    public String url;
+
+				public String getUrl () {
+					return this.url;
+				}
+				
+			    public String protocol;
+
+				public String getProtocol () {
+					return this.protocol;
+				}
+				
+
+
+	@Override
+	public int hashCode() {
+		if (this.hashCodeDirty) {
+			final int prime = PRIME;
+			int result = DEFAULT_HASHCODE;
+	
+						result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
+					
+    		this.hashCode = result;
+    		this.hashCodeDirty = false;
+		}
+		return this.hashCode;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		final row44Struct other = (row44Struct) obj;
+		
+						if (this.uuid == null) {
+							if (other.uuid != null)
+								return false;
+						
+						} else if (!this.uuid.equals(other.uuid))
+						
+							return false;
+					
+
+		return true;
+    }
+
+	public void copyDataTo(row44Struct other) {
+
+		other.uuid = this.uuid;
+	            other.url = this.url;
+	            other.protocol = this.protocol;
+	            
+	}
+
+	public void copyKeysDataTo(row44Struct other) {
+
+		other.uuid = this.uuid;
+	            	
+	}
+
+
+
+
+	private String readString(ObjectInputStream dis) throws IOException{
+		String strReturn = null;
+		int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			strReturn = null;
+		} else {
+			if(length > commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length) {
+				if(length < 1024 && commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length == 0) {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[1024];
+				} else {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[2 * length];
+   				}
+			}
+			dis.readFully(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length);
+			strReturn = new String(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length, utf8Charset);
+		}
+		return strReturn;
+	}
+
+    private void writeString(String str, ObjectOutputStream dos) throws IOException{
+		if(str == null) {
+            dos.writeInt(-1);
+		} else {
+            byte[] byteArray = str.getBytes(utf8Charset);
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+    }
+
+	private String readString(DataInputStream dis, ObjectInputStream ois) throws IOException{
+		String strReturn = null;
+		int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			strReturn = null;
+		} else {
+			byte[] byteArray = new byte[length];
+			dis.read(byteArray);
+			strReturn = new String(byteArray, utf8Charset);
+		}
+		return strReturn;
+	}
+
+	private void writeString(String str, DataOutputStream dos, ObjectOutputStream oos) throws IOException{
+		if(str == null) {
+            dos.writeInt(-1);
+		} else {
+            byte[] byteArray = str.getBytes(utf8Charset);
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+	}
+
+    public void readKeysData(ObjectInputStream dis) {
+
+		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
+
+        	try {
+
+        		int length = 0;
+		
+					this.uuid = readString(dis);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+
+		
+
+        }
+
+		
+
+      }
+
+
+    }
+
+    public void writeKeysData(ObjectOutputStream dos) {
+        try {
+
+		
+					// String
+				
+						writeString(this.uuid,dos);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
+
+    /**
+     * Fill Values data by reading ObjectInputStream.
+     */
+    public void readValuesData(DataInputStream dis, ObjectInputStream ois) {
+        try {
+
+			int length = 0;
+		
+						this.url = readString(dis,ois);
+					
+						this.protocol = readString(dis,ois);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+
+		
+
+        }
+
+		
+
+    }
+
+    /**
+     * Return a byte array which represents Values data.
+     */
+    public void writeValuesData(DataOutputStream dos, ObjectOutputStream oos) {
+        try {
+
+		
+						writeString(this.url, dos, oos);
+					
+						writeString(this.protocol, dos, oos);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+        	}
+
+    }
+
+
+    public String toString() {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString());
+		sb.append("[");
+		sb.append("uuid="+uuid);
+		sb.append(",url="+url);
+		sb.append(",protocol="+protocol);
+	    sb.append("]");
+
+	    return sb.toString();
+    }
+
+    /**
+     * Compare keys
+     */
+    public int compareTo(row44Struct other) {
+
+		int returnValue = -1;
+		
+						returnValue = checkNullsAndCompare(this.uuid, other.uuid);
+						if(returnValue != 0) {
+							return returnValue;
+						}
+
+					
+	    return returnValue;
+    }
+
+
+    private int checkNullsAndCompare(Object object1, Object object2) {
+        int returnValue = 0;
+		if (object1 instanceof Comparable && object2 instanceof Comparable) {
+            returnValue = ((Comparable) object1).compareTo(object2);
+        } else if (object1 != null && object2 != null) {
+            returnValue = compareStrings(object1.toString(), object2.toString());
+        } else if (object1 == null && object2 != null) {
+            returnValue = 1;
+        } else if (object1 != null && object2 == null) {
+            returnValue = -1;
+        } else {
+            returnValue = 0;
+        }
+
+        return returnValue;
+    }
+
+    private int compareStrings(String string1, String string2) {
+        return string1.compareTo(string2);
+    }
+
+
+}
+
+public static class OnRowsEndStructtAggregateRow_10 implements routines.system.IPersistableRow<OnRowsEndStructtAggregateRow_10> {
+    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+
+	
+			    public String uuid;
+
+				public String getUuid () {
+					return this.uuid;
+				}
+				
+			    public String url;
+
+				public String getUrl () {
+					return this.url;
+				}
+				
+			    public String protocol;
+
+				public String getProtocol () {
+					return this.protocol;
+				}
+				
+
+
+
+	private String readString(ObjectInputStream dis) throws IOException{
+		String strReturn = null;
+		int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			strReturn = null;
+		} else {
+			if(length > commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length) {
+				if(length < 1024 && commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length == 0) {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[1024];
+				} else {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[2 * length];
+   				}
+			}
+			dis.readFully(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length);
+			strReturn = new String(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length, utf8Charset);
+		}
+		return strReturn;
+	}
+
+    private void writeString(String str, ObjectOutputStream dos) throws IOException{
+		if(str == null) {
+            dos.writeInt(-1);
+		} else {
+            byte[] byteArray = str.getBytes(utf8Charset);
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+    }
+
+    public void readData(ObjectInputStream dis) {
+
+		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
+
+        	try {
+
+        		int length = 0;
+		
+					this.uuid = readString(dis);
+					
+					this.url = readString(dis);
+					
+					this.protocol = readString(dis);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+
+		
+
+        }
+
+		
+
+      }
+
+
+    }
+
+    public void writeData(ObjectOutputStream dos) {
+        try {
+
+		
+					// String
+				
+						writeString(this.uuid,dos);
+					
+					// String
+				
+						writeString(this.url,dos);
+					
+					// String
+				
+						writeString(this.protocol,dos);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
+    public String toString() {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString());
+		sb.append("[");
+		sb.append("uuid="+uuid);
+		sb.append(",url="+url);
+		sb.append(",protocol="+protocol);
+	    sb.append("]");
+
+	    return sb.toString();
+    }
+
+    /**
+     * Compare keys
+     */
+    public int compareTo(OnRowsEndStructtAggregateRow_10 other) {
+
+		int returnValue = -1;
+		
+	    return returnValue;
+    }
+
+
+    private int checkNullsAndCompare(Object object1, Object object2) {
+        int returnValue = 0;
+		if (object1 instanceof Comparable && object2 instanceof Comparable) {
+            returnValue = ((Comparable) object1).compareTo(object2);
+        } else if (object1 != null && object2 != null) {
+            returnValue = compareStrings(object1.toString(), object2.toString());
+        } else if (object1 == null && object2 != null) {
+            returnValue = 1;
+        } else if (object1 != null && object2 == null) {
+            returnValue = -1;
+        } else {
+            returnValue = 0;
+        }
+
+        return returnValue;
+    }
+
+    private int compareStrings(String string1, String string2) {
+        return string1.compareTo(string2);
+    }
+
+
+}
+
+public static class row43Struct implements routines.system.IPersistableRow<row43Struct> {
+    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+
+	
+			    public String uuid;
+
+				public String getUuid () {
+					return this.uuid;
+				}
+				
+			    public String url;
+
+				public String getUrl () {
+					return this.url;
+				}
+				
+			    public String protocol;
+
+				public String getProtocol () {
+					return this.protocol;
+				}
+				
+
+
+
+	private String readString(ObjectInputStream dis) throws IOException{
+		String strReturn = null;
+		int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			strReturn = null;
+		} else {
+			if(length > commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length) {
+				if(length < 1024 && commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length == 0) {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[1024];
+				} else {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[2 * length];
+   				}
+			}
+			dis.readFully(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length);
+			strReturn = new String(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length, utf8Charset);
+		}
+		return strReturn;
+	}
+
+    private void writeString(String str, ObjectOutputStream dos) throws IOException{
+		if(str == null) {
+            dos.writeInt(-1);
+		} else {
+            byte[] byteArray = str.getBytes(utf8Charset);
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+    }
+
+    public void readData(ObjectInputStream dis) {
+
+		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
+
+        	try {
+
+        		int length = 0;
+		
+					this.uuid = readString(dis);
+					
+					this.url = readString(dis);
+					
+					this.protocol = readString(dis);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+
+		
+
+        }
+
+		
+
+      }
+
+
+    }
+
+    public void writeData(ObjectOutputStream dos) {
+        try {
+
+		
+					// String
+				
+						writeString(this.uuid,dos);
+					
+					// String
+				
+						writeString(this.url,dos);
+					
+					// String
+				
+						writeString(this.protocol,dos);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
+    public String toString() {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString());
+		sb.append("[");
+		sb.append("uuid="+uuid);
+		sb.append(",url="+url);
+		sb.append(",protocol="+protocol);
+	    sb.append("]");
+
+	    return sb.toString();
+    }
+
+    /**
+     * Compare keys
+     */
+    public int compareTo(row43Struct other) {
+
+		int returnValue = -1;
+		
+	    return returnValue;
+    }
+
+
+    private int checkNullsAndCompare(Object object1, Object object2) {
+        int returnValue = 0;
+		if (object1 instanceof Comparable && object2 instanceof Comparable) {
+            returnValue = ((Comparable) object1).compareTo(object2);
+        } else if (object1 != null && object2 != null) {
+            returnValue = compareStrings(object1.toString(), object2.toString());
+        } else if (object1 == null && object2 != null) {
+            returnValue = 1;
+        } else if (object1 != null && object2 == null) {
+            returnValue = -1;
+        } else {
+            returnValue = 0;
+        }
+
+        return returnValue;
+    }
+
+    private int compareStrings(String string1, String string2) {
+        return string1.compareTo(string2);
+    }
+
+
+}
+
+public static class row42Struct implements routines.system.IPersistableRow<row42Struct> {
+    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+
+	
+			    public String uuid;
+
+				public String getUuid () {
+					return this.uuid;
+				}
+				
+			    public String url;
+
+				public String getUrl () {
+					return this.url;
+				}
+				
+			    public String protocol;
+
+				public String getProtocol () {
+					return this.protocol;
+				}
+				
+
+
+
+	private String readString(ObjectInputStream dis) throws IOException{
+		String strReturn = null;
+		int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			strReturn = null;
+		} else {
+			if(length > commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length) {
+				if(length < 1024 && commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length == 0) {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[1024];
+				} else {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[2 * length];
+   				}
+			}
+			dis.readFully(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length);
+			strReturn = new String(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length, utf8Charset);
+		}
+		return strReturn;
+	}
+
+    private void writeString(String str, ObjectOutputStream dos) throws IOException{
+		if(str == null) {
+            dos.writeInt(-1);
+		} else {
+            byte[] byteArray = str.getBytes(utf8Charset);
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+    }
+
+    public void readData(ObjectInputStream dis) {
+
+		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
+
+        	try {
+
+        		int length = 0;
+		
+					this.uuid = readString(dis);
+					
+					this.url = readString(dis);
+					
+					this.protocol = readString(dis);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+
+		
+
+        }
+
+		
+
+      }
+
+
+    }
+
+    public void writeData(ObjectOutputStream dos) {
+        try {
+
+		
+					// String
+				
+						writeString(this.uuid,dos);
+					
+					// String
+				
+						writeString(this.url,dos);
+					
+					// String
+				
+						writeString(this.protocol,dos);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
+    public String toString() {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString());
+		sb.append("[");
+		sb.append("uuid="+uuid);
+		sb.append(",url="+url);
+		sb.append(",protocol="+protocol);
+	    sb.append("]");
+
+	    return sb.toString();
+    }
+
+    /**
+     * Compare keys
+     */
+    public int compareTo(row42Struct other) {
+
+		int returnValue = -1;
+		
+	    return returnValue;
+    }
+
+
+    private int checkNullsAndCompare(Object object1, Object object2) {
+        int returnValue = 0;
+		if (object1 instanceof Comparable && object2 instanceof Comparable) {
+            returnValue = ((Comparable) object1).compareTo(object2);
+        } else if (object1 != null && object2 != null) {
+            returnValue = compareStrings(object1.toString(), object2.toString());
+        } else if (object1 == null && object2 != null) {
+            returnValue = 1;
+        } else if (object1 != null && object2 == null) {
+            returnValue = -1;
+        } else {
+            returnValue = 0;
+        }
+
+        return returnValue;
+    }
+
+    private int compareStrings(String string1, String string2) {
+        return string1.compareTo(string2);
+    }
+
+
+}
+
+public static class copyOfcopyOfcopyOfmapStruct implements routines.system.IPersistableRow<copyOfcopyOfcopyOfmapStruct> {
+    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+
+	
+			    public String uuid;
+
+				public String getUuid () {
+					return this.uuid;
+				}
+				
+			    public String url;
+
+				public String getUrl () {
+					return this.url;
+				}
+				
+			    public String protocol;
+
+				public String getProtocol () {
+					return this.protocol;
+				}
+				
+
+
+
+	private String readString(ObjectInputStream dis) throws IOException{
+		String strReturn = null;
+		int length = 0;
+        length = dis.readInt();
+		if (length == -1) {
+			strReturn = null;
+		} else {
+			if(length > commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length) {
+				if(length < 1024 && commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor.length == 0) {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[1024];
+				} else {
+   					commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[2 * length];
+   				}
+			}
+			dis.readFully(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length);
+			strReturn = new String(commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor, 0, length, utf8Charset);
+		}
+		return strReturn;
+	}
+
+    private void writeString(String str, ObjectOutputStream dos) throws IOException{
+		if(str == null) {
+            dos.writeInt(-1);
+		} else {
+            byte[] byteArray = str.getBytes(utf8Charset);
+	    	dos.writeInt(byteArray.length);
+			dos.write(byteArray);
+    	}
+    }
+
+    public void readData(ObjectInputStream dis) {
+
+		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
+
+        	try {
+
+        		int length = 0;
+		
+					this.uuid = readString(dis);
+					
+					this.url = readString(dis);
+					
+					this.protocol = readString(dis);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+
+		
+
+        }
+
+		
+
+      }
+
+
+    }
+
+    public void writeData(ObjectOutputStream dos) {
+        try {
+
+		
+					// String
+				
+						writeString(this.uuid,dos);
+					
+					// String
+				
+						writeString(this.url,dos);
+					
+					// String
+				
+						writeString(this.protocol,dos);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
+    public String toString() {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString());
+		sb.append("[");
+		sb.append("uuid="+uuid);
+		sb.append(",url="+url);
+		sb.append(",protocol="+protocol);
+	    sb.append("]");
+
+	    return sb.toString();
+    }
+
+    /**
+     * Compare keys
+     */
+    public int compareTo(copyOfcopyOfcopyOfmapStruct other) {
+
+		int returnValue = -1;
+		
+	    return returnValue;
+    }
+
+
+    private int checkNullsAndCompare(Object object1, Object object2) {
+        int returnValue = 0;
+		if (object1 instanceof Comparable && object2 instanceof Comparable) {
+            returnValue = ((Comparable) object1).compareTo(object2);
+        } else if (object1 != null && object2 != null) {
+            returnValue = compareStrings(object1.toString(), object2.toString());
+        } else if (object1 == null && object2 != null) {
+            returnValue = 1;
+        } else if (object1 != null && object2 == null) {
+            returnValue = -1;
+        } else {
+            returnValue = 0;
+        }
+
+        return returnValue;
+    }
+
+    private int compareStrings(String string1, String string2) {
+        return string1.compareTo(string2);
+    }
+
+
+}
+
+public static class row11Struct implements routines.system.IPersistableRow<row11Struct> {
+    final static byte[] commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+    static byte[] commonByteArray_LOCAL_PROJECT_sdiMetadataExtractor = new byte[0];
+
+	
+			    public routines.system.Document xmldoc;
+
+				public routines.system.Document getXmldoc () {
+					return this.xmldoc;
+				}
+				
+
+
+
+    public void readData(ObjectInputStream dis) {
+
+		synchronized(commonByteArrayLock_LOCAL_PROJECT_sdiMetadataExtractor) {
+
+        	try {
+
+        		int length = 0;
+		
+						this.xmldoc = (routines.system.Document) dis.readObject();
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+
+		
+			} catch(ClassNotFoundException eCNFE) {
+				 throw new RuntimeException(eCNFE);
+		
+
+        }
+
+		
+
+      }
+
+
+    }
+
+    public void writeData(ObjectOutputStream dos) {
+        try {
+
+		
+					// Document
+				
+       			    	dos.writeObject(this.xmldoc);
+					
+        	} catch (IOException e) {
+	            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
+    public String toString() {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString());
+		sb.append("[");
+		sb.append("xmldoc="+String.valueOf(xmldoc));
+	    sb.append("]");
+
+	    return sb.toString();
+    }
+
+    /**
+     * Compare keys
+     */
+    public int compareTo(row11Struct other) {
+
+		int returnValue = -1;
+		
+	    return returnValue;
+    }
+
+
+    private int checkNullsAndCompare(Object object1, Object object2) {
+        int returnValue = 0;
+		if (object1 instanceof Comparable && object2 instanceof Comparable) {
+            returnValue = ((Comparable) object1).compareTo(object2);
+        } else if (object1 != null && object2 != null) {
+            returnValue = compareStrings(object1.toString(), object2.toString());
+        } else if (object1 == null && object2 != null) {
+            returnValue = 1;
+        } else if (object1 != null && object2 == null) {
+            returnValue = -1;
+        } else {
+            returnValue = 0;
+        }
+
+        return returnValue;
+    }
+
+    private int compareStrings(String string1, String string2) {
+        return string1.compareTo(string2);
+    }
+
+
+}
+public void tFileInputXML_8Process(final java.util.Map<String, Object> globalMap) throws TalendException {
+	globalMap.put("tFileInputXML_8_SUBPROCESS_STATE", 0);
+
+ final boolean execStat = this.execStat;
+		String currentVirtualComponent = null;
+	
+		String iterateId = "";
+	
+	
+	String currentComponent = "";
+	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
+
+	try {
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
+				globalResumeTicket = true;
+
+
+
+		row11Struct row11 = new row11Struct();
+copyOfcopyOfcopyOfmapStruct copyOfcopyOfcopyOfmap = new copyOfcopyOfcopyOfmapStruct();
+row42Struct row42 = new row42Struct();
+row43Struct row43 = new row43Struct();
+row44Struct row44 = new row44Struct();
+
+
+
+
+	
+	/**
+	 * [tXMLMap_2_TXMLMAP_OUT begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tXMLMap_2_TXMLMAP_OUT", false);
+		start_Hash.put("tXMLMap_2_TXMLMAP_OUT", System.currentTimeMillis());
+		
+	
+		currentVirtualComponent = "tXMLMap_2";
+	
+	currentComponent="tXMLMap_2_TXMLMAP_OUT";
+
+	
+			if (execStat) {
+				if(resourceMap.get("inIterateVComp") == null){
+					
+						runStat.updateStatOnConnection("row11" + iterateId, 0, 0);
+					
+				}
+			} 
+
+		
+		int tos_count_tXMLMap_2_TXMLMAP_OUT = 0;
+		
+
+	
+	
+//===============================input xml init part===============================
+class XML_API_tXMLMap_2_TXMLMAP_OUT{
+	public boolean isDefNull(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null && node instanceof org.dom4j.Element) {
+        	org.dom4j.Attribute attri = ((org.dom4j.Element)node).attribute("nil");
+        	if(attri != null && ("true").equals(attri.getText())){
+            	return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isMissing(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        return node == null ? true : false;
+    }
+
+    public boolean isEmpty(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null) {
+            return node.getText().length() == 0;
+        }
+        return false;
+    }
+}
+	class Var__tXMLMap_2_TXMLMAP_OUT__Struct {
+	}
+	Var__tXMLMap_2_TXMLMAP_OUT__Struct Var__tXMLMap_2_TXMLMAP_OUT = new Var__tXMLMap_2_TXMLMAP_OUT__Struct();
+// ###############################
+// # Outputs initialization
+copyOfcopyOfcopyOfmapStruct copyOfcopyOfcopyOfmap_tmp = new copyOfcopyOfcopyOfmapStruct();
+copyOfcopyOfcopyOfmapStruct copyOfcopyOfcopyOfmap_save = null;
+//the aggregate variable
+copyOfcopyOfcopyOfmapStruct copyOfcopyOfcopyOfmap_aggregate = null;
+//init the resultset for aggregate
+java.util.List<Object> allOutsForAggregate_tXMLMap_2 = new java.util.ArrayList<Object>();
+globalMap.put("allOutsForAggregate_tXMLMap_2",allOutsForAggregate_tXMLMap_2);
+// ###############################
+class TreeNode_API_tXMLMap_2_TXMLMAP_OUT {
+	java.util.Map<String, String> xpath_value_map = new java.util.HashMap<String, String>();
+	
+	void clear(){
+		xpath_value_map.clear();
+	}
+	
+	void put(String xpath, String value){
+		xpath_value_map.put(xpath, value);
+	}
+	String get_null(String xpath) {
+		return null;
+	}
+	String get_String(String xpath){
+		return xpath_value_map.get(xpath);
+	}
+	java.util.Date get_Date(String xpath, String pattern){
+		String content = xpath_value_map.get(xpath);
+		if(content==null || content.length()==0) return null;
+		return ParserUtils.parseTo_Date(content, pattern);
+	}
+	Integer get_Integer(String xpath){
+		String content = xpath_value_map.get(xpath);
+		if(content==null || content.length()==0) return null;
+		return ParserUtils.parseTo_Integer(content);
+	}
+	Float get_Float(String xpath){
+		String content = xpath_value_map.get(xpath);
+		if(content==null || content.length()==0) return null;
+		return ParserUtils.parseTo_Float(content);
+	}
+	Character get_Character(String xpath){
+		String content = xpath_value_map.get(xpath);
+		if(content==null || content.length()==0) return null;
+		return ParserUtils.parseTo_Character(content);
+	}
+	Double get_Double(String xpath){
+		String content = xpath_value_map.get(xpath);
+		if(content==null || content.length()==0) return null;
+		return ParserUtils.parseTo_Double(content);
+	}
+}
+			TreeNode_API_tXMLMap_2_TXMLMAP_OUT treeNodeAPI_tXMLMap_2_TXMLMAP_OUT = new TreeNode_API_tXMLMap_2_TXMLMAP_OUT();
+			NameSpaceTool nsTool_tXMLMap_2_TXMLMAP_OUT = new NameSpaceTool();
+		int nb_line_tXMLMap_2_TXMLMAP_OUT = 0; 
+	
+    XML_API_tXMLMap_2_TXMLMAP_OUT xml_api_tXMLMap_2_TXMLMAP_OUT = new XML_API_tXMLMap_2_TXMLMAP_OUT();
+
+	//the map store the previous value of aggregate columns
+	java.util.Map<String,Object> aggregateCacheMap_tXMLMap_2_TXMLMAP_OUT = new java.util.HashMap<String,Object>();
+
+	            
+ 
+
+
+
+/**
+ * [tXMLMap_2_TXMLMAP_OUT begin ] stop
+ */
+
+
+
+	
+	/**
+	 * [tFileInputXML_8 begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tFileInputXML_8", false);
+		start_Hash.put("tFileInputXML_8", System.currentTimeMillis());
+		
+	
+	currentComponent="tFileInputXML_8";
+
+	
+		int tos_count_tFileInputXML_8 = 0;
+		
+
+	
+
+int nb_line_tFileInputXML_8 = 0;
+
+	String os_tFileInputXML_8 = System.getProperty("os.name").toLowerCase();
+	boolean isWindows_tFileInputXML_8=false;
+	if(os_tFileInputXML_8.indexOf("windows") > -1 || os_tFileInputXML_8.indexOf("nt") > -1){
+		isWindows_tFileInputXML_8=true;
+	}
+class NameSpaceTool_tFileInputXML_8 {
+
+    public java.util.HashMap<String, String> xmlNameSpaceMap = new java.util.HashMap<String, String>();
+    
+	private java.util.List<String> defualtNSPath = new java.util.ArrayList<String>();
+
+    public void countNSMap(org.dom4j.Element el) {
+        for (org.dom4j.Namespace ns : (java.util.List<org.dom4j.Namespace>) el.declaredNamespaces()) {
+            if (ns.getPrefix().trim().length() == 0) {
+                xmlNameSpaceMap.put("pre"+defualtNSPath.size(), ns.getURI());
+                String path = "";
+                org.dom4j.Element elTmp = el;
+                while (elTmp != null) {
+                	if (elTmp.getNamespacePrefix() != null && elTmp.getNamespacePrefix().length() > 0) {
+                        path = "/" + elTmp.getNamespacePrefix() + ":" + elTmp.getName() + path;
+                    } else {
+                        path = "/" + elTmp.getName() + path;
+                    }
+                    elTmp = elTmp.getParent();
+                }
+                defualtNSPath.add(path);
+            } else {
+                xmlNameSpaceMap.put(ns.getPrefix(), ns.getURI());
+            }
+
+        }
+        for (org.dom4j.Element e : (java.util.List<org.dom4j.Element>) el.elements()) {
+            countNSMap(e);
+        }
+    }
+    
+    private final org.talend.xpath.XPathUtil util = new  org.talend.xpath.XPathUtil();
+    
+    {
+    	util.setDefaultNSPath(defualtNSPath);
+    }
+    
+	public String addDefaultNSPrefix(String path) {
+		return util.addDefaultNSPrefix(path);
+	}
+	
+	public String addDefaultNSPrefix(String relativeXpression, String basePath) {
+		return util.addDefaultNSPrefix(relativeXpression,basePath);
+	}
+    
+}
+
+class XML_API_tFileInputXML_8{
+	public boolean isDefNull(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null && node instanceof org.dom4j.Element) {
+        	org.dom4j.Attribute attri = ((org.dom4j.Element)node).attribute("nil");
+        	if(attri != null && ("true").equals(attri.getText())){
+            	return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isMissing(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        return node == null ? true : false;
+    }
+
+    public boolean isEmpty(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null) {
+            return node.getText().length() == 0;
+        }
+        return false;
+    }
+}
+
+
+org.dom4j.io.SAXReader reader_tFileInputXML_8 = new org.dom4j.io.SAXReader();
+Object filename_tFileInputXML_8 = null;
+try {
+	filename_tFileInputXML_8 = System.getProperty("java.io.tmpdir") + "/sdiDump/tmp/out.xml";
+} catch(java.lang.Exception e) {
+	
+	
+	System.err.println(e.getMessage());
+	
+}
+if(filename_tFileInputXML_8 != null && filename_tFileInputXML_8 instanceof String && filename_tFileInputXML_8.toString().startsWith("//")){
+	if (!isWindows_tFileInputXML_8){
+		filename_tFileInputXML_8 = filename_tFileInputXML_8.toString().replaceFirst("//","/");
+	}
+}
+
+boolean isValidFile_tFileInputXML_8 = true;
+org.dom4j.Document doc_tFileInputXML_8 = null;
+java.io.Closeable toClose_tFileInputXML_8 = null;
+try{
+	if(filename_tFileInputXML_8 instanceof java.io.InputStream){
+		java.io.InputStream inputStream_tFileInputXML_8 = (java.io.InputStream)filename_tFileInputXML_8;
+		toClose_tFileInputXML_8 = inputStream_tFileInputXML_8;
+		doc_tFileInputXML_8 = reader_tFileInputXML_8.read(inputStream_tFileInputXML_8);
+	}else{
+		java.io.Reader unicodeReader_tFileInputXML_8 = new UnicodeReader(new java.io.FileInputStream(String.valueOf(filename_tFileInputXML_8)),"ISO-8859-15");
+		toClose_tFileInputXML_8 = unicodeReader_tFileInputXML_8;
+		org.xml.sax.InputSource in_tFileInputXML_8= new org.xml.sax.InputSource(unicodeReader_tFileInputXML_8);
+		doc_tFileInputXML_8 = reader_tFileInputXML_8.read(in_tFileInputXML_8);
+	}
+}catch(java.lang.Exception e){
+	
+	System.err.println(e.getMessage());
+	isValidFile_tFileInputXML_8 = false;
+} finally {
+	if(toClose_tFileInputXML_8!=null) {
+		toClose_tFileInputXML_8.close();
+	}
+}
+if(isValidFile_tFileInputXML_8){
+NameSpaceTool_tFileInputXML_8 nsTool_tFileInputXML_8 = new NameSpaceTool_tFileInputXML_8();
+nsTool_tFileInputXML_8.countNSMap(doc_tFileInputXML_8.getRootElement());
+java.util.HashMap<String,String> xmlNameSpaceMap_tFileInputXML_8 = nsTool_tFileInputXML_8.xmlNameSpaceMap;  
+
+org.dom4j.XPath x_tFileInputXML_8 = doc_tFileInputXML_8.createXPath(nsTool_tFileInputXML_8.addDefaultNSPrefix("/csw:GetRecordsResponse"));  
+x_tFileInputXML_8.setNamespaceURIs(xmlNameSpaceMap_tFileInputXML_8); 
+
+java.util.List<org.dom4j.tree.AbstractNode> nodeList_tFileInputXML_8 = (java.util.List<org.dom4j.tree.AbstractNode>)x_tFileInputXML_8.selectNodes(doc_tFileInputXML_8);	
+XML_API_tFileInputXML_8 xml_api_tFileInputXML_8 = new XML_API_tFileInputXML_8();
+String str_tFileInputXML_8 = "";
+org.dom4j.Node node_tFileInputXML_8 = null;
+
+//init all mapping xpaths
+java.util.Map<Integer,org.dom4j.XPath> xpaths_tFileInputXML_8=new java.util.HashMap<Integer,org.dom4j.XPath>();
+	class XPathUtil_tFileInputXML_8{
+	
+			   public void initXPaths_0(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_8 nsTool,
+			       java.util.HashMap<String,String> xmlNameSpaceMap){
+			
+	org.dom4j.XPath xpath_0 = org.dom4j.DocumentHelper.createXPath(nsTool.addDefaultNSPrefix(".","/csw:GetRecordsResponse"));
+	xpath_0.setNamespaceURIs(xmlNameSpaceMap);
+	
+			xpaths.put(0,xpath_0);
+			
+	     }
+	   
+	      public void initXPaths(java.util.Map<Integer,org.dom4j.XPath> xpaths,NameSpaceTool_tFileInputXML_8 nsTool,
+			    java.util.HashMap<String,String> xmlNameSpaceMap){
+			    
+			        initXPaths_0(xpaths,nsTool, xmlNameSpaceMap);
+			    
+		   }
+	}
+	XPathUtil_tFileInputXML_8 xPathUtil_tFileInputXML_8 = new XPathUtil_tFileInputXML_8();
+	xPathUtil_tFileInputXML_8.initXPaths(xpaths_tFileInputXML_8, nsTool_tFileInputXML_8, xmlNameSpaceMap_tFileInputXML_8);
+for (org.dom4j.tree.AbstractNode temp_tFileInputXML_8: nodeList_tFileInputXML_8) {
+		nb_line_tFileInputXML_8++;
+		
+	row11 = null;			
+	boolean whetherReject_tFileInputXML_8 = false;
+	row11 = new row11Struct();
+	try{
+    Object obj0_tFileInputXML_8 = xpaths_tFileInputXML_8.get(0).evaluate(temp_tFileInputXML_8);
+    if(obj0_tFileInputXML_8 == null) {
+    	node_tFileInputXML_8 = null;
+		str_tFileInputXML_8 = null;
+    	
+    } else if(obj0_tFileInputXML_8 instanceof org.dom4j.Node) {
+    	node_tFileInputXML_8 = (org.dom4j.Node)obj0_tFileInputXML_8;
+		str_tFileInputXML_8 = node_tFileInputXML_8.asXML();
+    } else if(obj0_tFileInputXML_8 instanceof String || obj0_tFileInputXML_8 instanceof Number){
+    	node_tFileInputXML_8 = temp_tFileInputXML_8;
+    	str_tFileInputXML_8 = String.valueOf(obj0_tFileInputXML_8);
+    } else if(obj0_tFileInputXML_8 instanceof java.util.List){
+    	java.util.List<org.dom4j.Node> nodes_tFileInputXML_8 = (java.util.List<org.dom4j.Node>)obj0_tFileInputXML_8;
+    	node_tFileInputXML_8 = nodes_tFileInputXML_8.size()>0 ? nodes_tFileInputXML_8.get(0) : null;
+		str_tFileInputXML_8 = node_tFileInputXML_8==null?null:node_tFileInputXML_8.asXML();
+	}
+								row11.xmldoc = ParserUtils.parseTo_Document(str_tFileInputXML_8,false,"ISO-8859-15"); 
+			
+    } catch (java.lang.Exception e) {
+        whetherReject_tFileInputXML_8 = true;
+                System.err.println(e.getMessage());
+                row11 = null;
+    }
+			
+			
+
+ 
+
+
+
+/**
+ * [tFileInputXML_8 begin ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_8 main ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_8";
+
+	
+
+ 
+
+
+	tos_count_tFileInputXML_8++;
+
+/**
+ * [tFileInputXML_8 main ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_8 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_8";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_8 process_data_begin ] stop
+ */
+// Start of branch "row11"
+if(row11 != null) { 
+
+
+
+	
+	/**
+	 * [tXMLMap_2_TXMLMAP_OUT main ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_2";
+	
+	currentComponent="tXMLMap_2_TXMLMAP_OUT";
+
+	
+
+			//row11
+			//row11
+
+
+			
+				if(execStat){
+					runStat.updateStatOnConnection("row11"+iterateId,1, 1);
+				} 
+			
+
+		
+
+	boolean rejectedInnerJoin_tXMLMap_2_TXMLMAP_OUT = false;
+	boolean rejectedDocInnerJoin_tXMLMap_2_TXMLMAP_OUT = false;
+	boolean mainRowRejected_tXMLMap_2_TXMLMAP_OUT = false;
+	boolean isMatchDocRowtXMLMap_2_TXMLMAP_OUT = false;
+	  
+	
+			
+
+		
+		
+				//init document to flat tool
+				routines.system.DocumentToFlat docToFlat_tXMLMap_2_TXMLMAP_OUT = new routines.system.DocumentToFlat();
+				docToFlat_tXMLMap_2_TXMLMAP_OUT.setOriginalLoop("/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource");
+				docToFlat_tXMLMap_2_TXMLMAP_OUT.setIsOptional(false);
+				if(row11.xmldoc == null || row11.xmldoc.getDocument() == null) {
+					throw new RuntimeException("row11.xmldoc can't be empty");
+				}
+				org.dom4j.Document doc_tXMLMap_2_TXMLMAP_OUT = row11.xmldoc.getDocument();
+				docToFlat_tXMLMap_2_TXMLMAP_OUT.setDoc(doc_tXMLMap_2_TXMLMAP_OUT);
+				docToFlat_tXMLMap_2_TXMLMAP_OUT.setDefineNS(true);
+				docToFlat_tXMLMap_2_TXMLMAP_OUT.setNamespaceTool(nsTool_tXMLMap_2_TXMLMAP_OUT);
+				
+					java.util.HashMap<String,String> xmlNameSpaceMap_tXMLMap_2_TXMLMAP_OUT = new java.util.HashMap<String,String>();
+					xmlNameSpaceMap_tXMLMap_2_TXMLMAP_OUT.put("gco","http://www.isotc211.org/2005/gco");xmlNameSpaceMap_tXMLMap_2_TXMLMAP_OUT.put("gmx","http://www.isotc211.org/2005/gmx");xmlNameSpaceMap_tXMLMap_2_TXMLMAP_OUT.put("csw","http://www.opengis.net/cat/csw/2.0.2");xmlNameSpaceMap_tXMLMap_2_TXMLMAP_OUT.put("gml","http://www.opengis.net/gml");xmlNameSpaceMap_tXMLMap_2_TXMLMAP_OUT.put("gmd","http://www.isotc211.org/2005/gmd");
+				
+				docToFlat_tXMLMap_2_TXMLMAP_OUT.setXmlNameSpaceMap(xmlNameSpaceMap_tXMLMap_2_TXMLMAP_OUT);
+				
+				String[] absolutePathMappings_tXMLMap_2_TXMLMAP_OUT = new String[3];
+				String[] relativePathMappings_tXMLMap_2_TXMLMAP_OUT = new String[3];
+				
+				absolutePathMappings_tXMLMap_2_TXMLMAP_OUT[0] = "row11.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString";
+				relativePathMappings_tXMLMap_2_TXMLMAP_OUT[0] = "gmd:protocol/gco:CharacterString";
+				
+				absolutePathMappings_tXMLMap_2_TXMLMAP_OUT[1] = "row11.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL";
+				relativePathMappings_tXMLMap_2_TXMLMAP_OUT[1] = "gmd:linkage/gmd:URL";
+				
+				absolutePathMappings_tXMLMap_2_TXMLMAP_OUT[2] = "row11.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:fileIdentifier/gco:CharacterString";
+				relativePathMappings_tXMLMap_2_TXMLMAP_OUT[2] = "../../../../../../gmd:fileIdentifier/gco:CharacterString";
+				
+				docToFlat_tXMLMap_2_TXMLMAP_OUT.setAbsolutePathMappings(absolutePathMappings_tXMLMap_2_TXMLMAP_OUT);
+				docToFlat_tXMLMap_2_TXMLMAP_OUT.setCurrentRelativePathMappings(relativePathMappings_tXMLMap_2_TXMLMAP_OUT);
+				//generate document to flat data
+				docToFlat_tXMLMap_2_TXMLMAP_OUT.flat();
+				//get flat data
+				java.util.List<java.util.Map<String, String>> resultSet_tXMLMap_2_TXMLMAP_OUT = docToFlat_tXMLMap_2_TXMLMAP_OUT.getResultSet();
+				
+				for (java.util.Map<String,String> oneRow_tXMLMap_2_TXMLMAP_OUT: resultSet_tXMLMap_2_TXMLMAP_OUT) { // G_TXM_M_001
+					nb_line_tXMLMap_2_TXMLMAP_OUT++;
+			    	rejectedInnerJoin_tXMLMap_2_TXMLMAP_OUT = false;
+			    	rejectedDocInnerJoin_tXMLMap_2_TXMLMAP_OUT = false;
+					mainRowRejected_tXMLMap_2_TXMLMAP_OUT=false;
+				    isMatchDocRowtXMLMap_2_TXMLMAP_OUT = false;
+					
+			    	treeNodeAPI_tXMLMap_2_TXMLMAP_OUT.clear();
+			    	for(java.util.Map.Entry<String, String> entry_tXMLMap_2_TXMLMAP_OUT : oneRow_tXMLMap_2_TXMLMAP_OUT.entrySet()) {
+						treeNodeAPI_tXMLMap_2_TXMLMAP_OUT.put(entry_tXMLMap_2_TXMLMAP_OUT.getKey(),entry_tXMLMap_2_TXMLMAP_OUT.getValue());
+					}
+					
+
+
+			
+{ // start of Var scope
+
+	// ###############################
+	// # Vars tables
+
+Var__tXMLMap_2_TXMLMAP_OUT__Struct Var = Var__tXMLMap_2_TXMLMAP_OUT;
+		// ###############################
+		// # Output tables
+
+copyOfcopyOfcopyOfmap = null;
+
+
+// # Output table : 'copyOfcopyOfcopyOfmap'
+
+copyOfcopyOfcopyOfmap_tmp = new copyOfcopyOfcopyOfmapStruct();
+copyOfcopyOfcopyOfmap_tmp.uuid = treeNodeAPI_tXMLMap_2_TXMLMAP_OUT.get_String("row11.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:fileIdentifier/gco:CharacterString");
+copyOfcopyOfcopyOfmap_tmp.url = treeNodeAPI_tXMLMap_2_TXMLMAP_OUT.get_String("row11.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL");
+copyOfcopyOfcopyOfmap_tmp.protocol = treeNodeAPI_tXMLMap_2_TXMLMAP_OUT.get_String("row11.xmldoc:/csw:GetRecordsResponse/csw:SearchResults/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString");allOutsForAggregate_tXMLMap_2.add(copyOfcopyOfcopyOfmap_tmp);
+
+// ###############################
+
+} // end of Var scope
+
+rejectedInnerJoin_tXMLMap_2_TXMLMAP_OUT = false;
+
+
+		}//G_TXM_M_001 close
+	
+
+ 
+
+
+	tos_count_tXMLMap_2_TXMLMAP_OUT++;
+
+/**
+ * [tXMLMap_2_TXMLMAP_OUT main ] stop
+ */
+	
+	/**
+	 * [tXMLMap_2_TXMLMAP_OUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_2";
+	
+	currentComponent="tXMLMap_2_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_2_TXMLMAP_OUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tXMLMap_2_TXMLMAP_OUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_2";
+	
+	currentComponent="tXMLMap_2_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_2_TXMLMAP_OUT process_data_end ] stop
+ */
+
+} // End of branch "row11"
+
+
+
+
+	
+	/**
+	 * [tFileInputXML_8 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_8";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_8 process_data_end ] stop
+ */
+	
+	/**
+	 * [tFileInputXML_8 end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_8";
+
+	
+
+
+}
+	}
+	globalMap.put("tFileInputXML_8_NB_LINE",nb_line_tFileInputXML_8);
+
+	
+ 
+
+ok_Hash.put("tFileInputXML_8", true);
+end_Hash.put("tFileInputXML_8", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tFileInputXML_8 end ] stop
+ */
+
+	
+	/**
+	 * [tXMLMap_2_TXMLMAP_OUT end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_2";
+	
+	currentComponent="tXMLMap_2_TXMLMAP_OUT";
+
+	
+
+
+
+
+			if(execStat){
+				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
+			 		runStat.updateStatOnConnection("row11"+iterateId,2, 0); 
+			 	}
+			}
+		
+ 
+
+ok_Hash.put("tXMLMap_2_TXMLMAP_OUT", true);
+end_Hash.put("tXMLMap_2_TXMLMAP_OUT", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tXMLMap_2_TXMLMAP_OUT end ] stop
+ */
+
+
+
+
+	
+	/**
+	 * [tAggregateRow_10_AGGOUT begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tAggregateRow_10_AGGOUT", false);
+		start_Hash.put("tAggregateRow_10_AGGOUT", System.currentTimeMillis());
+		
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGOUT";
+
+	
+			if (execStat) {
+				if(resourceMap.get("inIterateVComp") == null){
+					
+						runStat.updateStatOnConnection("row43" + iterateId, 0, 0);
+					
+				}
+			} 
+
+		
+		int tos_count_tAggregateRow_10_AGGOUT = 0;
+		
+
+// ------------ Seems it is not used
+
+java.util.Map hashAggreg_tAggregateRow_10 = new java.util.HashMap(); 
+
+// ------------
+
+	class UtilClass_tAggregateRow_10 { // G_OutBegin_AggR_144
+
+		public double sd(Double[] data) {
+	        final int n = data.length;
+        	if (n < 2) {
+	            return Double.NaN;
+        	}
+        	double d1 = 0d;
+        	double d2 =0d;
+	        
+	        for (int i = 0; i < data.length; i++) {
+            	d1 += (data[i]*data[i]);
+            	d2 += data[i];
+        	}
+        
+	        return Math.sqrt((n*d1 - d2*d2)/n/(n-1));
+	    }
+	    
+		public void checkedIADD(byte a, byte b, boolean checkTypeOverFlow, boolean checkUlp) {
+		    byte r = (byte) (a + b);
+		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'short/Short'", "'byte/Byte'"));
+		    }
+		}
+		
+		public void checkedIADD(short a, short b, boolean checkTypeOverFlow, boolean checkUlp) {
+		    short r = (short) (a + b);
+		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'int/Integer'", "'short/Short'"));
+		    }
+		}
+		
+		public void checkedIADD(int a, int b, boolean checkTypeOverFlow, boolean checkUlp) {
+		    int r = a + b;
+		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'long/Long'", "'int/Integer'"));
+		    }
+		}
+		
+		public void checkedIADD(long a, long b, boolean checkTypeOverFlow, boolean checkUlp) {
+		    long r = a + b;
+		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'long/Long'"));
+		    }
+		}
+		
+		public void checkedIADD(float a, float b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+			if(checkUlp) {
+			    float minAddedValue = Math.ulp(a);
+			    if (minAddedValue > Math.abs(b)) {
+			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(b), "'double' or 'BigDecimal'", "'float/Float'"));
+			    }
+			}
+			
+		    if (checkTypeOverFlow && ((double) a + (double) b > (double) Float.MAX_VALUE) || ((double) a + (double) b < (double) -Float.MAX_VALUE)) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'double' or 'BigDecimal'", "'float/Float'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, double b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+			if(checkUlp) {
+			    double minAddedValue = Math.ulp(a);
+			    if (minAddedValue > Math.abs(b)) {
+			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
+			    }
+			}
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, byte b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, short b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, int b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, float b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+			if(checkUlp) {
+			    double minAddedValue = Math.ulp(a);
+			    if (minAddedValue > Math.abs(b)) {
+			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
+			    }
+			}
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE )) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		private String buildOverflowMessage(String a, String b, String advicedTypes, String originalType) {
+		    return "Type overflow when adding " + b + " to " + a
+		    + ", to resolve this problem, increase the precision by using "+ advicedTypes +" type in place of "+ originalType +".";
+		}
+		
+		private String buildPrecisionMessage(String a, String b, String advicedTypes, String originalType) {
+		    return "The double precision is unsufficient to add the value " + b + " to " + a
+		    + ", to resolve this problem, increase the precision by using "+ advicedTypes +" type in place of "+ originalType +".";
+		}
+
+	} // G_OutBegin_AggR_144
+
+	UtilClass_tAggregateRow_10 utilClass_tAggregateRow_10 = new UtilClass_tAggregateRow_10();
+
+	
+
+	class AggOperationStruct_tAggregateRow_10 { // G_OutBegin_AggR_100
+
+		private static final int DEFAULT_HASHCODE = 1;
+	    private static final int PRIME = 31;
+	    private int hashCode = DEFAULT_HASHCODE;
+	    public boolean hashCodeDirty = true;
+
+    				String uuid;StringBuilder url_list = new StringBuilder();
+           			boolean url_list_firstEmpty = false;
+           			StringBuilder protocol_list = new StringBuilder();
+           			boolean protocol_list_firstEmpty = false;
+           			
+        
+	    @Override
+		public int hashCode() {
+			if (this.hashCodeDirty) {
+				final int prime = PRIME;
+				int result = DEFAULT_HASHCODE;
+		
+							result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
+							
+	    		this.hashCode = result;
+	    		this.hashCodeDirty = false;		
+			}
+			return this.hashCode;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (getClass() != obj.getClass()) return false;
+			final AggOperationStruct_tAggregateRow_10 other = (AggOperationStruct_tAggregateRow_10) obj;
+			
+							if (this.uuid == null) {
+								if (other.uuid != null) 
+									return false;
+							} else if (!this.uuid.equals(other.uuid)) 
+								return false;
+						
+			
+			return true;
+		}
+  
+        
+	} // G_OutBegin_AggR_100
+
+	AggOperationStruct_tAggregateRow_10 operation_result_tAggregateRow_10 = null;
+	AggOperationStruct_tAggregateRow_10 operation_finder_tAggregateRow_10 = new AggOperationStruct_tAggregateRow_10();
+	java.util.Map<AggOperationStruct_tAggregateRow_10,AggOperationStruct_tAggregateRow_10> hash_tAggregateRow_10 = new java.util.HashMap<AggOperationStruct_tAggregateRow_10,AggOperationStruct_tAggregateRow_10>();
+	
+	String delimiter_tAggregateRow_10 = "|";
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_10_AGGOUT begin ] stop
+ */
+
+
+
+	
+	/**
+	 * [tUniqRow_2 begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tUniqRow_2", false);
+		start_Hash.put("tUniqRow_2", System.currentTimeMillis());
+		
+	
+	currentComponent="tUniqRow_2";
+
+	
+			if (execStat) {
+				if(resourceMap.get("inIterateVComp") == null){
+					
+						runStat.updateStatOnConnection("row42" + iterateId, 0, 0);
+					
+				}
+			} 
+
+		
+		int tos_count_tUniqRow_2 = 0;
+		
+
+	
+		class KeyStruct_tUniqRow_2 {
+	
+			private static final int DEFAULT_HASHCODE = 1;
+		    private static final int PRIME = 31;
+		    private int hashCode = DEFAULT_HASHCODE;
+		    public boolean hashCodeDirty = true;
+	
+	        
+					String uuid;
+					String url;
+					String protocol;        
+	        
+		    @Override
+			public int hashCode() {
+				if (this.hashCodeDirty) {
+					final int prime = PRIME;
+					int result = DEFAULT_HASHCODE;
+			
+								result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
+								
+								result = prime * result + ((this.url == null) ? 0 : this.url.hashCode());
+								
+								result = prime * result + ((this.protocol == null) ? 0 : this.protocol.hashCode());
+								
+		    		this.hashCode = result;
+		    		this.hashCodeDirty = false;		
+				}
+				return this.hashCode;
+			}
+			
+			@Override
+			public boolean equals(Object obj) {
+				if (this == obj) return true;
+				if (obj == null) return false;
+				if (getClass() != obj.getClass()) return false;
+				final KeyStruct_tUniqRow_2 other = (KeyStruct_tUniqRow_2) obj;
+				
+									if (this.uuid == null) {
+										if (other.uuid != null) 
+											return false;
+								
+									} else if (!this.uuid.equals(other.uuid))
+								 
+										return false;
+								
+									if (this.url == null) {
+										if (other.url != null) 
+											return false;
+								
+									} else if (!this.url.equals(other.url))
+								 
+										return false;
+								
+									if (this.protocol == null) {
+										if (other.protocol != null) 
+											return false;
+								
+									} else if (!this.protocol.equals(other.protocol))
+								 
+										return false;
+								
+				
+				return true;
+			}
+	  
+	        
+		}
+
+	
+int nb_uniques_tUniqRow_2 = 0;
+int nb_duplicates_tUniqRow_2 = 0;
+KeyStruct_tUniqRow_2 finder_tUniqRow_2 = new KeyStruct_tUniqRow_2();
+java.util.Set<KeyStruct_tUniqRow_2> keystUniqRow_2 = new java.util.HashSet<KeyStruct_tUniqRow_2>(); 
+
+ 
+
+
+
+/**
+ * [tUniqRow_2 begin ] stop
+ */
+
+
+
+	
+	/**
+	 * [tFilterRow_14 begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tFilterRow_14", false);
+		start_Hash.put("tFilterRow_14", System.currentTimeMillis());
+		
+	
+	currentComponent="tFilterRow_14";
+
+	
+			if (execStat) {
+				if(resourceMap.get("inIterateVComp") == null){
+					
+						runStat.updateStatOnConnection("copyOfcopyOfcopyOfmap" + iterateId, 0, 0);
+					
+				}
+			} 
+
+		
+		int tos_count_tFilterRow_14 = 0;
+		
+    int nb_line_tFilterRow_14 = 0;
+    int nb_line_ok_tFilterRow_14 = 0;
+    int nb_line_reject_tFilterRow_14 = 0;
+
+    class Operator_tFilterRow_14 {
+      private String sErrorMsg = "";
+      private boolean bMatchFlag = true;
+      private String sUnionFlag = "&&";
+
+      public Operator_tFilterRow_14(String unionFlag){
+        sUnionFlag = unionFlag;
+        bMatchFlag =  "||".equals(unionFlag) ? false : true;
+      }
+
+      public String getErrorMsg() {
+        if (sErrorMsg != null && sErrorMsg.length() > 1)
+          return sErrorMsg.substring(1);
+        else 
+          return null;
+      }
+
+      public boolean getMatchFlag() {
+        return bMatchFlag;
+      }
+
+      public void matches(boolean partMatched, String reason) {
+        // no need to care about the next judgement
+        if ("||".equals(sUnionFlag) && bMatchFlag){
+          return;
+        }
+
+        if (!partMatched) {
+          sErrorMsg += "|" + reason;
+        }
+
+        if ("||".equals(sUnionFlag))
+          bMatchFlag = bMatchFlag || partMatched;
+        else
+          bMatchFlag = bMatchFlag && partMatched;
+      }
+    }
+
+ 
+
+
+
+/**
+ * [tFilterRow_14 begin ] stop
+ */
+
+
+
+	
+	/**
+	 * [tXMLMap_2_TXMLMAP_IN begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tXMLMap_2_TXMLMAP_IN", false);
+		start_Hash.put("tXMLMap_2_TXMLMAP_IN", System.currentTimeMillis());
+		
+	
+		currentVirtualComponent = "tXMLMap_2";
+	
+	currentComponent="tXMLMap_2_TXMLMAP_IN";
+
+	
+		int tos_count_tXMLMap_2_TXMLMAP_IN = 0;
+		
+java.util.List<Object> outs_tXMLMap_2 = (java.util.List<Object>)globalMap.get("allOutsForAggregate_tXMLMap_2");
+for(Object  row_out_tXMLMap_2_TXMLMAP_IN : outs_tXMLMap_2) {//TD512
+ 
+
+
+
+/**
+ * [tXMLMap_2_TXMLMAP_IN begin ] stop
+ */
+	
+	/**
+	 * [tXMLMap_2_TXMLMAP_IN main ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_2";
+	
+	currentComponent="tXMLMap_2_TXMLMAP_IN";
+
+	
+
+	copyOfcopyOfcopyOfmap = null;
+	if(row_out_tXMLMap_2_TXMLMAP_IN!=null && row_out_tXMLMap_2_TXMLMAP_IN instanceof copyOfcopyOfcopyOfmapStruct) {
+		copyOfcopyOfcopyOfmap = (copyOfcopyOfcopyOfmapStruct)row_out_tXMLMap_2_TXMLMAP_IN;		
+	}
+ 
+
+
+	tos_count_tXMLMap_2_TXMLMAP_IN++;
+
+/**
+ * [tXMLMap_2_TXMLMAP_IN main ] stop
+ */
+	
+	/**
+	 * [tXMLMap_2_TXMLMAP_IN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_2";
+	
+	currentComponent="tXMLMap_2_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_2_TXMLMAP_IN process_data_begin ] stop
+ */
+// Start of branch "copyOfcopyOfcopyOfmap"
+if(copyOfcopyOfcopyOfmap != null) { 
+
+
+
+	
+	/**
+	 * [tFilterRow_14 main ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_14";
+
+	
+
+			//copyOfcopyOfcopyOfmap
+			//copyOfcopyOfcopyOfmap
+
+
+			
+				if(execStat){
+					runStat.updateStatOnConnection("copyOfcopyOfcopyOfmap"+iterateId,1, 1);
+				} 
+			
+
+		
+
+          row42 = null;
+    Operator_tFilterRow_14 ope_tFilterRow_14 = new Operator_tFilterRow_14("&&");
+      ope_tFilterRow_14.matches((copyOfcopyOfcopyOfmap.protocol.contains("REST")
+			), "advanced condition failed");
+    
+    if (ope_tFilterRow_14.getMatchFlag()) {
+              if(row42 == null){ 
+                row42 = new row42Struct();
+              }
+               row42.uuid = copyOfcopyOfcopyOfmap.uuid;
+               row42.url = copyOfcopyOfcopyOfmap.url;
+               row42.protocol = copyOfcopyOfcopyOfmap.protocol;    
+      nb_line_ok_tFilterRow_14++;
+    } else {
+      nb_line_reject_tFilterRow_14++;
+    }
+
+nb_line_tFilterRow_14++;
+
+ 
+
+
+	tos_count_tFilterRow_14++;
+
+/**
+ * [tFilterRow_14 main ] stop
+ */
+	
+	/**
+	 * [tFilterRow_14 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_14";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_14 process_data_begin ] stop
+ */
+// Start of branch "row42"
+if(row42 != null) { 
+
+
+
+	
+	/**
+	 * [tUniqRow_2 main ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tUniqRow_2";
+
+	
+
+			//row42
+			//row42
+
+
+			
+				if(execStat){
+					runStat.updateStatOnConnection("row42"+iterateId,1, 1);
+				} 
+			
+
+		
+row43 = null;			
+if(row42.uuid == null){
+	finder_tUniqRow_2.uuid = null;
+}else{
+	finder_tUniqRow_2.uuid = row42.uuid.toLowerCase();
+}
+if(row42.url == null){
+	finder_tUniqRow_2.url = null;
+}else{
+	finder_tUniqRow_2.url = row42.url.toLowerCase();
+}
+if(row42.protocol == null){
+	finder_tUniqRow_2.protocol = null;
+}else{
+	finder_tUniqRow_2.protocol = row42.protocol.toLowerCase();
+}	
+finder_tUniqRow_2.hashCodeDirty = true;
+if (!keystUniqRow_2.contains(finder_tUniqRow_2)) {
+		KeyStruct_tUniqRow_2 new_tUniqRow_2 = new KeyStruct_tUniqRow_2();
+
+		
+if(row42.uuid == null){
+	new_tUniqRow_2.uuid = null;
+}else{
+	new_tUniqRow_2.uuid = row42.uuid.toLowerCase();
+}
+if(row42.url == null){
+	new_tUniqRow_2.url = null;
+}else{
+	new_tUniqRow_2.url = row42.url.toLowerCase();
+}
+if(row42.protocol == null){
+	new_tUniqRow_2.protocol = null;
+}else{
+	new_tUniqRow_2.protocol = row42.protocol.toLowerCase();
+}
+		
+		keystUniqRow_2.add(new_tUniqRow_2);if(row43 == null){ 
+	
+	row43 = new row43Struct();
+}row43.uuid = row42.uuid;			row43.url = row42.url;			row43.protocol = row42.protocol;					
+		nb_uniques_tUniqRow_2++;
+	} else {
+	  nb_duplicates_tUniqRow_2++;
+	}
+
+ 
+
+
+	tos_count_tUniqRow_2++;
+
+/**
+ * [tUniqRow_2 main ] stop
+ */
+	
+	/**
+	 * [tUniqRow_2 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tUniqRow_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tUniqRow_2 process_data_begin ] stop
+ */
+// Start of branch "row43"
+if(row43 != null) { 
+
+
+
+	
+	/**
+	 * [tAggregateRow_10_AGGOUT main ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGOUT";
+
+	
+
+			//row43
+			//row43
+
+
+			
+				if(execStat){
+					runStat.updateStatOnConnection("row43"+iterateId,1, 1);
+				} 
+			
+
+		
+	
+operation_finder_tAggregateRow_10.uuid = row43.uuid;
+			
+
+	operation_finder_tAggregateRow_10.hashCodeDirty = true;
+	
+	operation_result_tAggregateRow_10 = hash_tAggregateRow_10.get(operation_finder_tAggregateRow_10);
+
+	
+
+	if(operation_result_tAggregateRow_10 == null) { // G_OutMain_AggR_001
+
+		operation_result_tAggregateRow_10 = new AggOperationStruct_tAggregateRow_10();
+
+		operation_result_tAggregateRow_10.uuid = operation_finder_tAggregateRow_10.uuid;
+				
+		
+		
+
+		hash_tAggregateRow_10.put(operation_result_tAggregateRow_10, operation_result_tAggregateRow_10);
+	
+	} // G_OutMain_AggR_001
+
+
+	
+				if(row43.url != null) { // G_OutMain_AggR_546
+				
+				if(operation_result_tAggregateRow_10.url_list.length() > 0) {
+					operation_result_tAggregateRow_10.url_list.append("|");
+				} 
+				else if(operation_result_tAggregateRow_10.url_list_firstEmpty){
+					operation_result_tAggregateRow_10.url_list.append("|");
+				}
+					if(operation_result_tAggregateRow_10.url_list != null) {
+						if(operation_result_tAggregateRow_10.url_list_firstEmpty==false && ("").equals(String.valueOf(row43.url))){
+							operation_result_tAggregateRow_10.url_list_firstEmpty = true;
+						}
+						operation_result_tAggregateRow_10.url_list = operation_result_tAggregateRow_10.url_list.append(String.valueOf(row43.url));
+					}
+				
+				} // G_OutMain_AggR_546
+				
+				if(row43.protocol != null) { // G_OutMain_AggR_546
+				
+				if(operation_result_tAggregateRow_10.protocol_list.length() > 0) {
+					operation_result_tAggregateRow_10.protocol_list.append("|");
+				} 
+				else if(operation_result_tAggregateRow_10.protocol_list_firstEmpty){
+					operation_result_tAggregateRow_10.protocol_list.append("|");
+				}
+					if(operation_result_tAggregateRow_10.protocol_list != null) {
+						if(operation_result_tAggregateRow_10.protocol_list_firstEmpty==false && ("").equals(String.valueOf(row43.protocol))){
+							operation_result_tAggregateRow_10.protocol_list_firstEmpty = true;
+						}
+						operation_result_tAggregateRow_10.protocol_list = operation_result_tAggregateRow_10.protocol_list.append(String.valueOf(row43.protocol));
+					}
+				
+				} // G_OutMain_AggR_546
+				
+
+
+ 
+
+
+	tos_count_tAggregateRow_10_AGGOUT++;
+
+/**
+ * [tAggregateRow_10_AGGOUT main ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_10_AGGOUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_10_AGGOUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_10_AGGOUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_10_AGGOUT process_data_end ] stop
+ */
+
+} // End of branch "row43"
+
+
+
+
+	
+	/**
+	 * [tUniqRow_2 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tUniqRow_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tUniqRow_2 process_data_end ] stop
+ */
+
+} // End of branch "row42"
+
+
+
+
+	
+	/**
+	 * [tFilterRow_14 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_14";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_14 process_data_end ] stop
+ */
+
+} // End of branch "copyOfcopyOfcopyOfmap"
+
+
+
+
+	
+	/**
+	 * [tXMLMap_2_TXMLMAP_IN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_2";
+	
+	currentComponent="tXMLMap_2_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_2_TXMLMAP_IN process_data_end ] stop
+ */
+	
+	/**
+	 * [tXMLMap_2_TXMLMAP_IN end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_2";
+	
+	currentComponent="tXMLMap_2_TXMLMAP_IN";
+
+	
+
+}//TD512
+ 
+
+ok_Hash.put("tXMLMap_2_TXMLMAP_IN", true);
+end_Hash.put("tXMLMap_2_TXMLMAP_IN", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tXMLMap_2_TXMLMAP_IN end ] stop
+ */
+
+	
+	/**
+	 * [tFilterRow_14 end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_14";
+
+	
+    globalMap.put("tFilterRow_14_NB_LINE", nb_line_tFilterRow_14);
+    globalMap.put("tFilterRow_14_NB_LINE_OK", nb_line_ok_tFilterRow_14);
+    globalMap.put("tFilterRow_14_NB_LINE_REJECT", nb_line_reject_tFilterRow_14);
+    
+
+			if(execStat){
+				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
+			 		runStat.updateStatOnConnection("copyOfcopyOfcopyOfmap"+iterateId,2, 0); 
+			 	}
+			}
+		
+ 
+
+ok_Hash.put("tFilterRow_14", true);
+end_Hash.put("tFilterRow_14", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tFilterRow_14 end ] stop
+ */
+
+	
+	/**
+	 * [tUniqRow_2 end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tUniqRow_2";
+
+	
+
+globalMap.put("tUniqRow_2_NB_UNIQUES",nb_uniques_tUniqRow_2);
+globalMap.put("tUniqRow_2_NB_DUPLICATES",nb_duplicates_tUniqRow_2);
+
+			if(execStat){
+				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
+			 		runStat.updateStatOnConnection("row42"+iterateId,2, 0); 
+			 	}
+			}
+		
+ 
+
+ok_Hash.put("tUniqRow_2", true);
+end_Hash.put("tUniqRow_2", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tUniqRow_2 end ] stop
+ */
+
+	
+	/**
+	 * [tAggregateRow_10_AGGOUT end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGOUT";
+
+	
+
+			if(execStat){
+				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
+			 		runStat.updateStatOnConnection("row43"+iterateId,2, 0); 
+			 	}
+			}
+		
+ 
+
+ok_Hash.put("tAggregateRow_10_AGGOUT", true);
+end_Hash.put("tAggregateRow_10_AGGOUT", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tAggregateRow_10_AGGOUT end ] stop
+ */
+
+
+	
+	/**
+	 * [tAdvancedHash_row44 begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tAdvancedHash_row44", false);
+		start_Hash.put("tAdvancedHash_row44", System.currentTimeMillis());
+		
+	
+	currentComponent="tAdvancedHash_row44";
+
+	
+			if (execStat) {
+				if(resourceMap.get("inIterateVComp") == null){
+					
+						runStat.updateStatOnConnection("row44" + iterateId, 0, 0);
+					
+				}
+			} 
+
+		
+		int tos_count_tAdvancedHash_row44 = 0;
+		
+
+			   		// connection name:row44
+			   		// source node:tAggregateRow_10_AGGIN - inputs:(OnRowsEnd) outputs:(row44,row44) | target node:tAdvancedHash_row44 - inputs:(row44) outputs:()
+			   		// linked node: tMap_2 - inputs:(row2,row8,row6,row13,row19,row22,row23,row34,status,row45,row40,row27,row15,row44) outputs:(map)
+			   
+			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_row44 = 
+			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.UNIQUE_MATCH;
+			   			
+			   
+	   			org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<row44Struct> tHash_Lookup_row44 =org.talend.designer.components.lookup.memory.AdvancedMemoryLookup.
+	   						<row44Struct>getLookup(matchingModeEnum_row44);
+	   						   
+		   	   	   globalMap.put("tHash_Lookup_row44", tHash_Lookup_row44);
+		   	   	   
+				
+           
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row44 begin ] stop
+ */
+
+
+
+	
+	/**
+	 * [tAggregateRow_10_AGGIN begin ] start
+	 */
+
+	
+
+	
+		
+		ok_Hash.put("tAggregateRow_10_AGGIN", false);
+		start_Hash.put("tAggregateRow_10_AGGIN", System.currentTimeMillis());
+		
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGIN";
+
+	
+		int tos_count_tAggregateRow_10_AGGIN = 0;
+		
+
+java.util.Collection<AggOperationStruct_tAggregateRow_10> values_tAggregateRow_10 = hash_tAggregateRow_10.values();
+
+globalMap.put("tAggregateRow_10_NB_LINE", values_tAggregateRow_10.size());
+
+for(AggOperationStruct_tAggregateRow_10 aggregated_row_tAggregateRow_10 : values_tAggregateRow_10) { // G_AggR_600
+
+
+
+ 
+
+
+
+/**
+ * [tAggregateRow_10_AGGIN begin ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_10_AGGIN main ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGIN";
+
+	
+
+            				    row44.uuid = aggregated_row_tAggregateRow_10.uuid;
+            				    
+    								row44.url = aggregated_row_tAggregateRow_10.url_list.toString();
+	    						
+    								row44.protocol = aggregated_row_tAggregateRow_10.protocol_list.toString();
+	    						
+
+ 
+
+
+	tos_count_tAggregateRow_10_AGGIN++;
+
+/**
+ * [tAggregateRow_10_AGGIN main ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_10_AGGIN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_10_AGGIN process_data_begin ] stop
+ */
+
+	
+	/**
+	 * [tAdvancedHash_row44 main ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row44";
+
+	
+
+			//row44
+			//row44
+
+
+			
+				if(execStat){
+					runStat.updateStatOnConnection("row44"+iterateId,1, 1);
+				} 
+			
+
+		
+
+
+			   
+			   
+
+					row44Struct row44_HashRow = new row44Struct();
+		   	   	   
+				
+				row44_HashRow.uuid = row44.uuid;
+				
+				row44_HashRow.url = row44.url;
+				
+				row44_HashRow.protocol = row44.protocol;
+				
+			tHash_Lookup_row44.put(row44_HashRow);
+			
+            
+
+
+
+
+ 
+
+
+	tos_count_tAdvancedHash_row44++;
+
+/**
+ * [tAdvancedHash_row44 main ] stop
+ */
+	
+	/**
+	 * [tAdvancedHash_row44 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row44";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row44 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAdvancedHash_row44 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row44";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row44 process_data_end ] stop
+ */
+
+
+
+	
+	/**
+	 * [tAggregateRow_10_AGGIN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_10_AGGIN process_data_end ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_10_AGGIN end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGIN";
+
+	
+
+} // G_AggR_600
+
+ 
+
+ok_Hash.put("tAggregateRow_10_AGGIN", true);
+end_Hash.put("tAggregateRow_10_AGGIN", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tAggregateRow_10_AGGIN end ] stop
+ */
+
+	
+	/**
+	 * [tAdvancedHash_row44 end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row44";
+
+	
+
+tHash_Lookup_row44.endPut();
+
+			if(execStat){
+				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
+			 		runStat.updateStatOnConnection("row44"+iterateId,2, 0); 
+			 	}
+			}
+		
+ 
+
+ok_Hash.put("tAdvancedHash_row44", true);
+end_Hash.put("tAdvancedHash_row44", System.currentTimeMillis());
+
+
+
+
+/**
+ * [tAdvancedHash_row44 end ] stop
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				}//end the resume
+
+				
+
+
+
+	
+			}catch(java.lang.Exception e){	
+				
+				TalendException te = new TalendException(e, currentComponent, globalMap);
+				
+					te.setVirtualComponentName(currentVirtualComponent);
+				
+				throw te;
+			}catch(java.lang.Error error){	
+				
+					runStat.stopThreadStat();
+				
+				throw error;
+			}finally{
+				
+							//free memory for "tAggregateRow_10_AGGIN"
+							globalMap.remove("tAggregateRow_10");
+						
+				try{
+					
+	
+	/**
+	 * [tFileInputXML_8 finally ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputXML_8";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputXML_8 finally ] stop
+ */
+
+	
+	/**
+	 * [tXMLMap_2_TXMLMAP_OUT finally ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_2";
+	
+	currentComponent="tXMLMap_2_TXMLMAP_OUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_2_TXMLMAP_OUT finally ] stop
+ */
+
+	
+	/**
+	 * [tXMLMap_2_TXMLMAP_IN finally ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tXMLMap_2";
+	
+	currentComponent="tXMLMap_2_TXMLMAP_IN";
+
+	
+
+ 
+
+
+
+/**
+ * [tXMLMap_2_TXMLMAP_IN finally ] stop
+ */
+
+	
+	/**
+	 * [tFilterRow_14 finally ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFilterRow_14";
+
+	
+
+ 
+
+
+
+/**
+ * [tFilterRow_14 finally ] stop
+ */
+
+	
+	/**
+	 * [tUniqRow_2 finally ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tUniqRow_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tUniqRow_2 finally ] stop
+ */
+
+	
+	/**
+	 * [tAggregateRow_10_AGGOUT finally ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_10_AGGOUT finally ] stop
+ */
+
+	
+	/**
+	 * [tAggregateRow_10_AGGIN finally ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_10";
+	
+	currentComponent="tAggregateRow_10_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_10_AGGIN finally ] stop
+ */
+
+	
+	/**
+	 * [tAdvancedHash_row44 finally ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAdvancedHash_row44";
+
+	
+
+ 
+
+
+
+/**
+ * [tAdvancedHash_row44 finally ] stop
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				}catch(java.lang.Exception e){	
+					//ignore
+				}catch(java.lang.Error error){
+					//ignore
+				}
+				resourceMap = null;
+			}
+		
+
+		globalMap.put("tFileInputXML_8_SUBPROCESS_STATE", 1);
 	}
 	
 
@@ -41013,10 +44641,13 @@ public void tFileInputDelimited_1Process(final java.util.Map<String, Object> glo
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -41056,13 +44687,6 @@ row4Struct row4 = new row4Struct();
 		
 		int tos_count_tAggregateRow_1_AGGOUT = 0;
 		
-    	class BytesLimit65535_tAggregateRow_1_AGGOUT{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_1_AGGOUT().limitLog4jByte();
 
 // ------------ Seems it is not used
 
@@ -41442,13 +45066,6 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 	
 		int tos_count_tFileInputDelimited_1 = 0;
 		
-    	class BytesLimit65535_tFileInputDelimited_1{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileInputDelimited_1().limitLog4jByte();
 	
 	
 	
@@ -41699,7 +45316,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.uuid = null;
+						
+							
+								row3.uuid = null;
+							
+						
 						}
 						
 						
@@ -41717,7 +45338,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.dataset_id = null;
+						
+							
+								row3.dataset_id = null;
+							
+						
 						}
 						
 						
@@ -41735,7 +45360,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.datestamp = null;
+						
+							
+								row3.datestamp = null;
+							
+						
 						}
 						
 						
@@ -41753,7 +45382,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.crs = null;
+						
+							
+								row3.crs = null;
+							
+						
 						}
 						
 						
@@ -41771,7 +45404,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.title = null;
+						
+							
+								row3.title = null;
+							
+						
 						}
 						
 						
@@ -41789,7 +45426,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.edition = null;
+						
+							
+								row3.edition = null;
+							
+						
 						}
 						
 						
@@ -41807,7 +45448,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.abstracts = null;
+						
+							
+								row3.abstracts = null;
+							
+						
 						}
 						
 						
@@ -41825,7 +45470,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.custodian = null;
+						
+							
+								row3.custodian = null;
+							
+						
 						}
 						
 						
@@ -41843,7 +45492,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.inspire_themes = null;
+						
+							
+								row3.inspire_themes = null;
+							
+						
 						}
 						
 						
@@ -41861,7 +45514,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.gemet_concepts = null;
+						
+							
+								row3.gemet_concepts = null;
+							
+						
 						}
 						
 						
@@ -41882,11 +45539,14 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 									
 									
 										} catch(java.lang.Exception ex_tFileInputDelimited_1) {
-											rowstate_tFileInputDelimited_1.setException(ex_tFileInputDelimited_1);
+											rowstate_tFileInputDelimited_1.setException(new RuntimeException(String.format("Couldn't parse value for column '%s' in '%s', value is '%s'. Details: %s",
+												"wlon", "row3", rowtFileInputDelimited_1[columnIndexWithD_tFileInputDelimited_1], ex_tFileInputDelimited_1), ex_tFileInputDelimited_1));
 										}
     								}else{
     									
-    										row3.wlon = null;
+											
+												row3.wlon = null;
+											
     									
     								}
 									
@@ -41894,7 +45554,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.wlon = null;
+						
+							
+								row3.wlon = null;
+							
+						
 						}
 						
 						
@@ -41915,11 +45579,14 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 									
 									
 										} catch(java.lang.Exception ex_tFileInputDelimited_1) {
-											rowstate_tFileInputDelimited_1.setException(ex_tFileInputDelimited_1);
+											rowstate_tFileInputDelimited_1.setException(new RuntimeException(String.format("Couldn't parse value for column '%s' in '%s', value is '%s'. Details: %s",
+												"elon", "row3", rowtFileInputDelimited_1[columnIndexWithD_tFileInputDelimited_1], ex_tFileInputDelimited_1), ex_tFileInputDelimited_1));
 										}
     								}else{
     									
-    										row3.elon = null;
+											
+												row3.elon = null;
+											
     									
     								}
 									
@@ -41927,7 +45594,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.elon = null;
+						
+							
+								row3.elon = null;
+							
+						
 						}
 						
 						
@@ -41948,11 +45619,14 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 									
 									
 										} catch(java.lang.Exception ex_tFileInputDelimited_1) {
-											rowstate_tFileInputDelimited_1.setException(ex_tFileInputDelimited_1);
+											rowstate_tFileInputDelimited_1.setException(new RuntimeException(String.format("Couldn't parse value for column '%s' in '%s', value is '%s'. Details: %s",
+												"slat", "row3", rowtFileInputDelimited_1[columnIndexWithD_tFileInputDelimited_1], ex_tFileInputDelimited_1), ex_tFileInputDelimited_1));
 										}
     								}else{
     									
-    										row3.slat = null;
+											
+												row3.slat = null;
+											
     									
     								}
 									
@@ -41960,7 +45634,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.slat = null;
+						
+							
+								row3.slat = null;
+							
+						
 						}
 						
 						
@@ -41981,11 +45659,14 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 									
 									
 										} catch(java.lang.Exception ex_tFileInputDelimited_1) {
-											rowstate_tFileInputDelimited_1.setException(ex_tFileInputDelimited_1);
+											rowstate_tFileInputDelimited_1.setException(new RuntimeException(String.format("Couldn't parse value for column '%s' in '%s', value is '%s'. Details: %s",
+												"nlat", "row3", rowtFileInputDelimited_1[columnIndexWithD_tFileInputDelimited_1], ex_tFileInputDelimited_1), ex_tFileInputDelimited_1));
 										}
     								}else{
     									
-    										row3.nlat = null;
+											
+												row3.nlat = null;
+											
     									
     								}
 									
@@ -41993,7 +45674,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.nlat = null;
+						
+							
+								row3.nlat = null;
+							
+						
 						}
 						
 						
@@ -42011,7 +45696,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.stype = null;
+						
+							
+								row3.stype = null;
+							
+						
 						}
 						
 						
@@ -42029,7 +45718,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.scaleres = null;
+						
+							
+								row3.scaleres = null;
+							
+						
 						}
 						
 						
@@ -42047,7 +45740,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.tbegin = null;
+						
+							
+								row3.tbegin = null;
+							
+						
 						}
 						
 						
@@ -42065,7 +45762,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.tend = null;
+						
+							
+								row3.tend = null;
+							
+						
 						}
 						
 						
@@ -42083,7 +45784,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.protocols = null;
+						
+							
+								row3.protocols = null;
+							
+						
 						}
 						
 						
@@ -42101,7 +45806,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.links = null;
+						
+							
+								row3.links = null;
+							
+						
 						}
 						
 						
@@ -42119,7 +45828,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.lineage = null;
+						
+							
+								row3.lineage = null;
+							
+						
 						}
 						
 						
@@ -42137,7 +45850,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.data_src = null;
+						
+							
+								row3.data_src = null;
+							
+						
 						}
 						
 						
@@ -42155,7 +45872,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.published = null;
+						
+							
+								row3.published = null;
+							
+						
 						}
 						
 						
@@ -42173,7 +45894,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.sdiurl = null;
+						
+							
+								row3.sdiurl = null;
+							
+						
 						}
 						
 						
@@ -42191,7 +45916,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.distributionFormat = null;
+						
+							
+								row3.distributionFormat = null;
+							
+						
 						}
 						
 						
@@ -42209,7 +45938,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.place = null;
+						
+							
+								row3.place = null;
+							
+						
 						}
 						
 						
@@ -42227,7 +45960,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.useLimitation = null;
+						
+							
+								row3.useLimitation = null;
+							
+						
 						}
 						
 						
@@ -42245,7 +45982,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.browseGraphic = null;
+						
+							
+								row3.browseGraphic = null;
+							
+						
 						}
 						
 						
@@ -42263,7 +46004,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.shortName = null;
+						
+							
+								row3.shortName = null;
+							
+						
 						}
 						
 						
@@ -42281,7 +46026,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.referenceFlag = null;
+						
+							
+								row3.referenceFlag = null;
+							
+						
 						}
 						
 						
@@ -42299,7 +46048,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.wms = null;
+						
+							
+								row3.wms = null;
+							
+						
 						}
 						
 						
@@ -42317,7 +46070,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.idpTopics = null;
+						
+							
+								row3.idpTopics = null;
+							
+						
 						}
 						
 						
@@ -42335,7 +46092,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.restApi = null;
+						
+							
+								row3.restApi = null;
+							
+						
 						}
 						
 						
@@ -42353,7 +46114,11 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 							
 						
 						}else{
-							row3.status = null;
+						
+							
+								row3.status = null;
+							
+						
 						}
 						
 						
@@ -42403,6 +46168,26 @@ java.util.Map hashAggreg_tAggregateRow_1 = new java.util.HashMap();
 
 /**
  * [tFileInputDelimited_1 main ] stop
+ */
+	
+	/**
+	 * [tFileInputDelimited_1 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputDelimited_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputDelimited_1 process_data_begin ] stop
  */
 // Start of branch "row3"
 if(row3 != null) { 
@@ -42536,12 +46321,76 @@ operation_finder_tAggregateRow_1.uuid = row3.uuid;
 /**
  * [tAggregateRow_1_AGGOUT main ] stop
  */
+	
+	/**
+	 * [tAggregateRow_1_AGGOUT process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_1";
+	
+	currentComponent="tAggregateRow_1_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_1_AGGOUT process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAggregateRow_1_AGGOUT process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_1";
+	
+	currentComponent="tAggregateRow_1_AGGOUT";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_1_AGGOUT process_data_end ] stop
+ */
 
 } // End of branch "row3"
 
 
 
 
+	
+	/**
+	 * [tFileInputDelimited_1 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileInputDelimited_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileInputDelimited_1 process_data_end ] stop
+ */
 	
 	/**
 	 * [tFileInputDelimited_1 end ] start
@@ -42645,13 +46494,6 @@ end_Hash.put("tAggregateRow_1_AGGOUT", System.currentTimeMillis());
 		
 		int tos_count_tFileOutputDelimited_3 = 0;
 		
-    	class BytesLimit65535_tFileOutputDelimited_3{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileOutputDelimited_3().limitLog4jByte();
 
 String fileName_tFileOutputDelimited_3 = "";
     fileName_tFileOutputDelimited_3 = (new java.io.File(System.getProperty("java.io.tmpdir") + "/sdiDump/tmp/sdi.tsv")).getAbsolutePath().replace("\\","/");
@@ -42772,7 +46614,6 @@ String fileName_tFileOutputDelimited_3 = "";
             }
 
             int nb_line_tFileOutputDelimited_3 = 0;
-            int splitEvery_tFileOutputDelimited_3 = 1000;
             int splitedFileNo_tFileOutputDelimited_3 =0;
             int currentRow_tFileOutputDelimited_3 = 0;
 
@@ -42877,13 +46718,6 @@ resourceMap.put("nb_line_tFileOutputDelimited_3", nb_line_tFileOutputDelimited_3
 	
 		int tos_count_tAggregateRow_1_AGGIN = 0;
 		
-    	class BytesLimit65535_tAggregateRow_1_AGGIN{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAggregateRow_1_AGGIN().limitLog4jByte();
 
 java.util.Collection<AggOperationStruct_tAggregateRow_1> values_tAggregateRow_1 = hash_tAggregateRow_1.values();
 
@@ -42992,6 +46826,28 @@ for(AggOperationStruct_tAggregateRow_1 aggregated_row_tAggregateRow_1 : values_t
 /**
  * [tAggregateRow_1_AGGIN main ] stop
  */
+	
+	/**
+	 * [tAggregateRow_1_AGGIN process_data_begin ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_1";
+	
+	currentComponent="tAggregateRow_1_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_1_AGGIN process_data_begin ] stop
+ */
 
 	
 	/**
@@ -43069,9 +46925,71 @@ for(AggOperationStruct_tAggregateRow_1 aggregated_row_tAggregateRow_1 : values_t
 /**
  * [tFileOutputDelimited_3 main ] stop
  */
+	
+	/**
+	 * [tFileOutputDelimited_3 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileOutputDelimited_3";
+
+	
+
+ 
 
 
 
+/**
+ * [tFileOutputDelimited_3 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tFileOutputDelimited_3 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileOutputDelimited_3";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileOutputDelimited_3 process_data_end ] stop
+ */
+
+
+
+	
+	/**
+	 * [tAggregateRow_1_AGGIN process_data_end ] start
+	 */
+
+	
+
+	
+	
+		currentVirtualComponent = "tAggregateRow_1";
+	
+	currentComponent="tAggregateRow_1_AGGIN";
+
+	
+
+ 
+
+
+
+/**
+ * [tAggregateRow_1_AGGIN process_data_end ] stop
+ */
 	
 	/**
 	 * [tAggregateRow_1_AGGIN end ] start
@@ -43323,10 +47241,13 @@ public void tRunJob_1Process(final java.util.Map<String, Object> globalMap) thro
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -43352,13 +47273,6 @@ public void tRunJob_1Process(final java.util.Map<String, Object> globalMap) thro
 	
 		int tos_count_tRunJob_1 = 0;
 		
-    	class BytesLimit65535_tRunJob_1{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tRunJob_1().limitLog4jByte();
 
 
  
@@ -43447,7 +47361,7 @@ public void tRunJob_1Process(final java.util.Map<String, Object> globalMap) thro
 	  
 			 
 				if (childJob_tRunJob_1.getErrorCode() != null || ("failure").equals(childJob_tRunJob_1.getStatus())) {
-	        		throw new RuntimeException("Child job running failed");
+	        		throw new RuntimeException("Child job running failed.\n"+childJob_tRunJob_1.getException().getClass().getName() + ": " + childJob_tRunJob_1.getException().getMessage());
 				}
 			
 	  	
@@ -43459,6 +47373,46 @@ public void tRunJob_1Process(final java.util.Map<String, Object> globalMap) thro
 
 /**
  * [tRunJob_1 main ] stop
+ */
+	
+	/**
+	 * [tRunJob_1 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tRunJob_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tRunJob_1 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tRunJob_1 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tRunJob_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tRunJob_1 process_data_end ] stop
  */
 	
 	/**
@@ -43554,10 +47508,13 @@ public void tRunJob_2Process(final java.util.Map<String, Object> globalMap) thro
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -43582,13 +47539,6 @@ public void tRunJob_2Process(final java.util.Map<String, Object> globalMap) thro
 	
 		int tos_count_tRunJob_2 = 0;
 		
-    	class BytesLimit65535_tRunJob_2{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tRunJob_2().limitLog4jByte();
 
 
  
@@ -43642,16 +47592,23 @@ public void tRunJob_2Process(final java.util.Map<String, Object> globalMap) thro
 		context.synchronizeContext();
 		
 			parentContextMap_tRunJob_2.put("username", context.username);
+			paraList_tRunJob_2.add("--context_type " + "username" + "=" + "id_String");
 		
 			parentContextMap_tRunJob_2.put("password", context.password);
+			paraList_tRunJob_2.add("--context_type " + "password" + "=" + "id_Password");
 		
 			parentContextMap_tRunJob_2.put("outputDir", context.outputDir);
+			paraList_tRunJob_2.add("--context_type " + "outputDir" + "=" + "id_String");
 		 
 		java.util.Enumeration<?> propertyNames_tRunJob_2 = context.propertyNames();
 		while (propertyNames_tRunJob_2.hasMoreElements()) {
 			String key_tRunJob_2 = (String) propertyNames_tRunJob_2.nextElement();
-			Object value_tRunJob_2 = (Object) context.get(key_tRunJob_2);       
-			paraList_tRunJob_2.add("--context_param " + key_tRunJob_2 + "=" + value_tRunJob_2);
+			Object value_tRunJob_2 = (Object) context.get(key_tRunJob_2);
+			if(value_tRunJob_2!=null) {  
+				paraList_tRunJob_2.add("--context_param " + key_tRunJob_2 + "=" + value_tRunJob_2);
+			} else {
+				paraList_tRunJob_2.add("--context_param " + key_tRunJob_2 + "=" + NULL_VALUE_EXPRESSION_IN_COMMAND_STRING_FOR_CHILD_JOB_ONLY);
+			}
 			
 		}
 		
@@ -43694,7 +47651,7 @@ public void tRunJob_2Process(final java.util.Map<String, Object> globalMap) thro
 	  
 			 
 				if (childJob_tRunJob_2.getErrorCode() != null || ("failure").equals(childJob_tRunJob_2.getStatus())) {
-	        		throw new RuntimeException("Child job running failed");
+	        		throw new RuntimeException("Child job running failed.\n"+childJob_tRunJob_2.getException().getClass().getName() + ": " + childJob_tRunJob_2.getException().getMessage());
 				}
 			
 	  	
@@ -43706,6 +47663,46 @@ public void tRunJob_2Process(final java.util.Map<String, Object> globalMap) thro
 
 /**
  * [tRunJob_2 main ] stop
+ */
+	
+	/**
+	 * [tRunJob_2 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tRunJob_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tRunJob_2 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tRunJob_2 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tRunJob_2";
+
+	
+
+ 
+
+
+
+/**
+ * [tRunJob_2 process_data_end ] stop
  */
 	
 	/**
@@ -43797,10 +47794,13 @@ public void tFileDelete_1Process(final java.util.Map<String, Object> globalMap) 
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -43826,13 +47826,6 @@ public void tFileDelete_1Process(final java.util.Map<String, Object> globalMap) 
 	
 		int tos_count_tFileDelete_1 = 0;
 		
-    	class BytesLimit65535_tFileDelete_1{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tFileDelete_1().limitLog4jByte();
 
  
 
@@ -43899,10 +47892,10 @@ class DeleteFoldertFileDelete_1{
 	if(filetFileDelete_1.exists()&& filetFileDelete_1.isDirectory()){
 		DeleteFoldertFileDelete_1 dftFileDelete_1 = new DeleteFoldertFileDelete_1();
 		if(dftFileDelete_1.delete(filetFileDelete_1)){
-    		globalMap.put("tFileDelete_1_CURRENT_STATUS", "Path deleted.");
-    	}else{
-    		globalMap.put("tFileDelete_1_CURRENT_STATUS", "No path deleted.");
-    	}
+			globalMap.put("tFileDelete_1_CURRENT_STATUS", "Path deleted.");
+		}else{
+			globalMap.put("tFileDelete_1_CURRENT_STATUS", "No path deleted.");
+		}
 	}else{
 		globalMap.put("tFileDelete_1_CURRENT_STATUS", "Path does not exist or is invalid.");
     }
@@ -43918,6 +47911,46 @@ class DeleteFoldertFileDelete_1{
 
 /**
  * [tFileDelete_1 main ] stop
+ */
+	
+	/**
+	 * [tFileDelete_1 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileDelete_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileDelete_1 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tFileDelete_1 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tFileDelete_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tFileDelete_1 process_data_end ] stop
  */
 	
 	/**
@@ -44019,10 +48052,13 @@ public void tAssertCatcher_1Process(final java.util.Map<String, Object> globalMa
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
-
-			String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
-			boolean resumeIt = currentMethodName.equals(resumeEntryMethodName);
-			if( resumeEntryMethodName == null || resumeIt || globalResumeTicket){//start the resume
+			// TDI-39566 avoid throwing an useless Exception
+			boolean resumeIt = true;
+			if (globalResumeTicket == false && resumeEntryMethodName != null) {
+				String currentMethodName = new java.lang.Exception().getStackTrace()[0].getMethodName();
+				resumeIt = resumeEntryMethodName.equals(currentMethodName);
+			}
+			if (resumeIt || globalResumeTicket) { //start the resume
 				globalResumeTicket = true;
 
 
@@ -44048,13 +48084,6 @@ public void tAssertCatcher_1Process(final java.util.Map<String, Object> globalMa
 	
 		int tos_count_tAssertCatcher_1 = 0;
 		
-    	class BytesLimit65535_tAssertCatcher_1{
-    		public void limitLog4jByte() throws Exception{
-    			
-    		}
-    	}
-    	
-        new BytesLimit65535_tAssertCatcher_1().limitLog4jByte();
 
 	for (AssertCatcherUtils.AssertCatcherMessage acm : tAssertCatcher_1.getMessages()) {
  
@@ -44084,6 +48113,46 @@ public void tAssertCatcher_1Process(final java.util.Map<String, Object> globalMa
 
 /**
  * [tAssertCatcher_1 main ] stop
+ */
+	
+	/**
+	 * [tAssertCatcher_1 process_data_begin ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAssertCatcher_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tAssertCatcher_1 process_data_begin ] stop
+ */
+	
+	/**
+	 * [tAssertCatcher_1 process_data_end ] start
+	 */
+
+	
+
+	
+	
+	currentComponent="tAssertCatcher_1";
+
+	
+
+ 
+
+
+
+/**
+ * [tAssertCatcher_1 process_data_end ] stop
  */
 	
 	/**
@@ -44200,11 +48269,11 @@ end_Hash.put("tAssertCatcher_1", System.currentTimeMillis());
     };
 
 
-
-    private java.util.Properties context_param = new java.util.Properties();
+    private PropertiesWithType context_param = new PropertiesWithType();
     public java.util.Map<String, Object> parentContextMap = new java.util.HashMap<String, Object>();
 
     public String status= "";
+    
 
     public static void main(String[] args){
         final sdiMetadataExtractor sdiMetadataExtractorClass = new sdiMetadataExtractor();
@@ -44276,26 +48345,51 @@ end_Hash.put("tAssertCatcher_1", System.currentTimeMillis());
 
         try {
             //call job/subjob with an existing context, like: --context=production. if without this parameter, there will use the default context instead.
-            java.io.InputStream inContext = sdiMetadataExtractor.class.getClassLoader().getResourceAsStream("local_project/sdimetadataextractor_0_1/contexts/"+contextStr+".properties");
-            if(isDefaultContext && inContext ==null) {
-
-            } else {
-                if (inContext!=null) {
-                    //defaultProps is in order to keep the original context value
-                    defaultProps.load(inContext);
-                    inContext.close();
-                    context = new ContextProperties(defaultProps);
-                }else{
-                    //print info and job continue to run, for case: context_param is not empty.
-                    System.err.println("Could not find the context " + contextStr);
-                }
+            java.io.InputStream inContext = sdiMetadataExtractor.class.getClassLoader().getResourceAsStream("local_project/sdimetadataextractor_0_1/contexts/" + contextStr + ".properties");
+            if (inContext == null) {
+                inContext = sdiMetadataExtractor.class.getClassLoader().getResourceAsStream("config/contexts/" + contextStr + ".properties");
+            }
+            if (inContext != null && context != null && context.isEmpty()) {
+                //defaultProps is in order to keep the original context value
+                defaultProps.load(inContext);
+                inContext.close();
+                context = new ContextProperties(defaultProps);
+            } else if (!isDefaultContext) {
+                //print info and job continue to run, for case: context_param is not empty.
+                System.err.println("Could not find the context " + contextStr);
             }
 
             if(!context_param.isEmpty()) {
                 context.putAll(context_param);
+				//set types for params from parentJobs
+				for (Object key: context_param.keySet()){
+					String context_key = key.toString();
+					String context_type = context_param.getContextType(context_key);
+					context.setContextType(context_key, context_type);
+
+				}
             }
+				    context.setContextType("username", "id_String");
+				
                 context.username=(String) context.getProperty("username");
-                context.password=(String) context.getProperty("password");
+				    context.setContextType("password", "id_Password");
+				
+            		String pwd_password_value = context.getProperty("password");
+            		context.password = null;
+            		if(pwd_password_value!=null) {
+            			if(context_param.containsKey("password")) {//no need to decrypt if it come from program argument or parent job runtime
+            				context.password = pwd_password_value;
+            			} else if (!pwd_password_value.isEmpty()) {
+            				try {
+            					context.password = routines.system.PasswordEncryptUtil.decryptPassword(pwd_password_value);
+            					context.put("password",context.password);
+            				} catch (java.lang.RuntimeException e) {
+            					//do nothing
+            				}
+            			}
+            		}
+				    context.setContextType("outputDir", "id_String");
+				
                 context.outputDir=(String) context.getProperty("outputDir");
         } catch (java.io.IOException ie) {
             System.err.println("Could not load context "+contextStr);
@@ -44307,7 +48401,7 @@ end_Hash.put("tAssertCatcher_1", System.currentTimeMillis());
         if (parentContextMap != null && !parentContextMap.isEmpty()) {if (parentContextMap.containsKey("username")) {
                 context.username = (String) parentContextMap.get("username");
             }if (parentContextMap.containsKey("password")) {
-                context.password = (String) parentContextMap.get("password");
+                context.password = (java.lang.String) parentContextMap.get("password");
             }if (parentContextMap.containsKey("outputDir")) {
                 context.outputDir = (String) parentContextMap.get("outputDir");
             }
@@ -44319,6 +48413,7 @@ end_Hash.put("tAssertCatcher_1", System.currentTimeMillis());
         resumeUtil.initCommonInfo(pid, rootPid, fatherPid, projectName, jobName, contextStr, jobVersion);
 
 		List<String> parametersToEncrypt = new java.util.ArrayList<String>();
+			parametersToEncrypt.add("password");
         //Resume: jobStart
         resumeUtil.addLog("JOB_STARTED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","",resumeUtil.convertToJsonText(context,parametersToEncrypt));
 
@@ -44345,6 +48440,8 @@ if(execStat) {
     long end = 0;
 
     startTime = System.currentTimeMillis();
+
+
 
 
 this.globalResumeTicket = true;//to run tPreJob
@@ -44382,8 +48479,6 @@ this.globalResumeTicket = true;//to run tPostJob
 
 
 
-
-
 if (execStat) {
     runStat.updateStatOnJob(RunStat.JOBEND, fatherNode);
     runStat.stopThreadStat();
@@ -44409,7 +48504,7 @@ if (execStat) {
 
 
 
-		
+
 
 
 
@@ -44421,6 +48516,7 @@ if (execStat) {
 
     private java.util.Map<String, Object> getSharedConnections4REST() {
         java.util.Map<String, Object> connections = new java.util.HashMap<String, Object>();
+
 
 
 
@@ -44459,7 +48555,19 @@ if (execStat) {
             fatherNode = arg.substring(14);
         } else if (arg.startsWith("--pid=")) {
             pid = arg.substring(6);
-        } else if (arg.startsWith("--context_param")) {
+        } else if (arg.startsWith("--context_type")) {
+            String keyValue = arg.substring(15);
+			int index = -1;
+            if (keyValue != null && (index = keyValue.indexOf('=')) > -1) {
+                if (fatherPid==null) {
+                    context_param.setContextType(keyValue.substring(0, index), replaceEscapeChars(keyValue.substring(index + 1)));
+                } else { // the subjob won't escape the especial chars
+                    context_param.setContextType(keyValue.substring(0, index), keyValue.substring(index + 1) );
+                }
+
+            }
+
+		} else if (arg.startsWith("--context_param")) {
             String keyValue = arg.substring(16);
             int index = -1;
             if (keyValue != null && (index = keyValue.indexOf('=')) > -1) {
@@ -44474,6 +48582,8 @@ if (execStat) {
 		}
 
     }
+    
+    private static final String NULL_VALUE_EXPRESSION_IN_COMMAND_STRING_FOR_CHILD_JOB_ONLY = "<TALEND_NULL>";
 
     private final String[][] escapeChars = {
         {"\\\\","\\"},{"\\n","\n"},{"\\'","\'"},{"\\r","\r"},
@@ -44521,6 +48631,6 @@ if (execStat) {
     ResumeUtil resumeUtil = null;
 }
 /************************************************************************************************
- *     1115703 characters generated by Talend Open Studio for Big Data 
- *     on the February 27, 2018 5:38:40 PM CET
+ *     1153716 characters generated by Talend Open Studio for Big Data 
+ *     on the June 24, 2019 3:24:32 PM CEST
  ************************************************************************************************/
