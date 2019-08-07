@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<talendfile:ContextType xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd" xmi:id="_7ws0UK-uEempcsFeapwBrg" confirmationNeeded="false" name="Default">
+  <contextParameter xmi:id="_FaIzwK-vEempcsFeapwBrg" comment="" name="pgHost" prompt="pgHost?" promptNeeded="false" type="id_String" value=""/>
+  <contextParameter xmi:id="_FaIzwa-vEempcsFeapwBrg" comment="" name="pgPort" prompt="pgPort?" promptNeeded="false" type="id_Integer" value="5432"/>
+  <contextParameter xmi:id="_FaIzwq-vEempcsFeapwBrg" comment="" name="pgUsername" prompt="pgUsername?" promptNeeded="false" type="id_String" value=""/>
+  <contextParameter xmi:id="_FaIzw6-vEempcsFeapwBrg" comment="" name="pgPassword" prompt="pgPassword?" promptNeeded="false" type="id_Password" value=""/>
+  <contextParameter xmi:id="_Wfw38K-vEempcsFeapwBrg" comment="" name="pgDatabase" prompt="pgDatabase?" promptNeeded="false" type="id_String" value="&quot;geonetwork_sdi?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory&quot;"/>
+  <contextParameter xmi:id="_djmHEK-vEempcsFeapwBrg" comment="" name="pgSchema" prompt="pgSchema?" promptNeeded="false" type="id_String" value=""/>
+  <contextParameter xmi:id="_9aq3QK-4Eems8oRgjWcDjw" comment="" name="sqliteFilename" prompt="sqliteFilename?" promptNeeded="false" type="id_String" value="&quot;/cdi/cdi.sqlite&quot;"/>
+  <contextParameter xmi:id="_2h2BcK-8Eems8oRgjWcDjw" comment="" name="resolveFilename" prompt="resolveFilename?" promptNeeded="false" type="id_String" value="&quot;/cdi/resolveFilename.csv&quot;"/>
+  <contextParameter xmi:id="_9qBIkK-9EemtF8SPT-jrjQ" comment="" name="outputDir" prompt="outputDir?" promptNeeded="false" type="id_String" value="&quot;d:/tmp/"/>
+</talendfile:ContextType>
